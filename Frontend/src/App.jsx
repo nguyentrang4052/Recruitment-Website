@@ -8,6 +8,7 @@ import './App.css';
 
 function App() {
   return (
+<<<<<<< HEAD
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -21,3 +22,40 @@ function App() {
 }
 
 export default App;
+=======
+    <>
+      <Header />
+    </>
+  )
+}
+export default App
+
+/*
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+import EmployerRegistration from './components/EmployerRegistration/EmployerRegistration';
+import EmployerDashboard from './components/EmployerDashboard/EmployerDashboard';
+import Login from './components/Login/Login';
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import './App.css';
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<EmployerRegistration />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/employer-dashboard" element={<EmployerDashboard />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+ */
+>>>>>>> 7e621e9811bfb9065b4925fbcdb545d2f5df34d5

@@ -33,7 +33,11 @@ public class Rating implements Serializable {
 	@JsonManagedReference
 	private Employer employer;
 
+<<<<<<< HEAD
 	@Column(name = "score", columnDefinition = "decimal(10,2) NULL")
+=======
+	@Column(name = "score", columnDefinition = "decimal(10, 2) NULL")
+>>>>>>> 7e621e9811bfb9065b4925fbcdb545d2f5df34d5
 	private BigDecimal score;
 
 	@Column(name = "content", columnDefinition = "nvarchar(255) NULL")

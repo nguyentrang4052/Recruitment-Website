@@ -1,0 +1,24 @@
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.main-content {
+  display: flex;
+  background-color: white;
+  position: fixed;  
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-left: 20%;
+  top: 80px;
+
+} 

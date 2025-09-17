@@ -1,34 +1,27 @@
-import React from 'react';
 import './Header.css';  
+import Menu from './Menu';
 
+const menuItems = [{
+  label: 'Tất cả việc làm',
+  submenu: ['Công việc A', 'Công việc B', 'Công việc C', 'Công việc D', 'Công việc E','Công việc F','Công việc G','Công việc H','Công việc I','Công việc J']
+},
+{ label: 'Công ty',
+  submenu: ['Công ty A', 'Công ty B', 'Công ty C', 'Công ty D', 'Công ty E']
+}
+];
 function Header() {
   return (
     <div className="header">
       <div className="header-left">
         <img src="logo.png" alt="Logo" className="logo" />
-        <nav className="nav-menu">
-          <div className="nav-item">
-            <a>Tìm việc làm</a>
-            <ul className="dropdown">
-              <li><a href="#">Việc làm IT</a></li>
-              <li><a href="#">Việc làm Marketing</a></li>
-              <li><a href="#">Việc làm Kinh doanh</a></li>
-            </ul>
-          </div>
-          <div className="nav-item">
-            <a>Công ty tuyển dụng </a>
-            <ul className="dropdown">
-              <li><a href="#">Giới thiệu</a></li>
-              <li><a href="#">Đánh giá</a></li>
-            </ul>
-          </div>
-          
+        <nav className="nav-menu">       
+          {menuItems.map((menu, index) => (
+            <Menu key={index} label={menu.label} submenu={menu.submenu} />
+          ))}
         </nav>
       </div>
       <div className="header-right">
-        <button className="signup-btn">Đăng ký</button>
-        <button className="login-btn">Đăng nhập</button>
-        <a href="#" className="employer-link">Nhà tuyển dụng</a>
+         <img src="avatar.jpg" alt="Avatar" className="avatar" />
       </div>
     </div>
   );

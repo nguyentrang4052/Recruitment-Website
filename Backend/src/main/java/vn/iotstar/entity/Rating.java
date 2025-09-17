@@ -1,6 +1,7 @@
 package vn.iotstar.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -32,12 +33,12 @@ public class Rating implements Serializable {
 	@JsonManagedReference
 	private Employer employer;
 
-	@Column(name = "score", columnDefinition = "int NULL")
-	private Integer score;
+	@Column(name = "score", columnDefinition = "decimal(10,2) NULL")
+	private BigDecimal score;
 
 	@Column(name = "content", columnDefinition = "nvarchar(255) NULL")
 	private String content;
 
 	@Column(name = "date", columnDefinition = "datetime NULL")
-	private LocalDate date;
+	private LocalDate date = LocalDate.now();
 }

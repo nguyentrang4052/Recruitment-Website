@@ -1,0 +1,158 @@
+.recruimentnews-page {
+  margin-top: 10px;
+  margin-left: 0; 
+  padding-top: 20px;
+  display: block; 
+  background-color: white;
+}
+
+.recruimentnews-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 20px;  
+  padding: 20px;
+  margin-top: 250px;
+  width: 100%;
+  max-width: 1300px;
+  background-color: white;
+  padding-bottom: 20px;
+}
+
+.recruimentnew-container:first-child {
+  position: sticky;
+  top: 0;
+  background: white; /* Nền để không bị đè lên phần tử phía sau */
+  z-index: 10;
+}
+
+.recruiment-card {
+  padding: 15px;
+  border:1px solid black;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 380px;
+  height: 220px;
+  text-align: left;
+  margin-left: 0 ;
+  overflow: hidden;
+}
+
+.recruiment-card p {
+    display: flex; 
+    flex-direction: row;  
+    text-align: left;
+    margin-bottom: 2px;
+    margin-left: 20px;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.recruiment-card:hover {
+  box-shadow: 0 8px 16px rgba(170, 33, 33, 0.2);
+  transform: translateY(-5px);
+  border-color: #a40606;
+  cursor: pointer;
+}
+
+.recruiment-title {
+  color: black;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 10px;
+  text-align: left;
+  margin-left: 20px;
+  margin-top: 10px;
+  text-decoration: underline;
+  width: 340px;
+  height: 40px;
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+
+
+
+.recruiment-title:hover {
+  color: #004080;
+}
+
+.recruiment-info{
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+}
+
+.recruiment-value-emp {
+  text-transform: uppercase;
+  color: #004080;
+  font-size: 13px;
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.recruiment-value {
+  color: #191010;
+  font-size: 12px;
+  margin-left: 4px;
+  font-weight: normal;
+  margin-top: 1px;
+}
+
+.btn {
+  bottom: 10px;   
+  margin-top: 20px;         
+  margin-left: 180px;
+  top: 160px;
+}
+
+.favorite-btn {
+  background-color: rgba(246, 242, 242, 0.792) ;
+  color: #ba1515;
+  width: 45px;
+  height: 45px;
+  border-radius: 100%;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.favorite-btn:hover {
+  background-color: rgba(246, 242, 242, 0.792)
+}
+
+.apply-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.apply-btn:hover {
+  background-color: #218838;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #4CAF50;
+}
+
+.pagination button:disabled {
+    background-color: rgba(246, 242, 242, 0.792);
+    cursor: not-allowed;
+}

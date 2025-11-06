@@ -1,0 +1,258 @@
+.new-applicants-container {
+    padding: 30px 40px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    max-width: 1200px;
+    font-family: Arial, sans-serif;
+    text-align: left;
+    position: relative; 
+    width: 1070px;
+    margin-left: 340px;
+}
+
+.new-applicants-container h2 {
+    text-align: center;
+    color: #004080;
+    margin-bottom: 30px;
+    font-size: 28px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 15px;
+}
+
+.applicants-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.applicant-card {
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 5px solid #007bff;
+    gap: 15px;
+}
+
+.applicant-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.applicant-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.candidate-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid #007bff;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.applicant-info {
+    flex-grow: 1;
+}
+
+.applicant-name {
+    margin: 0;
+    font-size: 1.3em;
+    color: #004080;
+    font-weight: bold;
+}
+
+.applicant-position {
+    color: #6c757d;
+    font-style: italic;
+    margin: 5px 0 12px;
+    font-size: 0.95em;
+}
+
+.applicant-details {
+    display: flex;
+    gap: 15px;
+    color: #495057;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.applicant-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.skill-tag {
+    background-color: #e9f2ff;
+    color: #007bff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+
+.applicant-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.action-button {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+}
+
+.view-button {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.view-button:hover {
+    background-color: #138496;
+}
+
+.approve-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.approve-button:hover {
+    background-color: #218838;
+}
+
+.reject-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.reject-button:hover {
+    background-color: #c82333;
+}
+
+.action-button.disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+.back-button {
+    background-color: #6c757d;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.25s, transform 0.2s;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+    gap: 15px;
+}
+
+.pagination button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.25s, transform 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.page-indicator {
+    font-weight: bold;
+    color: #004080;
+}
+
+main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    padding: 0 40px; 
+}
+
+.main-header h2 {
+    flex-grow: 1;
+    text-align: center;
+    color: #004080;
+    font-size: 28px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin: 0;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 40px; 
+    transition: color 0.25s;
+}
+
+.back-button:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.user-info {
+    font-weight: bold;
+    color: #004080;
+}

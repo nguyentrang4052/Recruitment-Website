@@ -1,0 +1,142 @@
+body {
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    text-align: center;
+}
+
+.login-card h2 {
+    color: #004080;
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.form-groups {
+    margin-bottom: 20px;
+    text-align: left;
+    margin-left: 20px;
+
+}
+
+.form-groups label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #004080;
+    font-size: 14px;
+}
+
+.form-groups input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.login-button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-button:hover {
+    background: linear-gradient(90deg, #0056b3, #004080);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.forgot-password-link {
+    margin-top: 15px; 
+    font-size: 15px;  
+    text-align: center; 
+}
+
+.forgot-password-link a {
+    color: #007bff; 
+    text-decoration: none; 
+    font-weight: 500; 
+    transition: color 0.2s ease-in-out; 
+}
+
+.forgot-password-link a:hover {
+    color: #0056b3;
+    text-decoration: underline; 
+}
+
+
+.social-login {
+    margin-top: 25px;
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
+
+.social-login p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 16px;
+    margin-left: 15px;
+    height: 30px;
+}
+
+.google-button {
+    width: 100%;
+    padding: 12px;
+    height: 35px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    background-color: #db4437;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.google-button:hover {
+    background-color: #c33b2f;
+    transform: translateY(-2px);
+}
+
+
+.switch-page-link {
+    margin-top: 20px;
+    font-size: 15px;
+    color: #333;
+}
+
+.switch-page-link a {
+    color: #007bff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.switch-page-link a:hover {
+    text-decoration: underline;
+}

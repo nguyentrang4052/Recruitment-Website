@@ -1,0 +1,48 @@
+.notice-container {
+  width: 1000px;
+  padding: 20px 40px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  margin-left: 260px;
+  margin-top: -200px;
+}
+
+.notice-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 4px;
+  background-color: #add8af;
+  text-align: center;
+}
+
+.notice-table th, .notice-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.notice-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  color: rgb(9, 11, 155);
+}
+
+.btn-create {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  align-self: flex-end;
+}
+
+.btn-create:hover {
+  background-color: #45a049;
+}

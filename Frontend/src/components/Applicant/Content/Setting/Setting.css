@@ -1,0 +1,104 @@
+.main-layout {
+  display: flex;
+  align-items: flex-start; 
+  margin-left: -100px;
+  margin-top: 85px;
+}
+
+.setting-row {
+  gap: 40px;
+  margin-bottom: 30px;
+
+}
+
+.setting-col {
+  flex: 1;
+  background: #fafafa;
+  padding: 25px;
+  border-radius: 8px;
+  border: 2px solid #eee;
+}
+
+.form-group-setting {
+  margin: 30px 10px;
+  
+}
+
+.form-group-setting input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 90%;
+}
+
+.form-group-setting input:focus {
+  border-color: #00c2a5;
+}
+
+.button-group {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-update {
+  background: linear-gradient(to right, #00e0ac, #00c2a5);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.btn-update:hover {
+  opacity: 0.9;
+}
+
+.btn-skip {
+  background: #f1f1f1;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-skip:hover {
+  background: #e0e0e0;
+}
+
+.popup-message {
+  position: fixed;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 40px 30px;
+  border: 1px solid #007bff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  text-align: center;
+}
+
+.popup-message p {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+.popup-message button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+

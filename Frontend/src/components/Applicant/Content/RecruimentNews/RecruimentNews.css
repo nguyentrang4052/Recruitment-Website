@@ -1,0 +1,423 @@
+.image-search {
+  position: relative;
+  width: 100%;
+  margin-bottom: 30px; /* Khoảng cách giữa phần search và nội dung bên dưới */
+}
+
+.image-search img {
+  width: 100%;
+  height: 60vh;                
+  object-fit: fill;
+  display: block; /* Loại bỏ khoảng trắng dưới ảnh */
+}
+
+.search-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  margin: 20px auto 0; /* Khoảng cách 20px từ ảnh */
+  gap: 2%;
+  padding: 0 5%;
+  max-width: 1200px;
+}
+
+.search-container.dashboard {
+  margin: 20px auto 0;
+}
+
+.image-search input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  height: 45px;
+  padding: 12px 20px;
+  font-size: clamp(14px, 2vw, 16px);
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.image-search button {
+  width: 60px;  
+  height: 45px;  
+  font-size: 24px;  
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-search button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.recruimentnews-page {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px; /* Tăng từ 15px lên 40px */
+}
+
+/* Hoặc thêm margin cho container */
+.recruimentnews-container {
+  margin-top: 30px;
+  margin-left: 30px;  /* Thêm margin trái */
+  margin-right: 30px; /* Thêm margin phải */
+  display: flex;
+  flex-direction: column;
+  gap: clamp(15px, 3vw, 30px);
+  padding: clamp(10px, 2vw, 15px);
+  width: calc(100% - 60px); /* Trừ đi margin 2 bên */
+}
+
+.recruimentnew-container {
+  background: whitesmoke;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: row;
+  gap: clamp(15px, 3vw, 50px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: clamp(10px, 4vw, 40px);
+}
+
+.recruimentnew-container:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+.company-img {
+  width: clamp(80px, 20vw, 280px);
+  height: clamp(80px, 10vw, 200px);
+  object-fit: contain;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.recruitment-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recruiment-position {
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.recruiment-position:hover {
+  color: #007bff;
+}
+
+.recruiment-value-emp {
+  display: block;
+  font-size: clamp(14px, 2vw, 16px);
+  color: #222;
+  font-weight: 500;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.recruiment-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: clamp(12px, 1.8vw, 14px);
+  color: #444;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.recruiment-info p {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.recruiment-value {
+  margin-left: 4px;
+}
+
+.end-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.skills-list {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.skill {
+  padding: 6px 14px;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  font-size: clamp(12px, 1.5vw, 14px);
+  color: #333;
+  background-color: #fff;
+  white-space: nowrap;
+}
+
+.btn {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: clamp(13px, 1.8vw, 15px);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: fit-content; /* Thêm dòng này */
+  display: inline-flex; /* Thêm dòng này */
+  align-items: center; /* Thêm dòng này */
+  justify-content: center; /* Thêm dòng này */
+}
+
+.favorite-btn {
+  background: white;
+  color: #999; /* Màu xám nhạt khi chưa favorite */
+  font-size: 18px !important;
+  padding: 10px 14px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  border: 1px solid #e0e0e0; /* Thêm viền để dễ nhìn */
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.favorite-btn:hover {
+  background: #fff5f5;
+  color: #ff4458;
+  border-color: #ffccd5;
+  transform: scale(1.05);
+}
+
+/* Trạng thái active (đã favorite) */
+.favorite-btn.active {
+  background: #ffe3e8;
+  color: #ff4458; /* Màu hồng đỏ */
+  border-color: #ffccd5;
+}
+
+.favorite-btn.active:hover {
+  background: #ffd4dc;
+  color: #e63946;
+  transform: scale(1.08);
+}
+
+/* Animation khi click */
+.favorite-btn:active {
+  transform: scale(0.95);
+}
+
+/* Đảm bảo icon có kích thước đồng nhất */
+.favorite-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.apply-btn {
+  background: #007bff;
+  color: white;
+  min-width: 100px; /* Thêm chiều rộng tối thiểu */
+  padding: 10px 24px !important; /* Tăng padding ngang */
+  font-weight: 500; /* Thêm font weight */
+}
+
+.apply-btn:hover {
+  background: #0056b3;
+}
+
+.pagination {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  border: none;
+  background: #007bff;
+  color: whitesmoke;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: clamp(12px, 2vw, 14px);
+  min-width: 40px;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: clamp(12px, 2vw, 14px);
+  margin: 0 8px;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .image-search img {
+    height: 35vh;
+  }
+  
+  .search-container {
+    padding: 0 10px;
+    margin-top: 15px;
+  }
+  
+  .recruimentnews-page {
+    width: 95%;
+  }
+  
+  .recruimentnew-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .company-logo {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .recruitment-content {
+    align-items: center;
+  }
+  
+  .recruiment-position,
+  .recruiment-value-emp {
+    text-align: center;
+  }
+  
+  .recruiment-info {
+    justify-content: center;
+  }
+  
+  .end-card {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .skills-list {
+    justify-content: center;
+    min-width: 100%;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .image-search {
+    margin-bottom: 20px;
+  }
+
+  .image-search img {
+    height: 30vh;
+  }
+  
+  .search-container {
+    flex-direction: row;
+    gap: 10px;
+    padding: 0 15px;
+    margin-top: 15px;
+  }
+  
+  .image-search input[type="text"] {
+    height: 40px;
+  }
+  
+  .image-search button {
+    width: 50px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .recruimentnews-page {
+    width: 100%;
+    padding: 0 10px;
+  }
+  
+  .company-logo {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .recruiment-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .recruiment-info p {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .btn {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn button {
+    width: 100%;
+  }
+  
+  .pagination {
+    gap: 5px;
+  }
+  
+  .pagination button {
+    padding: 6px 12px;
+  }
+}
+
+/* Màn hình rất nhỏ */
+@media (max-width: 360px) {
+  .image-search img {
+    height: 25vh;
+  }
+  
+  .search-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .image-search button {
+    width: 100%;
+  }
+}

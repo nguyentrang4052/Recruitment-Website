@@ -1,0 +1,314 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.saved-jobs-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 100vh;
+    background: #f5f5f5;
+}
+
+.saved-jobs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.saved-jobs-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.toggle-btn{
+    padding: 8px 16px;
+              background: #f0f0f0;
+              border: none;
+                border-radius: 4px;
+              cursor: pointer;
+              font-size: 14px
+}
+
+/* Trạng thái rỗng */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.empty-icon {
+    margin-bottom: 30px;
+}
+
+.heart-circle {
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, #89cff0 0%, #4a9fd8 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(74, 159, 216, 0.3);
+}
+
+.heart-circle::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    background: #d0d0d0;
+    border-radius: 50%;
+}
+
+.heart-circle::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+}
+
+.heart-icon {
+    color: white;
+    fill: white;
+}
+
+.empty-message {
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.find-jobs-btn {
+    padding: 14px 40px;
+    background: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.find-jobs-btn:hover {
+    background: #0b5ed7;
+}
+
+/* Danh sách việc làm */
+.jobs-list-section {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.filter-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.jobs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.saved-job-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.saved-job-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-btn active svg {
+    font-size: 24; 
+    fill: #0d6efd;
+ color: #0d6efd;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+
+.job-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #f5f5f5;
+    padding: 5px;
+}
+
+.job-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.job-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.4;
+}
+
+.job-company {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.job-deadline {
+    display: flex;
+    align-items: center;
+}
+
+.deadline-text {
+    font-size: 0.9rem;
+    color: #00b14f;
+    font-weight: 500;
+}
+
+.apply-btn {
+    background: #0d6efd;
+    border: none;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.apply-btn:hover {
+    background: #0b5ed7;
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .saved-jobs-container {
+        padding: 20px 15px;
+    }
+
+    .saved-jobs-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .saved-jobs-title {
+        font-size: 1.4rem;
+    }
+
+    .empty-state {
+        padding: 60px 20px;
+    }
+
+    .heart-circle {
+        width: 120px;
+        height: 120px;
+    }
+
+    .empty-message {
+        font-size: 1rem;
+    }
+
+    .jobs-list-section {
+        padding: 20px 15px;
+    }
+
+    .saved-job-card {
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .job-logo {
+        width: 50px;
+        height: 50px;
+    }
+
+    .job-info {
+        flex: 1 1 100%;
+        order: 3;
+    }
+
+    .job-deadline {
+        order: 4;
+        flex: 1 1 100%;
+    }
+
+    .apply-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .saved-jobs-title {
+        font-size: 1.2rem;
+    }
+
+    .heart-circle {
+        width: 100px;
+        height: 100px;
+    }
+
+    .find-jobs-btn {
+        padding: 12px 30px;
+        font-size: 0.9rem;
+    }
+
+    .saved-job-card {
+        padding: 12px;
+    }
+
+    .job-title {
+        font-size: 0.95rem;
+    }
+
+    .job-company,
+    .deadline-text {
+        font-size: 0.85rem;
+    }
+}

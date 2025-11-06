@@ -1,0 +1,278 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+  background-color: #f4f7fc;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+}
+
+h2 {
+  color: #1d3557;
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+p {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.profile-section {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.profile-section h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #0a3d62;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+}
+
+.profile-left,
+.profile-right {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.profile-left {
+  width: 100%;
+  text-align: center;
+  padding-right: 0;
+  margin-bottom: 20px;
+}
+
+.profile-right {
+  width: 100%;
+  margin-left: 0;
+}
+
+.pr-avatar {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 2px solid #007bff;
+  margin-bottom: 15px;
+  border-radius: 50%;
+}
+
+.change-avatar-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.change-avatar-btn:hover {
+  background-color: #0056b3;
+}
+
+.form-group-pr,
+.form-group-pr-exp {
+  margin-bottom: 20px;
+}
+
+.form-group-pr label,
+.form-group-pr-exp label {
+  display: block;
+  text-align: left;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group-pr input,
+.form-group-pr textarea,
+.form-group-pr-exp input {
+  padding: 10px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group-pr-exp label {
+  margin-left: 0;
+}
+
+.form-group-pr textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+select:focus {
+  border-color: #4A90E2;
+  outline: none;
+}
+
+.add-experience-btn,
+.add-education-btn,
+.add-skill-btn,
+.add-level-btn,
+.upload-cv-btn {
+  margin-top: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+}
+
+.add-experience-btn:hover,
+.add-education-btn:hover,
+.add-skill-btn:hover,
+.add-level-btn:hover,
+.upload-cv-btn:hover {
+  background-color: #218838;
+}
+
+.save-profile-btn {
+  display: block;
+  margin: 30px auto 0;
+  background-color: #f66f6f;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-weight: bold;
+  font-size: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+}
+
+.save-profile-btn:hover {
+  background-color: #e63946;
+}
+
+/* Tablettes */
+@media (min-width: 768px) {
+  .page-wrapper {
+    width: 80%;
+  }
+
+  .profile-container {
+    padding: 40px;
+  }
+
+  .pr-avatar {
+    width: 180px;
+    height: 180px;
+  }
+
+  .form-group-pr input,
+  .form-group-pr textarea {
+    width: 85%;
+  }
+
+  .add-experience-btn,
+  .add-education-btn,
+  .add-skill-btn,
+  .add-level-btn,
+  .upload-cv-btn {
+    width: auto;
+    min-width: 150px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .page-wrapper {
+    width: 70%;
+  }
+
+  h2 {
+    font-size: 32px;
+  }
+
+  .profile-left {
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+    padding-right: 20px;
+    margin-bottom: 0;
+  }
+
+  .profile-right {
+    width: 65%;
+    display: inline-block;
+    margin-left: 30px;
+  }
+
+  .pr-avatar {
+    width: 200px;
+    height: 200px;
+  }
+
+  .form-group-pr input {
+    width: 70%;
+  }
+
+  .form-group-pr-exp input {
+    width: 70%;
+  }
+
+  .form-group-pr-exp label {
+    margin-left: 40px;
+  }
+
+  select {
+    width: 70%;
+    margin-left: 10px;
+  }
+
+  .add-experience-btn,
+  .add-education-btn,
+  .add-skill-btn,
+  .add-level-btn,
+  .upload-cv-btn {
+    margin-left: 10px;
+    width: auto;
+  }
+
+  .save-profile-btn {
+    width: auto;
+  }
+}
+
+/* Grands écrans */
+@media (min-width: 1440px) {
+  .page-wrapper {
+    width: 60%;
+  }
+}

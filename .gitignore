@@ -1,0 +1,34 @@
+# Node
+frontend/node_modules/
+frontend/build/
+
+# Spring Boot
+backend/target/
+backend/.idea/
+backend/.settings/
+backend/.classpath
+backend/.project
+backend/*.iml
+
+# Hệ thống
+*.log
+.DS_Store
+
+/.metadata/
+.vscode
+/.idea/
+
+*.class
+*.jar
+*.war
+*.ear
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Maven wrapper files
+backend/.mvn/wrapper/maven-wrapper.jar
+
+Backend/src/main/resources/application.propertiesBackend/src/main/resources/application.properties

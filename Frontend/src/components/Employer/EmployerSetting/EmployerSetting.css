@@ -1,0 +1,118 @@
+body {
+    overflow-x: hidden;
+}
+
+main, #app {
+    overflow-x: hidden;
+}
+
+
+
+.setting-container {
+    width: auto;
+    margin: 20px auto;
+    padding: 30px 40px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 1000px;
+    margin-left: 400px;
+}
+
+.setting-title {
+    font-size: 1.5em; 
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    color: rgb(9, 11, 155);
+}
+
+.setting-col h3 {
+    color: #333; 
+    font-weight: 600;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.setting-row {
+    display: flex; 
+    gap: 40px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; 
+}
+
+.setting-col {
+    flex: 1; 
+    background: #fafafa;
+    padding: 25px;
+    border-radius: 8px;
+    border: 2px solid #eee;
+    min-width: 150px;
+}
+
+.form-emp {
+    margin-bottom: 20px; 
+}
+
+.form-emp input {
+    margin-top: 20px;
+    width: 370px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #00c2a5;
+}
+
+.button-group {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-update {
+    background: linear-gradient(to right, #00e0ac, #00c2a5);
+    border: none;
+    padding: 15px 10px;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    flex: 1; 
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.btn-update:hover {
+    opacity: 0.9;
+}
+
+.btn-skip {
+    background: #f1f1f1;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    flex: 1; 
+    margin-right: 10px;
+}
+
+.btn-skip:hover {
+    background: #e0e0e0;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}

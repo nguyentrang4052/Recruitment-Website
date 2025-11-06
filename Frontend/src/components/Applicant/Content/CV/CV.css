@@ -1,0 +1,113 @@
+
+.nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.25rem;
+  margin-top: 25px;
+}
+
+.nav-tabs button {
+  border: none;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #555;
+  position: relative;
+  transition: color 0.3s;
+}
+
+/* Viền dưới trượt theo nút */
+.nav-tabs button::after {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #007bff;
+  transition: width 0.3s;
+}
+
+.nav-tabs button.active {
+  color: #007bff;
+}
+
+.nav-tabs button.active::after {
+  width: 100%;
+}
+
+.cv-templates {
+  width: min(90%, 1200px);
+  margin: 20px auto;
+  font-family: system-ui, sans-serif;
+}
+
+.cv-templates h1,
+.cv-templates h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.cv-section p{
+  font-size: 24px;
+  color: black;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 15px;
+}
+
+.cv-section svg{
+  vertical-align: middle;
+  margin-right: 8px;
+  font-size: 30px;
+}
+
+.template-grid {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); */
+  gap: 2rem;
+  margin-bottom: 3rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.template-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+}
+.template-card:hover {
+  transform: translateY(-4px);
+}
+
+.template-card img {
+  width: 100%;
+  height: fit-content;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.use-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.use-btn:hover {
+  background: #0056b3;
+}
+
+.upload-section {
+  background: #f7f7f7;
+  padding: 2rem;
+  border-radius: 8px;
+}
+.upload-section input[type="file"] {
+  margin-top: 1rem;
+}

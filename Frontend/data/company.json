@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "name": "MB Bank",
+    "logo": "🏦",
+    "rating": 4.9,
+    "fullName": "Ngân hàng TMCP Quân Đội (MB)",
+    "location": "Ha Noi",
+    "jobs": 31,
+    "reviews": 123,
+    "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=200&fit=crop"
+  },
+  {
+    "id": 2,
+    "name": "LG CNS Việt Nam",
+    "logo": "⭕",
+    "rating": 4.8,
+    "fullName": "TOP 1 IT COMPANY IN KOREA",
+    "location": "Ha Noi",
+    "jobs": 16,
+    "reviews": 50,
+    "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=200&fit=crop"
+  },
+  {
+    "id": 3,
+    "name": "Bosch Global Software",
+    "logo": "🔧",
+    "rating": 3.3,
+    "fullName": "The Bosch Group is a leading global supplier of technology and services",
+    "location": "Ho Chi Minh",
+    "jobs": 12,
+    "reviews": 286,
+    "image": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop"
+  },
+  {
+    "id": 4,
+    "name": "Viettel Group",
+    "logo": "📱",
+    "rating": 4.5,
+    "fullName": "Tập đoàn Công nghiệp - Viễn thông Quân đội",
+    "location": "Ha Noi",
+    "jobs": 45,
+    "reviews": 234,
+    "image": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=200&fit=crop"
+  },
+  {
+    "id": 5,
+    "name": "FPT Software",
+    "logo": "💻",
+    "rating": 4.2,
+    "fullName": "Leading technology corporation in Vietnam",
+    "location": "Da Nang",
+    "jobs": 28,
+    "reviews": 189,
+    "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=200&fit=crop"
+  },
+  {
+    "id": 6,
+    "name": "VinGroup",
+    "logo": "🏢",
+    "rating": 4.1,
+    "fullName": "Vietnam's leading private conglomerate",
+    "location": "Ho Chi Minh",
+    "jobs": 52,
+    "reviews": 312,
+    "image": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=200&fit=crop"
+  }
+]

@@ -1,8 +1,14 @@
 #root {
+<<<<<<< HEAD
   /* margin: 0 auto;
   padding: 2rem; */
   text-align: center;
   /* background-color: blue; */
+=======
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+>>>>>>> origin/Trong
 }
 
 /* .layout {
@@ -22,10 +28,13 @@
   margin: 0 auto;      
   background: #f8f9fa;
 } */
+<<<<<<< HEAD
 .app-container {
   display: flex;
   flex-direction: column;
 
   flex: 1;  
 }
+=======
+>>>>>>> origin/Trong
 

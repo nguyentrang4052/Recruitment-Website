@@ -43,6 +43,7 @@ public class Account implements Serializable {
 	@Column(name = "photo", nullable = true, length = 255)
 	private String photo;
 
+
 	@ManyToOne
 	@JoinColumn(name = "roleID", referencedColumnName = "roleID")
 	private Role role;
@@ -53,6 +54,9 @@ public class Account implements Serializable {
 //	@JsonManagedReference
 
 	@OneToOne(mappedBy = "account")
+	@JsonManagedReference
 	private Employer employer;
 	
+	
+
 }

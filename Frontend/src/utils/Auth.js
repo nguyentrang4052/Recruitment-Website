@@ -1,4 +1,5 @@
 export function isTokenExpired(token) {
+<<<<<<< HEAD
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const exp = payload.exp;
@@ -10,4 +11,17 @@ export function isTokenExpired(token) {
   } catch (err) {
     return true;
   }
+=======
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const exp = payload.exp;
+        if (!exp) return true;
+
+        const currentTime = Math.floor(Date.now() / 1000);
+        return currentTime >= exp;
+        // eslint-disable-next-line no-unused-vars
+    } catch (err) {
+        return true;
+    }
+>>>>>>> origin/Trong
 }

@@ -39,5 +39,4 @@ public class Rating implements Serializable {
 
 	@Column(name = "date", nullable = true)
 	private LocalDate date = LocalDate.now();
-
 }

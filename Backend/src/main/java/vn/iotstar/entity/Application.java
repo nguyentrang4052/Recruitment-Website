@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -33,11 +34,13 @@ public class Application implements Serializable {
 	@Id
 	@ManyToOne
 	@JsonBackReference  
+
 	@JoinColumn(name = "applicantID")
 	private Applicant applicant;
 
 	@Column(name = "date", nullable = true)
 	private LocalDate date = LocalDate.now();
+
 
 	@Enumerated(EnumType.STRING)
 	private EStatus status;

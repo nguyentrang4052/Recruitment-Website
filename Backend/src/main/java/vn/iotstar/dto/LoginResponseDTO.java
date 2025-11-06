@@ -9,11 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginResponseDTO {
 
-	private String token;
-	private String username;
-	private String email;
-	private String roleName;
 
-	private Integer applicantID;
+    private String token;
+    private String username;
+    private String email;
+    private String roleName;
+    private Integer applicantID;
+    private Integer employerID; 
 
+  
 }

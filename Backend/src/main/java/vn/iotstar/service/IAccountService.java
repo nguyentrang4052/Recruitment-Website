@@ -8,6 +8,7 @@ import vn.iotstar.dto.ForgotPassResponeDTO;
 import vn.iotstar.dto.OtpRequestDTO;
 import vn.iotstar.dto.SignupRequestDTO;
 import vn.iotstar.dto.SignupResponseDTO;
+
 import vn.iotstar.entity.Account;
 
 public interface IAccountService {
@@ -34,5 +35,5 @@ public interface IAccountService {
 
 	String loginByGoogle(String idTokenString) throws Exception;
 
-//	String getRoleFromUsername(String username);
+
 }

@@ -178,6 +178,7 @@
     height: 100%;
     object-fit: cover; 
     border-radius: 50%;
+<<<<<<< HEAD
 }
 
 .logo-preview-wrapper {
@@ -197,6 +198,25 @@
     transition: all 0.3s ease;
     position: relative;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+=======
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.logo-preview-wrapper {
+     width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #007bff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f2f5;
+    padding: 0;
+    margin: 0 auto 15px;
+>>>>>>> origin/Trong
 }
 
 .logo-overlay {
@@ -236,4 +256,8 @@
     font-size: 14px;
     margin-top: 5px;
     display: block;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/Trong

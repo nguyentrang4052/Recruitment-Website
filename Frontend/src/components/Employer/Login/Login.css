@@ -8,7 +8,10 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+<<<<<<< HEAD
     margin: 5% auto;
+=======
+>>>>>>> origin/Trong
 }
 
 .login-card {

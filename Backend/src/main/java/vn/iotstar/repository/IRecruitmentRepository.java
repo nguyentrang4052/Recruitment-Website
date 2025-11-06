@@ -28,3 +28,4 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 }
 
 
+

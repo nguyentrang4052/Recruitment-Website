@@ -16,6 +16,7 @@ import vn.iotstar.service.IEmployerService;
 import vn.iotstar.service.IRatingService;
 import vn.iotstar.service.IRecruitmentService;
 
+
 @Service
 public class EmployerService implements IEmployerService {
 
@@ -46,6 +47,21 @@ public class EmployerService implements IEmployerService {
 		return ratingService.countByEmployer_EmployerID(id);
 	}
 
+    @Override
+    public Employer findByAccount_accountID(Integer accountId) {
+        return eRepository.findByAccount_accountID(accountId);
+    }
+
+    @Override
+    public <S extends Employer> S save(S entity) {
+        return eRepository.save(entity);
+    }
+
+    @Override
+    public long count() {
+        return eRepository.count();
+    }
+
 	@Override
 	public EmployerCardDTO mapToDetail(Employer emp) {
 
@@ -64,4 +80,5 @@ public class EmployerService implements IEmployerService {
 						countReviews(emp.getEmployerID()),
 						rating);
 	}
+
 }

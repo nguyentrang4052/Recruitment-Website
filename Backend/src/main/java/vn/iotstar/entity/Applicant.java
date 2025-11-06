@@ -69,4 +69,5 @@ public class Applicant implements Serializable {
 	private List<Skill> skill;
 
 
+
 }

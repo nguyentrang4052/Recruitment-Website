@@ -10,6 +10,7 @@ import SearchApplicant from '../../Employer/SearchApplicant/SearchApplicant';
 import NewApplicant from '../NewApplicant/NewApplicant';
 import ActiveJobs from '../ActiveJobs/ActiveJobs';
 import ProfileViewsStats from '../ProfileViewsStats/ProfileViewsStats';
+<<<<<<< HEAD
 
 import logo from '../../../assets/logo.png';
 
@@ -23,6 +24,28 @@ function EmployerDashboard() {
         setUsername('EmployerUserName'); // Giả sử lấy từ API
     }, []);
 
+=======
+// import { useNavigate } from 'react-router-dom';
+import logo from '../../../assets/logo.png';
+
+function EmployerDashboard() {
+    // const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState('dashboard');
+
+    const [username, setUsername] = useState(''); // Khởi tạo rỗng
+    useEffect(() => {
+        const storedUser = localStorage.getItem('username');
+        if (storedUser) {
+            setUsername(storedUser);
+        }
+    }, []);
+
+    // const handleNavigate = (path) => {
+
+    //     setActiveTab('dashboard');
+    //     navigate(path);
+    // };
+>>>>>>> origin/Trong
 
     const renderContent = () => {
         switch (activeTab) {
@@ -33,7 +56,11 @@ function EmployerDashboard() {
             case 'post':
                 return <PostJob activeTab="post" setActiveTab={setActiveTab} />;
             case 'search':
+<<<<<<< HEAD
                 return <SearchApplicant activeTab="search" setActiveTab={setActiveTab} />;
+=======
+                return <SearchApplicant setActiveTab={setActiveTab} />;
+>>>>>>> origin/Trong
             case 'newApplicant':
                 return <NewApplicant activeTab="newApplicant" setActiveTab={setActiveTab} />;
             case 'activeJobs':

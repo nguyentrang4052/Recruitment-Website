@@ -20,6 +20,9 @@ public class CareerInformation implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Integer ID;
+	
+	@Column(name = "title", nullable = true, length = 255)
+	private String title;
 
 	@Column(name = "desireLevel", nullable = true, length=255)
 	private String desireLevel;
@@ -36,5 +39,6 @@ public class CareerInformation implements Serializable {
 	@OneToOne
 	@JoinColumn(name = "applicantID", referencedColumnName = "applicantID")
 	private Applicant applicant;
+
 
 }

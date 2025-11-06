@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,6 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "Skill")
 public class Skill implements Serializable {
+
 
 	/**
 	 * 
@@ -32,11 +34,11 @@ public class Skill implements Serializable {
 	private String description;
 
 	@ManyToMany (mappedBy = "skill")
+	@JsonIgnore
 	private List<Applicant> applicant;
 	
 	@ManyToMany(mappedBy = "skill")
+	@JsonIgnore
 	private List<RecruitmentNews> reNews;
-
-
 	
 }

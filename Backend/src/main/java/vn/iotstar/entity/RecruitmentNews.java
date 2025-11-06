@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -48,6 +48,7 @@ public class RecruitmentNews implements Serializable {
 	@Column(name = "other", nullable = true, length = 2500)
 	private String other;
 
+
 	@Column(name = "minSalary", nullable = true, precision = 10, scale = 2)
 	private BigDecimal minSalary;
 
@@ -88,14 +89,17 @@ public class RecruitmentNews implements Serializable {
 	@JoinColumn(name = "employerID")
 	private Employer employer;
 
+
 	@OneToMany(mappedBy = "recruitmentNews")
+	@JsonManagedReference
 	private List<Application> application;
-
+	
 	@OneToMany(mappedBy = "reNews")
+	@JsonManagedReference
 	private List<ViewLog> viewLog;
-
+	
 	@ManyToMany
 	@JoinTable(name = "Require", joinColumns = @JoinColumn(name = "RNID"), inverseJoinColumns = @JoinColumn(name = "skillID"))
-	private List<Skill> skill;
+	private List <Skill> skill;
 
 }

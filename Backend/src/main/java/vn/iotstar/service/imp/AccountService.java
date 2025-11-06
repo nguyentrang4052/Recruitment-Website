@@ -12,6 +12,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import vn.iotstar.entity.Account;
+import vn.iotstar.repository.IAccountRepository;
+import vn.iotstar.service.IAccountService;
 
 import vn.iotstar.dto.*;
 import vn.iotstar.entity.*;
@@ -19,6 +22,9 @@ import vn.iotstar.repository.*;
 import vn.iotstar.security.JwtUtil;
 import vn.iotstar.service.*;
 import vn.iotstar.util.SecurityUtil;
+import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class AccountService implements IAccountService {
@@ -41,6 +47,7 @@ public class AccountService implements IAccountService {
 	private JwtUtil jwtUtil;
 
 	 private String googleClientId = "393089958981-77pg8slhbj7eoceklnrunm4ofb0jd1k9.apps.googleusercontent.com";
+
 	public AccountService(IAccountRepository accountRepository) {
 		this.accountRepository = accountRepository;
 	}
@@ -61,6 +68,7 @@ public class AccountService implements IAccountService {
 	}
 
 	@Override
+
 	public <S extends Account> S save(S entity) {
 		return accountRepository.save(entity);
 	}
@@ -226,4 +234,5 @@ public class AccountService implements IAccountService {
 
 		return jwtUtil.generateToken(account.getEmail(), "google");
 	}
+
 }

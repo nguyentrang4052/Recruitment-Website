@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Notice.css';
+<<<<<<< HEAD
 import province from '../../../../../data/provinces.json'
 
 const NoticeTable = () => {
@@ -103,6 +104,12 @@ const NoticeTable = () => {
       frequency: 'daily'
     });
   };
+=======
+
+const NoticeTable = () => {
+  const [notice, setNotice] = useState([]);
+
+>>>>>>> origin/Trong
 
   return (
     <div className="notice-container">
@@ -114,7 +121,10 @@ const NoticeTable = () => {
             <th>Ngày Tạo</th>
             <th>Công Việc Phù Hợp</th>
             <th>Nhận Email</th>
+<<<<<<< HEAD
             <th>Thao Tác</th>
+=======
+>>>>>>> origin/Trong
           </tr>
         </thead>
         <tbody>
@@ -129,11 +139,16 @@ const NoticeTable = () => {
                   checked={notification.emailNotice}
                   onChange={() => {
                     const updatedNotice = [...notice];
+<<<<<<< HEAD
                     updatedNotice[index].emailNotice = !updatedNotice[index].emailNotice;
+=======
+                    updatedNotice[index].emailNotification = !updatedNotice[index].emailNotice;
+>>>>>>> origin/Trong
                     setNotice(updatedNotice);
                   }}
                 />
               </td>
+<<<<<<< HEAD
               <td>
                 <div className="action-buttons">
                   <button className="btn-edit" onClick={() => handleEdit(index)}>
@@ -144,10 +159,13 @@ const NoticeTable = () => {
                   </button>
                 </div>
               </td>
+=======
+>>>>>>> origin/Trong
             </tr>
           ))}
         </tbody>
       </table>
+<<<<<<< HEAD
       <button className="btn-create" onClick={handleCreateNew}>Tạo Mới</button>
 
       {showPopup && (
@@ -257,8 +275,15 @@ const NoticeTable = () => {
           </div>
         </div>
       )}
+=======
+      <button className="btn-create">Tạo Mới</button>
+>>>>>>> origin/Trong
     </div>
   );
 };
 
+<<<<<<< HEAD
 export default NoticeTable;
+=======
+export default NoticeTable;
+>>>>>>> origin/Trong

@@ -25,6 +25,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
+
 import vn.iotstar.security.CustomUserDetailsService;
 import vn.iotstar.security.JwtFilter;
 
@@ -35,10 +36,11 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager, JwtFilter jwtFilter)
 			throws Exception {
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/uploads/**", "/api/skills/list", "/api/employer/uploadLogo", "/api/employer/register",  "/api/employer/register/verify**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/", "/api/detail", "/api/applicant/relate-jobs",
 								"/api/applicant/companies", "/api/applicant/companies/detail", "/api/applicant/companies/job")
-						.permitAll().requestMatchers("/api/applicant/apply").authenticated().anyRequest()
+                        // .requestMatchers(HttpMethod.POST, "/api/employer/recruitment/create").hasAuthority("ROLE_employer")
+						.permitAll().requestMatchers("/api/applicant/apply", "/api/employer/**").authenticated().anyRequest()
 						.authenticated())
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationManager(authManager)
@@ -86,4 +88,24 @@ public class SecurityConfig {
 			}
 		};
 	}
+
+    // @Bean
+    // public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager, JwtFilter jwtFilter)
+    //         throws Exception {
+
+    //     http
+    //         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    //         .csrf(AbstractHttpConfigurer::disable)
+    //         .authorizeHttpRequests(auth -> auth
+    //             .requestMatchers("/api/auth/**", "/uploads/**", "/api/skills/list", "/api/employer/uploadLogo", "/api/employer/register",  "/api/employer/register/verify**").permitAll()
+    //             .requestMatchers(HttpMethod.POST, "/api/employer/recruitment/create").hasAuthority("ROLE_employer")
+    //             .requestMatchers("/api/employer/**").authenticated()
+    //             .anyRequest().permitAll()
+    //         )
+    //         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    //         .authenticationManager(authManager)
+    //         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+    //     return http.build();
+    // }
 }

@@ -7,7 +7,6 @@ export default defineConfig({
   optimizeDeps: {
     include: ['jwt-decode'],
   },
-<<<<<<< HEAD
   server: {
     port: 5173,
     headers: {
@@ -15,6 +14,4 @@ export default defineConfig({
       'Cross-Origin-Embedder-Policy': 'unsafe-none',
     },
   },
-=======
->>>>>>> origin/Trong
 })

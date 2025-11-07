@@ -68,7 +68,7 @@ function RecruitDetail() {
         if (token)
         {setShowForm(true);}
         else{
-            navigate('/login')
+            navigate('/applicant-login')
             return
         }
     };
@@ -127,7 +127,7 @@ function RecruitDetail() {
         const token = localStorage.getItem('token');
 
         if (!token || isTokenExpired(token)) {
-            navigate("/login");
+            navigate("/applicant-login");
             return;
         }
 

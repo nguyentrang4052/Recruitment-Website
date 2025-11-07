@@ -43,7 +43,7 @@ public class Employer implements Serializable {
 	@Column(name = "companyWebsite", nullable = true, length = 255)
 	private String companyWebsite;
 
-	@Column(name = "companyProfile", nullable = true, length = 255)
+	@Column(name = "companyProfile", nullable = true, length = 5000)
 	private String companyProfile;
 
 

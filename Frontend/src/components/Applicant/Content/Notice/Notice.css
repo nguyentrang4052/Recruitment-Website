@@ -1,24 +1,13 @@
 .notice-container {
-<<<<<<< HEAD
   width: 70%;            
   margin: 50px auto;      
   padding: 20px 40px;
   background: white;
-=======
-  width: 1000px;
-  padding: 20px 40px;
-  background: #fff;
->>>>>>> origin/Trong
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-<<<<<<< HEAD
   align-items: center;    
-=======
-  margin-left: 260px;
-  margin-top: -200px;
->>>>>>> origin/Trong
 }
 
 .notice-table {
@@ -57,7 +46,6 @@
 .btn-create:hover {
   background-color: #45a049;
 }
-<<<<<<< HEAD
 
 .popup-overlay {
   position: fixed;
@@ -203,5 +191,3 @@
     font-size: 13px;
   }
 }
-=======
->>>>>>> origin/Trong

@@ -1,27 +1,17 @@
 .page-wrapper {
   display: flex;
   flex-direction: column;
-<<<<<<< HEAD
   width: 90%;
   max-width: 1200px;
   margin: 20px auto;
   padding: 0 15px;
-=======
-  width: 70%;
-  margin-top: 80px;
-  margin-left: 320px;
->>>>>>> origin/Trong
 }
 
 .profile-container {
   display: flex;
   flex-direction: column;
-<<<<<<< HEAD
   gap: 20px;
   padding: 30px;
-=======
-  padding: 30px 50px;
->>>>>>> origin/Trong
   background-color: #f4f7fc;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
@@ -62,21 +52,14 @@ p {
 }
 
 .profile-left {
-<<<<<<< HEAD
   width: 100%;
   text-align: center;
   padding-right: 0;
   margin-bottom: 20px;
-=======
-  width: 30%;
-  text-align: center;
-  padding-right: 20px;
->>>>>>> origin/Trong
 }
 
 .profile-right {
   width: 100%;
-<<<<<<< HEAD
   margin-left: 0;
 }
 
@@ -87,17 +70,6 @@ p {
   border: 2px solid #007bff;
   margin-bottom: 15px;
   border-radius: 50%;
-=======
-  margin-left: 90px;
-}
-
-.pr-avatar {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border: 2px solid #007bff;
-  margin-bottom: 15px;
->>>>>>> origin/Trong
 }
 
 .change-avatar-btn {
@@ -113,17 +85,9 @@ p {
   background-color: #0056b3;
 }
 
-<<<<<<< HEAD
 .form-group-pr,
 .form-group-pr-exp {
   margin-bottom: 20px;
-=======
-
-.form-group-pr,
-.form-group-pr-exp {
-  margin-bottom: 20px;
-  justify-content: flex-end;
->>>>>>> origin/Trong
 }
 
 .form-group-pr label,
@@ -136,40 +100,22 @@ p {
 }
 
 .form-group-pr input,
-<<<<<<< HEAD
 .form-group-pr textarea,
-=======
->>>>>>> origin/Trong
 .form-group-pr-exp input {
   padding: 10px 12px;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 14px;
-<<<<<<< HEAD
   width: 100%;
   box-sizing: border-box;
 }
 
 .form-group-pr-exp label {
   margin-left: 0;
-=======
-  width: 70%;
-  margin-right: 250px;
-}
-
-.form-group-pr-exp input {
-  width: 90%;
-  margin-right: 0;
-}
-
-.form-group-pr-exp label {
-  margin-left: 40px;
->>>>>>> origin/Trong
 }
 
 .form-group-pr textarea {
   resize: vertical;
-<<<<<<< HEAD
   min-height: 100px;
 }
 
@@ -188,27 +134,6 @@ select {
 select:focus {
   border-color: #4A90E2;
   outline: none;
-=======
-  height: 100px;
-  width: 90%;
-}
-
-select {
-    width: 90%;
-    padding: 10px;
-    font-size: 1em;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #333;
-    transition: border-color 0.3s ease;
-    margin-left: 10px;
-}
-
-select:focus {
-    border-color: #4A90E2;
-    outline: none;
->>>>>>> origin/Trong
 }
 
 .add-experience-btn,
@@ -220,27 +145,17 @@ select:focus {
   background-color: #28a745;
   color: white;
   border: none;
-<<<<<<< HEAD
   padding: 10px 16px;
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
   font-size: 14px;
-=======
-  padding: 8px 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 10px;
->>>>>>> origin/Trong
 }
 
 .add-experience-btn:hover,
 .add-education-btn:hover,
 .add-skill-btn:hover,
-<<<<<<< HEAD
 .add-level-btn:hover,
-=======
->>>>>>> origin/Trong
 .upload-cv-btn:hover {
   background-color: #218838;
 }
@@ -257,17 +172,13 @@ select:focus {
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s ease;
-<<<<<<< HEAD
   width: 100%;
   max-width: 300px;
-=======
->>>>>>> origin/Trong
 }
 
 .save-profile-btn:hover {
   background-color: #e63946;
 }
-<<<<<<< HEAD
 
 /* Tablettes */
 @media (min-width: 768px) {
@@ -365,5 +276,3 @@ select:focus {
     width: 60%;
   }
 }
-=======
->>>>>>> origin/Trong

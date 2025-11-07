@@ -1,10 +1,9 @@
-<<<<<<< HEAD
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import HomePage from "./components/Applicant/Pages/HomePage/HomePage.jsx"
 import Login from './components/Employer/Login/Login.jsx'
+import ApplicantLogin from './components/Applicant/Login/Login.jsx'
 import SignUp from './components/Applicant/Content/SignUp/SignUp.jsx'
 import ForgotPass from './components/Employer/ForgotPassword/ForgotPassword.jsx'
-import EmployerLink from './components/Employer/EmployerDashboard/EmployerDashboard.jsx'
+import EmployerLink from './components/Employer/EmployerRegistration/EmployerRegistration.jsx'
 import EmployerDashboard from './components/Employer/EmployerDashboard/EmployerDashboard.jsx'
 import Verify from './components/Applicant/Content/SignUp/OtpVerify.jsx'
 import EmployerRegistration from './components/Employer/EmployerRegistration/EmployerRegistration'
@@ -22,34 +21,17 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { LayoutWithHeader, LayoutWithHomePage } from './components/Applicant/Layout.jsx';
 import './App.css';
 import CompanyReviews from './components/Applicant/Content/Company/CompanyReviews/CompanyReviews.jsx'
-
-
-function App() {
-
-=======
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from "./components/Applicant/Content/HomePage/HomePage.jsx";
-import Login from './components/Employer/Login/Login.jsx';
-import Dashboard from './components/Applicant/Content/Dashboard/Dashboard.jsx';
-import SignUp from './components/Applicant/Content/SignUp/SignUp.jsx';
-import ForgotPass from './components/Employer/ForgotPassword/ForgotPassword.jsx';
-import EmployerLink from './components/Employer/EmployerRegistration/EmployerRegistration.jsx';
-import EmployerDashboard from './components/Employer/EmployerDashboard/EmployerDashboard.jsx';
-import EmployerRegistration from './components/Employer/EmployerRegistration/EmployerRegistration';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-
 import ApplicantDetail from './components/Employer/ApplicantDetail/ApplicantDetail.jsx';
 
-import './App.css';
 
 function App() {
->>>>>>> origin/Trong
+
+
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
   if (!clientId) {
     console.error("❌ VITE_GOOGLE_CLIENT_ID chưa được định nghĩa trong file .env")
   }
-<<<<<<< HEAD
 
 
 
@@ -61,6 +43,7 @@ function App() {
           <Route path="/" element={<LayoutWithHomePage />}>
            <Route path="/" element={<RecruimentNews />} />  
             <Route path="/login" element={<Login />} />
+            <Route path="/applicant-login" element={<ApplicantLogin />} />
 
             <Route path="/employer-link" element={<EmployerLink />} />
             <Route path="/signup" element={<SignUp />} />
@@ -91,26 +74,9 @@ function App() {
           <Route path="/employer-dashboard" element={<EmployerDashboard />} />
 
           <Route path="/employer-signup" element={<EmployerRegistration />} />
-
-=======
-  return (
-
-    <GoogleOAuthProvider clientId={clientId}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/employer-link" element={<EmployerLink />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/employer-dashboard" element={<EmployerDashboard />} />
-          <Route path="/forgot-password" element={<ForgotPass />} />
-          <Route path="/employer-signup" element={<EmployerRegistration />} />
-
-
           <Route path="/employer/applicant/:id" element={<ApplicantDetail />} />
 
->>>>>>> origin/Trong
+
         </Routes>
       </Router>
     </GoogleOAuthProvider>

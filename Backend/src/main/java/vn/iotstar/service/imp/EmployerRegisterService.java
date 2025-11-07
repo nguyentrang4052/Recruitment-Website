@@ -53,6 +53,7 @@ public class EmployerRegisterService implements IEmployerRegisterService {
         account.setEmail(dto.getEmail());
         account.setPassword(passwordEncoder.encode(dto.getPassword()));
         account.setActive(0);
+        account.setProvider("employer");
 
         Role role = roleRepository.findById(2).orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND, "Role không tồn tại")
@@ -65,6 +66,7 @@ public class EmployerRegisterService implements IEmployerRegisterService {
         employer.setRepresentative(dto.getContactPerson());
         employer.setPhone(dto.getPhoneNumber());
         employer.setAccount(account);
+        
         employerRegisterRepository.save(employer);
 
   

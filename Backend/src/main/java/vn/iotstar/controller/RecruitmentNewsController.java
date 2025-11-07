@@ -38,7 +38,6 @@ public class RecruitmentNewsController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy tin tuyển dụng"));
     }
 
- 
     @PostMapping("/create")
     public ResponseMessage createRecruitment(@RequestBody RecruitmentNewsDTO dto) {
         try {

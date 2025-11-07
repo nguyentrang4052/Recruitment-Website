@@ -19,7 +19,7 @@ function HomePage() {
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
-    navigate('/login');
+    navigate('/applicant-login');
   };
 
   const handleSignUpClick = () => {

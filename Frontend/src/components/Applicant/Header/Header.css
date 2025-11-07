@@ -2,30 +2,20 @@
   display: flex;
   justify-content: space-between;  
   align-items: center;  
-<<<<<<< HEAD
   background-color: whitesmoke;
-=======
-  background-color: #ffffff;
->>>>>>> origin/Trong
   border-bottom: 1px solid #212121;
   position: fixed;  
   top: 0;
   left: 0;
   right: 0;
   width: 100%; 
-<<<<<<< HEAD
   height: 79px; 
   z-index: 1000;
   padding: 0 20px;
-=======
-  height: 80px; 
-  z-index: 1000;
->>>>>>> origin/Trong
 }
 
 .header-left {
   display: flex;
-<<<<<<< HEAD
   align-items: center;
   gap: 20px;
 }
@@ -36,19 +26,10 @@
   object-fit: contain;
   cursor: pointer;
   flex-shrink: 0;
-=======
-  align-items: center; 
-}
-
-.logo {
-  width: 280px; 
-  margin-right: 20px;
->>>>>>> origin/Trong
 }
 
 .nav-menu {
   display: flex; 
-<<<<<<< HEAD
   align-items: center;
   padding: 0;
   margin: 0;
@@ -57,34 +38,16 @@
 }
 
 .nav-menu a {
-=======
-  margin: 20px 0;
-  padding: 20px 0;
-  list-style-type: none;
-  width: 800px;
-}
-
-.nav-menu a {
-  margin-right: 20px;
->>>>>>> origin/Trong
   text-decoration: none;
   color: rgb(9, 11, 155);
   font-size: 16px;
   font-weight: 500;
-<<<<<<< HEAD
   white-space: nowrap;
-=======
->>>>>>> origin/Trong
 }
 
 .nav-item {
   position: relative;
-<<<<<<< HEAD
   cursor: pointer;
-=======
-  margin-right: 100px;
-  margin-left: 80px;
->>>>>>> origin/Trong
 }
 
 .dropdown {
@@ -93,7 +56,6 @@
   top: 100%;
   left: 0;
   background-color: white;
-<<<<<<< HEAD
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   list-style-type: none;
   padding: 10px 0;
@@ -102,27 +64,12 @@
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   z-index: 1001;
-=======
-  border: 1px solid #59e773;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  list-style-type: none;
-  padding: 10px 0;
-  width:  180px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
->>>>>>> origin/Trong
 }
 
 .nav-item:hover .dropdown {
   display: block;
   opacity: 1;
   visibility: visible;
-<<<<<<< HEAD
-=======
-  flex: 1 1 150px;
-  
->>>>>>> origin/Trong
 }
 
 .dropdown li {
@@ -142,7 +89,6 @@
   color: #03775c; 
   padding-left: 10px;
   background-color: white;
-<<<<<<< HEAD
 }
 
 .cv-button {
@@ -155,9 +101,6 @@
 
 .cv-button:hover {
   color: #03775c;
-=======
-  width: 130px;
->>>>>>> origin/Trong
 }
 
 .header-right {
@@ -165,23 +108,15 @@
   align-items: center;     
   gap: 10px;                
   flex-shrink: 0;
-<<<<<<< HEAD
   position: relative;
 }
 
-=======
-  margin-right: 20px;
-}
-
-
->>>>>>> origin/Trong
 button {
   padding: 8px 16px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-<<<<<<< HEAD
 }
 
 .avatar {
@@ -418,22 +353,3 @@ button {
     padding: 7px 12px;
   }
 }
-=======
-  margin-left: 10px;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  margin-left: 2000px;
-}
-
-.avatar:hover {
-  transform: scale(1.1);
-}
-
->>>>>>> origin/Trong

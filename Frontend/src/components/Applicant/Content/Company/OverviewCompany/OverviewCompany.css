@@ -185,8 +185,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #111827;
+  color: #271127;
 }
+
 
 .company-rating {
   display: flex;

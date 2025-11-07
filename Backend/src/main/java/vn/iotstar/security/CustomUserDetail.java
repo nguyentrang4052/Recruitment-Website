@@ -20,12 +20,13 @@ public class CustomUserDetail implements UserDetails {
 	private Account account;
 
 	
-	public CustomUserDetail(Account account) {
-		this.account = account;
-	}
-	
+
 	public Account getAccount() {
 		return account;
+	}
+
+	public CustomUserDetail(Account account) {
+		this.account = account;
 	}
 
 	@Override

@@ -129,44 +129,5 @@ public class JwtFilter extends OncePerRequestFilter {
                 || path.startsWith("/api/skills/list");
     }
 
-    // @Override
-    // protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-    //         throws ServletException, IOException {
-
-    //     String authHeader = request.getHeader("Authorization");
-    //     String username = null;
-    //     String token = null;
-
-    //     if (authHeader != null && authHeader.startsWith("Bearer ")) {
-    //         token = authHeader.substring(7);
-    //         try {
-    //             username = jwtUtil.extractUsername(token);
-    //         } catch (Exception e) {
-    //             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token không hợp lệ");
-    //             return;
-    //         }
-    //     }
-
-    //     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-    //         CustomUserDetail userDetails = (CustomUserDetail) userDetailsService.loadUserByUsername(username);
-
-    //         if (jwtUtil.validateToken(token, userDetails)) {
-
-    //             String role = userDetails.getAccount().getRole().getRoleName(); 
-    //             var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-    //             var authToken = new UsernamePasswordAuthenticationToken(
-    //                     userDetails, null, authorities
-    //             );
-    //             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-    //             SecurityContextHolder.getContext().setAuthentication(authToken);
-    //         } else {
-    //             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token hết hạn hoặc không hợp lệ");
-    //             return;
-    //         }
-    //     }
-
-    //     filterChain.doFilter(request, response);
-    // }
-
 }
+

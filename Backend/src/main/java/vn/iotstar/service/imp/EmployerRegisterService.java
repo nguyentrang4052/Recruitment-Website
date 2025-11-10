@@ -109,6 +109,7 @@ public class EmployerRegisterService implements IEmployerRegisterService {
             account.setPassword(dto.getPassword()); 
             account.setActive(1);                 
             account.setRole(role);
+            account.setProvider("local");
             Account savedAccount = accountRepository.save(account);
 
            

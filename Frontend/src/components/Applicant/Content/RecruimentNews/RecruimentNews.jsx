@@ -201,8 +201,8 @@ function RecruimentNews() {
         fetchRecruitments();
     }, []);
 
- 
-    
+
+
 
     const totalPages = Math.ceil(recruitments.length / recruimentPerPage);
 

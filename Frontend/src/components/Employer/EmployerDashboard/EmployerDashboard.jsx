@@ -57,7 +57,6 @@ function EmployerDashboard() {
                 return <ProfileViewsStats setActiveTab={setActiveTab} />;
             case 'servicePackages':
                 return <ServicePackages />;
-
             case 'settings':
                 return <EmployerSetting activeTab="settings" setActiveTab={setActiveTab} />;
 

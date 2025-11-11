@@ -16,7 +16,7 @@ const initialJobs = [
 const ActiveJobs = ({ setActiveTab }) => {
     const [jobs] = useState(initialJobs);
     const [currentPage, setCurrentPage] = useState(1);
-    const jobsPerPage = 4;
+    const jobsPerPage = 6;
 
     const indexOfLastJob = currentPage * jobsPerPage;
     const indexOfFirstJob = indexOfLastJob - jobsPerPage;
@@ -25,31 +25,31 @@ const ActiveJobs = ({ setActiveTab }) => {
     const totalPages = Math.ceil(jobs.length / jobsPerPage);
 
     return (
-        <div className="active-jobs-container">
-            <div className="header-row">
-                <button className="back-button" onClick={() => setActiveTab('dashboard')}>
+        <div className="joblist-container">
+            <div className="joblist-header">
+                <button className="joblist-back-button" onClick={() => setActiveTab('dashboard')}>
                     ← Quay lại
                 </button>
                 <h2 className="page-title">TIN TUYỂN DỤNG ĐANG HOẠT ĐỘNG</h2>
             </div>
 
-            <div className="jobs-list">
+            <div className="joblist-list">
                 {currentJobs.map(job => (
-                    <div key={job.id} className="job-card">
-                        <h3 className="job-title">{job.title}</h3>
-                        <p className="job-meta">
+                    <div key={job.id} className="joblist-card">
+                        <h3 className="joblist-title">{job.title}</h3>
+                        <p className="joblist-meta">
                             <FontAwesomeIcon icon={faMapMarkerAlt} /> {job.location} |{' '}
                             <FontAwesomeIcon icon={faClock} /> {job.postedDate}
                         </p>
-                        <p className="job-applicants">
+                        <p className="joblist-applicants">
                             <FontAwesomeIcon icon={faUsers} /> Ứng viên đã nộp: {job.applicants}
                         </p>
-                        <span className="job-status">{job.status}</span>
+                        <span className="joblist-status">{job.status}</span>
                     </div>
                 ))}
             </div>
 
-            <div className="pagination">
+            <div className="joblist-pagination">
                 <button onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 1}>
                     ← Trang trước
                 </button>

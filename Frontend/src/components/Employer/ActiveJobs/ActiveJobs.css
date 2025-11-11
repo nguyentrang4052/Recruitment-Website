@@ -1,4 +1,4 @@
-.active-jobs-container {
+.joblist-container {
   padding: 30px 40px;
   background: #fff;
   border-radius: 12px;
@@ -10,32 +10,33 @@
   margin-left: 370px;
 }
 
-.header-row {
+.joblist-header {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.back-button {
+.joblist-back-button {
   background: none;
   border: none;
   color: #007bff;
   font-size: 16px;
   cursor: pointer;
   margin-right: 20px;
+  
 }
 
-.back-button:hover {
+.joblist-back-button:hover {
   text-decoration: underline;
 }
 
-.jobs-list {
+.joblist-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 20px;  
 }
 
-.job-card {
+.joblist-card {
   background: #f8f9fa;
   padding: 20px;
   border-radius: 12px;
@@ -44,32 +45,59 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.job-card:hover {
+.joblist-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
-.job-title {
+.joblist-title {
   color: #004080;
   font-size: 1.3em;
   margin-bottom: 10px;
 }
 
-.job-meta {
+.joblist-meta {
   color: #495057;
   font-size: 0.9em;
   margin-bottom: 8px;
 }
 
-.job-applicants {
+.joblist-applicants {
   color: #28a745;
   font-weight: bold;
 }
 
-.job-status {
+.joblist-status {
   background: #007bff;
   color: #fff;
   padding: 5px 12px;
   border-radius: 6px;
   font-size: 0.85em;
+}
+
+.joblist-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.joblist-pagination button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.joblist-pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.joblist-pagination button:hover:not(:disabled) {
+  background-color: #0056b3;
 }

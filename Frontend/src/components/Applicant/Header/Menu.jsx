@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
+import { goOrReload } from '../../../utils/NavigateConfig';
 
 const Menu = ({ label, submenu, isSubmenu = false, navigateMap={} }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,9 +10,12 @@ const Menu = ({ label, submenu, isSubmenu = false, navigateMap={} }) => {
 
   const navigate = useNavigate()
    const handleLabelClick = () => {
-    if (navigateMap[label]) {
-      navigate(navigateMap[label]);
-    }
+    // if (navigateMap[label]) {
+    //   navigate(navigateMap[label]);
+    // }
+     const path =navigateMap[label];
+    if (!path) return;
+    goOrReload(path, navigate);
   };
 
   const handleSubmenuClick = (item) => {

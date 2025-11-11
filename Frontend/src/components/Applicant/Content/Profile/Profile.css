@@ -45,6 +45,8 @@ p {
   padding-bottom: 8px;
 }
 
+
+
 .profile-left,
 .profile-right {
   display: inline-block;
@@ -60,7 +62,6 @@ p {
 
 .profile-right {
   width: 100%;
-  margin-left: 0;
 }
 
 .pr-avatar {
@@ -71,6 +72,7 @@ p {
   margin-bottom: 15px;
   border-radius: 50%;
 }
+
 
 .change-avatar-btn {
   background-color: #007bff;
@@ -119,6 +121,9 @@ p {
   min-height: 100px;
 }
 
+.form-group-pr p {
+  text-align: left;
+}
 select {
   width: 100%;
   padding: 10px;
@@ -134,6 +139,29 @@ select {
 select:focus {
   border-color: #4A90E2;
   outline: none;
+}
+
+.edit-profile {
+  margin-left: 17rem;
+  background-color: #ccc;
+   padding: 10px 16px;
+
+}
+.edit-goal{
+  margin-left: 33rem;
+  background-color: #ccc;
+   padding: 10px 16px;
+}
+
+.delete-photo-btn {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #e74c3c;
+  background: transparent;
+  border: 1px solid #e74c3c;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .add-experience-btn,
@@ -179,6 +207,24 @@ select:focus {
 .save-profile-btn:hover {
   background-color: #e63946;
 }
+
+.skills-grid-profile {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cột */
+  gap: 8px 16px; 
+  align-items: start;
+}
+
+.skill-item-profile {
+  display: flex;
+  align-items: left;
+  gap: 8px;
+  text-align: left;
+  margin: auto 20px auto 20px;
+   font-size: 15px;
+  color: #333;
+}
+
 
 /* Tablettes */
 @media (min-width: 768px) {
@@ -235,9 +281,17 @@ select:focus {
   }
 
   .pr-avatar {
-    width: 200px;
-    height: 200px;
-  }
+  width: 150px;             /* chiều rộng bằng chiều cao */
+  height: 150px;
+  object-fit: cover;         /* cắt ảnh cho vừa khung */
+  border-radius: 50%;        /* làm tròn 100% */
+  border: 2px solid #ddd;    /* viền nhẹ */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 auto;    
+  text-align: center;        /* căn giữa */
+}
+
 
   .form-group-pr input {
     width: 70%;

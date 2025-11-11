@@ -47,7 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (path.equals("/api/logout") || path.equals("/api/") || path.equals("/api/detail")
                 || path.equals("/api/applicant/relate-jobs") || path.equals("/api/applicant/companies")
-                || path.equals("/api/applicant/companies/detail") || path.equals("/api/applicant/companies/job")) {
+                || path.equals("/api/applicant/companies/detail") || path.equals("/api/applicant/companies/job") || path.equals("/api/job/search")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -107,9 +107,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
 
                 String role = ((CustomUserDetail) userDetails).getAccount().getRole().getRoleName();
+                
                 var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                authToken = new UsernamePasswordAuthenticationToken(username, null,authorities);
+                if ("google".equalsIgnoreCase(provider)) {
+                    authToken = new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                }
 
-                authToken = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
             }
 
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

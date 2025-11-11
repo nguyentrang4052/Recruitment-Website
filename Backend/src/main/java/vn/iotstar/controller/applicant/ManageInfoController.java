@@ -1,15 +1,106 @@
 package vn.iotstar.controller.applicant;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.Map;
 
-@Controller
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import vn.iotstar.dto.ApplicantDTO;
+import vn.iotstar.dto.ApplicantDetailDTO;
+import vn.iotstar.dto.applicant.ProfileDTO;
+import vn.iotstar.entity.Account;
+import vn.iotstar.entity.Applicant;
+import vn.iotstar.service.IAccountService;
+import vn.iotstar.service.IApplicantService;
+
+@RestController
 @RequestMapping("/api/applicant")
 public class ManageInfoController {
-//	
-//	@PostMapping("/add-notice")
-//	
+
+    private final IApplicantService applicantService_1;
+
+	@Autowired
+	private IApplicantService applicantService;
+	
+	@Autowired
+	private IAccountService accountService;
+
+
+    ManageInfoController(IApplicantService applicantService_1) {
+        this.applicantService_1 = applicantService_1;
+    }
+
+
+	@GetMapping("/profile/info")
+	public ProfileDTO getInfo(@RequestParam String email) {
+		Applicant applicant = applicantService.findByAccount_email(email);
+		return applicantService.mapToDetail(applicant);
+	}
+	
+	@PostMapping("/profile/upload-photo/{email}")
+	public ResponseEntity<Map<String, String>> uploadPhoto(
+	        @PathVariable String email,
+	        @RequestParam("photo") MultipartFile file) {
+
+		Account acc = accountService.findByEmail(email);
+
+	    // Xóa ảnh cũ (nếu có và là file nội bộ)
+	    String oldPhoto = acc.getPhoto();
+	    if (oldPhoto != null && !oldPhoto.startsWith("http")) {
+	        applicantService.deleteFile(oldPhoto);
+	    }
+
+	    // Lưu ảnh mới
+	    String newPhoto = applicantService.storeFile(file);
+
+	    // Cập nhật DB
+	    acc.setPhoto(newPhoto);
+	    accountService.save(acc);
+	    Integer accId = acc.getAccountID();
+	    Applicant applicant = applicantService.findByAccount_accountID(accId);
+	    applicant.setAccount(acc);
+
+	    return ResponseEntity.ok(Map.of("photo", newPhoto));
+	}
+
+	@PutMapping("/profile/update/{applicantID}")
+	public ResponseEntity<ProfileDTO> updateApplicant(@PathVariable Integer applicantID,
+			@RequestBody ProfileDTO updatedApplicantDTO) {
+
+		try {
+			ProfileDTO result = applicantService.updateApplicant(applicantID, updatedApplicantDTO);
+			
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); 
+		}
+	}
+	
+	 @DeleteMapping("/delete/photo")
+	    public ResponseEntity<?> deletePhoto(@RequestParam String email) {
+		 Account acc = accountService.findByEmail(email);
+
+	        String oldPhoto = acc.getPhoto();
+	        if (oldPhoto == null || oldPhoto.isBlank()) {
+	            return ResponseEntity.badRequest().body("Không có ảnh để xóa");
+	        }
+
+	        if (oldPhoto != null && !oldPhoto.startsWith("http")) {
+	        	applicantService.deleteFile(oldPhoto);
+	        }
+	        
+
+	        acc.setPhoto(null);
+	        accountService.save(acc);
+	        
+//	        applicantService.save(applicant); // hoặc updateApplicant(...)
+
+	        return ResponseEntity.ok("Xóa ảnh thành công");
+	    }
 	
 	
+
 }

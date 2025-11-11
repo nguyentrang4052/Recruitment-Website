@@ -5,16 +5,7 @@ import HomePage from './Pages/HomePage/HomePage.jsx';
 import { Breadcrumb } from './Breadcrumb/Breadcrumb.jsx';
 import { useLocation } from 'react-router-dom';
 
-// Layout với Header
-// const LayoutWithHeader = () => (
 
-//   <>
-//     <Header />
-//     <Breadcrumb /> 
-//     <Outlet /> 
-//     <Footer />
-//   </>
-// );
 const LayoutWithHeader = () => {
   const location = useLocation(); 
 
@@ -22,42 +13,33 @@ const LayoutWithHeader = () => {
     <>
       <Header />
       {location.pathname !== '/dashboard' && <Breadcrumb />}
+      {/* <Breadcrumb/> */}
       <Outlet /> 
       <Footer />
     </>
   );
 };
 
-// const LayoutWithHomePage = () => {
 
-//   const location = useLocation(); 
-
-//   return (
-//     <>
-//       <HomePage />
-//       {location.pathname == '/recruitment/:rnid' && <Breadcrumb />}
-//       <Outlet /> 
-//       <Footer />
-//     </>
-//   );
-// };
 const LayoutWithHomePage = () => {
   const location = useLocation();
   const token = localStorage.getItem('token');
-  // const isLoggedIn = token && !isTokenExpired(token);
 
   return (
     <>
       {token ? (
         <>
           <Header />
-          {location.pathname.startsWith('/recruitment/') && <Breadcrumb />}
+          {(location.pathname.startsWith('/recruitment/') || location.pathname.startsWith('/companies') )&& <Breadcrumb />}
+
+       
           <Outlet />
           <Footer />
         </>
       ) : (
         <>
           <HomePage />
+          {location.pathname !== '/' &&  location.pathname !== '/applicant-login' && <Breadcrumb />}
           <Outlet />
           <Footer />
         </>

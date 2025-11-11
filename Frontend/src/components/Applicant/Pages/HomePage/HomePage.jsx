@@ -2,6 +2,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import './HomePage.css';
 import Menu from '../../Header/Menu.jsx';
 import homepageLogo from "../../../../assets/logoWeb.png"
+import { NAVIGATE_MAP } from './../../../../utils/NavigateConfig.js'
 
 const menuItems = [{
   label: 'Tất cả việc làm',
@@ -38,7 +39,7 @@ function HomePage() {
             <div className="home-header-left">
               <img src={homepageLogo} alt="Logo" className="homepage-logo" />
               <nav className="nav-menu">
-                {menuItems.map((menu, index) => (<Menu key={index} label={menu.label} submenu={menu.submenu} />))}
+                {menuItems.map((menu, index) => (<Menu key={index} label={menu.label} submenu={menu.submenu} navigateMap={NAVIGATE_MAP}/>))}
                 <Link to="/cv-templates" className="cv-button">
                   Tạo CV xin việc
                 </Link>

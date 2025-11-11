@@ -11,8 +11,8 @@ import {
 import { ImHeart } from "react-icons/im"
 import { IoIosSettings } from "react-icons/io"
 import { FaHouse } from "react-icons/fa6"
-import { useEffect  } from 'react'
-import { useNavigate,Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { isTokenExpired } from './../../../utils/Auth'
 import { NAVIGATE_MAP } from './../../../utils/NavigateConfig'
 import axios from "axios";
@@ -28,20 +28,36 @@ const menuItems = [
   }
 ];
 
+// const menuItems = [
+//   {
+//     label: 'Tất cả việc làm',
+//     submenu: [
+//       {
+//         label: 'Theo kỹ năng',
+//         submenu: 
+//         'Theo kỹ năng', 'Theo cấp bậc', 'Theo địa điểm', 'Theo vị trí'
+//       }
+//       ]
+//   },
+//   {
+//     label: 'Công ty',
+//     submenu: ['Giới thiệu công ty', 'Đánh giá công ty']
+//   }
+// ];
 
 
 function Header() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   useEffect(() => {
-      const token = localStorage.getItem('token');
-  
-      if (!token || isTokenExpired(token)) {
-        localStorage.clear();
-        navigate("/applicant-login");
-      }
-    }, [navigate]);
-  
-   const handleLogoutClick = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token || isTokenExpired(token)) {
+      localStorage.clear();
+      navigate("/applicant-login");
+    }
+  }, [navigate]);
+
+  const handleLogoutClick = async () => {
     const token = localStorage.getItem("token");
     try {
       if (token) {
@@ -56,32 +72,100 @@ function Header() {
       navigate("/");
     }
   };
-   
+
+  // const handlePageSelect = (page) => {
+  //   switch (page) {
+  //     case 'home':
+  //       navigate('/dashboard');
+  //       break;
+  //     case 'profile':
+  //       navigate('/profile');
+  //       break;
+  //     case 'save-jobs':
+  //       navigate('/save-jobs');
+  //       break;
+  //     case 'apply-jobs':
+  //       navigate('/apply-jobs');
+  //       break;
+  //     case 'notifications':
+  //       navigate('/notifications');
+  //       break;
+  //     case 'settings':
+  //       navigate('/settings');
+  //       break;
+  //     case 'logout':
+  //       handleLogoutClick();
+  //       break;
+  //     default:
+  //       if (localStorage.getItem('roleName') == "applicant")
+  //         navigate('/dashboard')
+  //       else
+  //         navigate('/employer-dashboard')
+  //   }
+  // };
+
+  const reloadCurrentPage = () => window.location.reload();
+
   const handlePageSelect = (page) => {
+    const currentPath = window.location.pathname;
+
+
     switch (page) {
-      case 'home':
-        navigate('/dashboard');
+      case 'home': {
+        const target = '/dashboard';
+        if (currentPath === target) reloadCurrentPage();
+        else navigate(target);
         break;
-      case 'profile':
-        navigate('/profile');
+      }
+
+      case 'profile': {
+        const target = '/profile';
+        if (currentPath === target) reloadCurrentPage();
+        else navigate(target);
         break;
-      case 'save-jobs':
-        navigate('/save-jobs');
+      }
+
+      case 'save-jobs': {
+        const target = '/save-jobs';
+        if (currentPath === target) reloadCurrentPage();
+        else navigate(target);
         break;
-      case 'apply-jobs':
-        navigate('/apply-jobs');
+      }
+
+      case 'apply-jobs': {
+        const target = '/apply-jobs';
+        if (currentPath === target) reloadCurrentPage();
+        else navigate(target);
         break;
-      case 'notifications':
-        navigate('/notifications');
+      }
+
+      case 'notifications': {
+        const target = '/notifications';
+        if (currentPath === target) reloadCurrentPage();
+        else navigate(target);
         break;
-      case 'settings':
-        navigate('/settings');
+      }
+
+      case 'settings': {
+        const target = '/settings';
+        if (currentPath === target) reloadCurrentPage();
+        else navigate(target);
         break;
-      case 'logout':
+      }
+
+      case 'logout': {
         handleLogoutClick();
         break;
-      default:
-        navigate('/dashboard');
+      }
+
+      default: {
+        const fallback =
+          localStorage.getItem('roleName') === 'applicant'
+            ? '/dashboard'
+            : '/employer-dashboard';
+        if (currentPath === fallback) reloadCurrentPage();
+        else navigate(fallback);
+      }
     }
   };
   return (
@@ -91,13 +175,13 @@ function Header() {
           <img src={homePageLogo} alt="Logo" className="homepage-logo" onClick={() => handlePageSelect("home")} />
           <nav className="nav-menu">
             {menuItems.map((menu, index) => (
-              <Menu key={index} label={menu.label} submenu={menu.submenu} navigateMap={NAVIGATE_MAP}/>
+              <Menu key={index} label={menu.label} submenu={menu.submenu} navigateMap={NAVIGATE_MAP} />
             ))}
-             <Link to="/cv-templates" className="cv-button">
-                  Tạo CV xin việc
-                </Link>
+            <Link to="/cv-templates" className="cv-button">
+              Tạo CV xin việc
+            </Link>
           </nav>
-          
+
         </div>
 
         <div className="header-right" style={{ position: "relative" }}>

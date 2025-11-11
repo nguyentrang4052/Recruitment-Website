@@ -1,5 +1,6 @@
 package vn.iotstar.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,5 +21,7 @@ public interface IEmployerService {
     <S extends Employer> S save(S entity);
 
     long count();
+
+	BigDecimal avgScore(Integer id);
 
 }

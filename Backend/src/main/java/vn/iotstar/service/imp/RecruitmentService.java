@@ -19,7 +19,7 @@ import vn.iotstar.service.IRecruitmentService;
 
 @Service
 public class RecruitmentService implements IRecruitmentService {
-	
+
 	@Autowired
 	private IRecruitmentRepository recruitmentRepository;
 
@@ -32,9 +32,7 @@ public class RecruitmentService implements IRecruitmentService {
 	public Optional<RecruitmentNews> findById(Integer id) {
 		return recruitmentRepository.findById(id);
 	}
-	
-	
-	
+
 	@Override
 	public Integer countApprovedJobs(Integer id) {
 		return recruitmentRepository.countApprovedJobs(id);
@@ -45,31 +43,54 @@ public class RecruitmentService implements IRecruitmentService {
 		String salary = (rn.getMinSalary() != null && rn.getMaxSalary() != null)
 				? rn.getMinSalary() + " VND" + " - " + rn.getMaxSalary() + " VND"
 				: "Thỏa thuận";
-	    EmployerCardDTO emp = new EmployerCardDTO(
-	            rn.getEmployer().getEmployerName(),
-	            rn.getEmployer().getCompanyLogo());
 
-	    List<String> skillNames = rn.getSkill()
-	                                .stream()
-	                                .map(Skill::getSkillName)
-	                                .toList();
+		EmployerCardDTO emp = new EmployerCardDTO(rn.getEmployer().getEmployerName(), rn.getEmployer().getCompanyLogo(),
+				countApprovedJobs(rn.getEmployer().getEmployerID()), rn.getEmployer().getAddress());
 
-	    return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(), rn.getPostedAt(), skillNames, rn.getStatus(),rn.getDescription(), rn.getExperience(), rn.getLiteracy(), rn.getLevel(), rn.getOther(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(), rn.getApplyBy());
+		List<String> skillNames = rn.getSkill().stream().map(Skill::getSkillName).toList();
+
+		return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(),
+				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
+				rn.getLevel(), rn.getOther(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(),
+				rn.getApplyBy());
 	}
-	
+
 	@Override
 	public List<RecruitmentNews> getRelateJob(Integer id) {
 		RecruitmentNews reNews = recruitmentRepository.findById(id).get();
-		return recruitmentRepository.findRelatedJobs(reNews.getPosition(), reNews.getLocation(), reNews.getFormOfWork(), id);
+		return recruitmentRepository.findRelatedJobs(reNews.getPosition(), reNews.getLocation(), reNews.getFormOfWork(),
+				id);
 	}
 
 	@Override
 	public List<RecruitmentNews> findByEmployer_EmployerID(Integer id) {
 		return recruitmentRepository.findByEmployer_EmployerID(id);
 	}
+
+	@Override
+	public List<RecruitmentNews> findBySkill_SkillName(String skillName) {
+		return recruitmentRepository.findBySkill_SkillName(skillName);
+	}
+
+	@Override
+	public List<RecruitmentNews> findByPosition(String position) {
+		return recruitmentRepository.findByPosition(position);
+	}
+
+	@Override
+	public List<RecruitmentNews> findByLevel(String level) {
+		return recruitmentRepository.findByLevel(level);
+	}
+
+	@Override
+	public List<RecruitmentNews> findByLocation(String location) {
+		return recruitmentRepository.findByLocation(location);
+	}
+
+	@Override
+	public List<RecruitmentNews> findByApplication_Applicant_ApplicantID(Integer id) {
+		return recruitmentRepository.findByApplication_Applicant_ApplicantID(id);
+	}
 	
-
 	
-
-
 }

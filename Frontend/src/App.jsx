@@ -15,13 +15,16 @@ import RecruimentNews from './components/Applicant/Content/RecruimentNews/Recrui
 import CV from './components/Applicant/Content/CV/CV.jsx'
 import SaveJob from './components/Applicant/Content/ManageJob/SaveJob/SaveJob.jsx'
 import ApplyJob from './components/Applicant/Content/ManageJob/ApplyJob/ApplyJob.jsx'
-import OverviewCompany from './components/Applicant/Content/Company/OverviewCompany/OverviewCompany.jsx'
+import CompanyReview from './components/Applicant/Content/Company/CompanyReview/CompanyReview.jsx'
+import CompanyIntro from './components/Applicant/Content/Company/CompanyIntro/CompanyIntro.jsx'
 import CompanyDetail from './components/Applicant/Content/Company/CompanyDetail/CompanyDetail.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { LayoutWithHeader, LayoutWithHomePage } from './components/Applicant/Layout.jsx';
 import './App.css';
-import CompanyReviews from './components/Applicant/Content/Company/CompanyReviews/CompanyReviews.jsx'
+import CompanyReviewDetail from './components/Applicant/Content/Company/CompanyReviewDetail/ReviewDetail.jsx'
 import ApplicantDetail from './components/Employer/ApplicantDetail/ApplicantDetail.jsx';
+import AdminDashboard from './components/Admin/Dashboard/Dashboard.jsx'
+
 
 
 function App() {
@@ -33,6 +36,13 @@ function App() {
     console.error("❌ VITE_GOOGLE_CLIENT_ID chưa được định nghĩa trong file .env")
   }
 
+  const RoleRedirect = () => {
+    const role = localStorage.getItem('roleName');
+    if (role === 'applicant') return <Navigate to="/dashboard" replace />;
+    if (role === 'employer') return <Navigate to="/employer-dashboard" replace />;
+    return null;
+  };
+
 
 
   return (
@@ -40,8 +50,9 @@ function App() {
       <Router>
 
         <Routes>
-          <Route path="/" element={<LayoutWithHomePage />}>
-           <Route path="/" element={<RecruimentNews />} />  
+          <Route path="/" element={<RoleRedirect />} />
+          <Route element={<LayoutWithHomePage />}>
+            <Route index element={<RecruimentNews />} />
             <Route path="/login" element={<Login />} />
             <Route path="/applicant-login" element={<ApplicantLogin />} />
 
@@ -50,24 +61,31 @@ function App() {
             <Route path="/verify-otp" element={<Verify />} />
             <Route path="/forgot-password" element={<ForgotPass />} />
             <Route path='/recruitment/:rnid' element={<RecruitmentDetail />} />
+            <Route path='/companies' element={<CompanyIntro />} />
+            <Route path='/companies/:employerId' element={<CompanyDetail />} />
+
+            <Route path="/companies/reviews/:employerId" element={<CompanyReviewDetail />} />
+            <Route path="/companies/reviews" element={<CompanyReview />} />
 
 
           </Route>
-          <Route path="/" element={<LayoutWithHeader />}>
-             
-            <Route path='/recruitment/:rnid' element={<RecruitmentDetail />} />
+          <Route element={<LayoutWithHeader />}>
+
+            {/* <Route path='/recruitment/:rnid' element={<RecruitmentDetail />} /> */}
 
             <Route path="/dashboard" element={<RecruimentNews />} />
-            <Route path="/companies" element={<OverviewCompany/>}/>
-            <Route path="/companies/:id" element={<CompanyDetail />} />
-            <Route path="/companies/reviews" element={<CompanyReviews/>}/>
-            {/* <Route path ='/companies/intro' element={<CompanyDetail/>}/> */}
+            {/* <Route path='/companies' element={<CompanyIntro />} />
+            <Route path='/companies/:employerId' element={<CompanyDetail />} />
+
+            <Route path="/companies/reviews/:employerId" element={<CompanyReviewDetail />} />
+            <Route path="/companies/reviews" element={<CompanyReview />} /> */}
             <Route path="/profile" element={<Profile />} />
             <Route path="/save-jobs" element={<SaveJob />} />
             <Route path="/apply-jobs" element={<ApplyJob />} />
             <Route path="/notifications" element={<Notice />} />
             <Route path="/settings" element={<Setting />} />
             <Route path="/cv-templates" element={<CV />} />
+            
 
 
           </Route>
@@ -75,6 +93,8 @@ function App() {
 
           <Route path="/employer-signup" element={<EmployerRegistration />} />
           <Route path="/employer/applicant/:id" element={<ApplicantDetail />} />
+          <Route path = "/admin" element=   {<AdminDashboard/>}/>
+          {/* <Route path = "/admin/recruitment" element={<AdminRecruitmentDetail/>}/> */}
 
 
         </Routes>

@@ -116,7 +116,7 @@
 }
 
 /* Company Card */
-.company-card {
+.company-card-review {
   background-color: white;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
@@ -128,7 +128,7 @@
   height: 100%;
 }
 
-.company-card:hover {
+.company-card-review:hover {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
@@ -161,16 +161,22 @@
 }
 
 .company-logo {
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 2rem;
   background-color: white;
   border: 2px solid #e5e7eb;
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
   flex-shrink: 0;
+  overflow: hidden;  /* Ẩn phần ảnh thừa nếu có */
+}
+
+.company-logo img {
+  width: 100%;    /* Đảm bảo ảnh chiếm toàn bộ chiều rộng của thẻ chứa */
+  height: 100%;   /* Đảm bảo ảnh chiếm toàn bộ chiều cao của thẻ chứa */
+  object-fit: cover;  /* Cắt ảnh để vừa với vùng chứa nhưng vẫn giữ tỷ lệ */
 }
 
 .company-title {
@@ -178,13 +184,18 @@
   min-width: 0;
 }
 
-.company-name {
+.company-name-review {
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 17px;
   margin-bottom: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  
+}
+
+.company-name-review a{
+  font-size: 16px;
   color: #271127;
 }
 
@@ -233,6 +244,11 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  text-align: justify;
+}
+
+.meta-item svg {
+  font-size: 140px;
 }
 
 .company-divider {

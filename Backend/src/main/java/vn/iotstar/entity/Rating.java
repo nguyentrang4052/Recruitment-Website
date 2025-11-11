@@ -2,8 +2,8 @@ package vn.iotstar.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.*;
 import vn.iotstar.key.RatingID;
@@ -38,5 +38,5 @@ public class Rating implements Serializable {
 	private String content;
 
 	@Column(name = "date", nullable = true)
-	private LocalDate date = LocalDate.now();
+	private LocalDateTime date = LocalDateTime.now();
 }

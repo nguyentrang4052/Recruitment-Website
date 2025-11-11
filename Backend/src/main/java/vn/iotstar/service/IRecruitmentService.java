@@ -20,4 +20,14 @@ public interface IRecruitmentService {
 
 	List<RecruitmentNews> findByEmployer_EmployerID(Integer id);
 
+	List<RecruitmentNews> findByLocation(String location);
+
+	List<RecruitmentNews> findByLevel(String level);
+
+	List<RecruitmentNews> findByPosition(String position);
+
+	List<RecruitmentNews> findBySkill_SkillName(String skillName);
+
+	List<RecruitmentNews> findByApplication_Applicant_ApplicantID(Integer id);
+
 }

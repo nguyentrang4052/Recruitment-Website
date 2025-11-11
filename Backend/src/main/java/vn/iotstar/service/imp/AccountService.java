@@ -235,4 +235,11 @@ public class AccountService implements IAccountService {
 		return jwtUtil.generateToken(account.getEmail(), "google");
 	}
 
+	@Override
+	public Account findByApplicant_ApplicantID(Integer applicantID) {
+		return accountRepository.findByApplicant_ApplicantID(applicantID);
+	}
+	
+	
+
 }

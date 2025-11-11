@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class RatingDTO {
 
 	private String content;
-	private LocalDate date;
+	private LocalDateTime date;
 	private BigDecimal score;
 
 }

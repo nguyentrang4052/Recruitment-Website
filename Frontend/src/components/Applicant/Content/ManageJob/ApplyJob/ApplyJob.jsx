@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 import './ApplyJob.css';
+import { useNavigate } from 'react-router-dom';
 
 const AppliedJobs = () => {
   // Giả lập dữ liệu - thay đổi hasJobs để test 2 trạng thái
@@ -16,6 +17,10 @@ const AppliedJobs = () => {
     },
     // Thêm jobs khác nếu cần
   ];
+    const navigate = useNavigate();
+  const handleFindJob = () =>  {
+    navigate("/dashboard")
+  }
 
   return (
     <div className="applied-jobs-container">
@@ -43,7 +48,7 @@ const AppliedJobs = () => {
           <p className="empty-message">
             Bạn chưa nộp đơn cho việc làm nào...
           </p>
-          <button className="find-jobs-btn">
+          <button className="find-jobs-btn" onClick={handleFindJob}>
             Đến trang tìm việc
           </button>
         </div>

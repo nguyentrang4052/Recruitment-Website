@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import vn.iotstar.entity.Account;
 import vn.iotstar.entity.Applicant;
 
 @Repository
@@ -53,4 +54,6 @@ public interface IApplicantRepository extends JpaRepository<Applicant, Integer> 
          @Param("desireLevel") String desireLevel, 
          Pageable pageable
      );
+     
+     Applicant findByAccount_email(String email);
 }

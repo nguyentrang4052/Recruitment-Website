@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import lombok.*;
 import vn.iotstar.enums.EFormOfWork;
 import vn.iotstar.enums.EStatus;
@@ -14,16 +13,15 @@ import vn.iotstar.enums.EStatus;
 @AllArgsConstructor
 public class RecruitmentCardDTO {
 	private Integer rnid;
-	private String position;	
+	private String position;
 	private EmployerCardDTO employer;
-	private String salary; 
+	private String salary;
 	private String location;
 	private LocalDate deadline;
 	private LocalDate postedAt;
 	private List<String> skill = new ArrayList<>();
 	private EStatus status;
-	
-	
+
 	private String description;
 	private String experience;
 	private String literacy;
@@ -33,9 +31,5 @@ public class RecruitmentCardDTO {
 	private EFormOfWork formOfWork;
 	private String workingTime;
 	private String applyBy;
-	
-
-
-	
 
 }

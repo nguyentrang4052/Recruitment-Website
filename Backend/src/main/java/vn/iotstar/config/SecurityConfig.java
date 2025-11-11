@@ -38,9 +38,11 @@ public class SecurityConfig {
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/uploads/**", "/api/skills/list", "/api/employer/uploadLogo", "/api/employer/register",  "/api/employer/register/verify**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/", "/api/detail", "/api/applicant/relate-jobs",
-								"/api/applicant/companies", "/api/applicant/companies/detail", "/api/applicant/companies/job").permitAll()
+								"/api/applicant/companies", "/api/applicant/companies/detail", "/api/applicant/companies/job", "/api/job/search").permitAll()
+//						.requestMatchers(HttpMethod.GET, "/api/applicant/favourite-job").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/employer/recruitment/create").hasAuthority("ROLE_employer")
-						.requestMatchers("/api/applicant/apply", "/api/employer/**").authenticated().anyRequest()
+//						.requestMatchers(HttpMethod.POST, "/api/applicant/toggle").hasAuthority("ROLE_USER")
+						.requestMatchers("/api/applicant/apply", "/api/applicant/profile/**", "/api/employer/**", "/api/applicant/toggle", "/api/applicant/favourite-job").authenticated().anyRequest()
 						.authenticated())
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationManager(authManager)

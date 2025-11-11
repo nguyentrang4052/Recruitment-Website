@@ -8,140 +8,20 @@ import { isTokenExpired } from '../../../../utils/Auth'
 import axios from 'axios'
 import './RecruimentNews.css';
 import { formatDate } from '../../../../utils/Format'
+import locations from '../../../../../data/provinces.json'
 
-// const samplerecruitments = [
-//     {
-//         rnid: 1,
-//         position: "Lập trình viên Frontend",
-//         employer: {
-//             name: "Công ty ABC",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "10-15 triệu VND",
-//         location: "Hà Nội",
-//         deadline: "30/09/2024",
-//         postedAt: "01/09/2024",
-//         skill: ["Java", "C#", "SQL", "Oracle", "React JS"]
-//     },
-//     {
-//         rnid: 2,
-//         position: "Lập trình viên Backend",
-//         employer: {
-//             name: "Công ty XYZ",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "8-12 triệu VND",
-//         location: "TP. Hồ Chí Minh",
-//         deadline: "15/10/2024",
-//         postedAt: "05/09/2024",
-//         skill: ["Java", "C#", "SQL"]
-//     },
-//     {
-//         rnid: 3,
-//         position: "Kỹ sư DevOps",
-//         employer: {
-//             name: "Công ty DEF",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "12-18 triệu VND",
-//         location: "Đà Nẵng",
-//         deadline: "20/10/2024",
-//         postedAt: "10/09/2024",
-//         skill: ["Java", "C#", "SQL"]
-//     },
-//     {
-//         rnid: 4,
-//         position: "Fullstack developer",
-//         employer: {
-//             name: "Công ty GHI",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "7-10 triệu VND",
-//         location: "Hải Phòng",
-//         deadline: "25/10/2024",
-//         postedAt: "12/09/2024",
-//         skill: ["Java", "C#", "SQL"]
-//     },
-//     {
-//         rnid: 5,
-//         position: "Thiết kế UI/UX",
-//         employer: {
-//             name: "Công ty JKL",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "9-14 triệu VND",
-//         location: "Cần Thơ",
-//         deadline: "30/10/2024",
-//         postedAt: "15/09/2024",
-//         skill: ["Java", "C#", "SQL"]
-//     },
-//     {
-//         rnid: 6,
-//         position: "Quản lý dự án",
-//         employer: {
-//             name: "Công ty MNO",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "15-20 triệu VND",
-//         location: "Hà Nội",
-//         deadline: "05/11/2024",
-//         postedAt: "18/09/2024",
-//         skill: ["Java", "C#", "SQL"]
-//     },
-//     {
-//         rnid: 7,
-//         position: "Chuyên viên An ninh Mạng",
-//         employer: {
-//             name: "Công ty PQR",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "10-13 triệu VND",
-//         location: "TP. Hồ Chí Minh",
-//         deadline: "10/11/2024",
-//         postedAt: "20/09/2024",
-//         skill: ["Java", "C#", "SQL"]
-//     },
-//     {
-//         rnid: 8,
-//         position: "Kỹ sư Mạng",
-//         employer: {
-//             name: "Công ty STU",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "11-16 triệu VND",
-//         location: "Đà Nẵng",
-//         deadline: "15/11/2024",
-//         postedAt: "22/09/2024",
-//         skill: ["Java", "C#", "SQL"]
-//     },
-//     {
-//         rnid: 9,
-//         position: "Chuyên viên Phân tích Dữ liệu",
-//         employer: {
-//             name: "Công ty YZ",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "13-17 triệu VND",
-//         location: "Cần Thơ",
-//         deadline: "25/11/2024",
-//         postedAt: "28/09/2024",
-//         skill: ["Java", "C#", "SQL"]
-//     },
-//     {
-//         rnid: 10,
-//         position: "Business Intelligence",
-//         employer: {
-//             name: "TEZ SK4",
-//             logo: "/logo/bosch.png"
-//         },
-//         salary: "11-12 triệu VND",
-//         location: "TP Hồ Chí Minh",
-//         deadline: "23/10/2025",
-//         postedAt: "23/09/2025",
-//         skill: ["Java", "C#", "SQL"]
-//     }
-// ];
-function ImageWithSearch({ searchText, onSearchChange, onSearch }) {
+
+function ImageWithSearch({
+    skillName,
+    setSkillName,
+    position,
+    setPosition,
+    level,
+    setLevel,
+    location,
+    setLocation,
+    onSearch
+}) {
     const images = [
         "/images/introduce1.png",
         "/images/introduce2.png"
@@ -155,19 +35,33 @@ function ImageWithSearch({ searchText, onSearchChange, onSearch }) {
         return () => clearInterval(interval);
     }, [images.length]);
 
-    const isDashboard = location.pathname === '/dashboard';
+    const levels = ['INTERN', 'FRESHER', 'JUNIOR', 'MID_LEVEL', 'SENIOR']
+
+    const isDashboard = location.pathname === '/dashboard'
 
     return (
         <div className="image-search">
             <img src={images[currentImage]} alt={`Slrnide ${currentImage}`} />
             <div className={`search-container ${isDashboard ? 'dashboard' : ''}`}>
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchText}
-                    onChange={onSearchChange}
-                />
-                <button className="search-btn" onClick={() => onSearch()}>
+                <input placeholder="-- Vị trí -- " value={position} onChange={e => setPosition(e.target.value)} />
+
+                <select value={level} onChange={e => setLevel(e.target.value)}>
+                    <option value="">-- Chọn cấp bậc --</option>
+                    {levels.map((loc, idx) => (
+                        <option key={idx} value={loc}>{loc}</option>
+                    ))}
+                </select>
+
+                <input placeholder="-- Kỹ năng -- " value={skillName} onChange={e => setSkillName(e.target.value)} />
+
+
+                <select value={location} onChange={e => setLocation(e.target.value)}>
+                    <option value="">-- Chọn địa điểm --</option>
+                    {locations.map((loc, idx) => (
+                        <option key={idx} value={loc.name}>{loc.name}</option>
+                    ))}
+                </select>
+                <button className="search-btn" onClick={onSearch}>
                     <FaSearch />
                 </button>
             </div>
@@ -180,7 +74,11 @@ function RecruimentNews() {
     const [searchText, setSearchText] = useState('');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const [favoriteJobs, setFavoriteJobs] = useState([]);
+    // const [favoriteJobs, setFavoriteJobs] = useState([]);
+    const [skillName, setSkillName] = useState('');
+    const [position, setPosition] = useState('');
+    const [level, setLevel] = useState('');
+    const [location, setLocation] = useState('');
 
     const recruimentPerPage = 10;
 
@@ -201,8 +99,8 @@ function RecruimentNews() {
         fetchRecruitments();
     }, []);
 
- 
-    
+
+
 
     const totalPages = Math.ceil(recruitments.length / recruimentPerPage);
 
@@ -222,14 +120,26 @@ function RecruimentNews() {
         setCurrentPage(1);
     };
 
-    const token = localStorage.getItem('token')
+    const handleSearch = async () => {
+        const params = new URLSearchParams();
+        if (skillName.trim()) params.append('skillName', skillName.trim());
+        if (position.trim()) params.append('position', position.trim());
+        if (level.trim()) params.append('level', level.trim());
+        if (location.trim()) params.append('location', location.trim());
+
+        try {
+            const res = await axios.get('http://localhost:8080/api/job/search', { params });
+            console.log(res.data)
+            setRecruitments(res.data);
+            setCurrentPage(1);
+        } catch {
+            setRecruitments([]);
+        }
+    };
+
 
     const onApply = (rnid) => {
-        if (token && !isTokenExpired(token)) {
-            navigate(`/recruitment/${rnid}`);
-        }
-        else
-            navigate("/applicant-login");
+        navigate(`/recruitment/${rnid}`);
     }
 
     const viewDetail = (rnid) => {
@@ -237,38 +147,87 @@ function RecruimentNews() {
     }
 
 
-    const toggleFavorite = (rnid) => {
+    const toggleFavorite = async (rnid) => {
         const token = localStorage.getItem('token');
+        const applicantID = localStorage.getItem('applicantID')
 
         if (!token || isTokenExpired(token)) {
             navigate("/applicant-login");
             return;
         }
 
-        setFavoriteJobs(prev => {
-            let newFavorites;
-            if (prev.includes(rnid)) {
-                newFavorites = prev.filter(id => id !== rnid);
-            } else {
-                // Thêm favorite
-                newFavorites = [...prev, rnid];
+        try {
+            const res = await axios.post(
+                "http://localhost:8080/api/applicant/toggle", null,
+                {
+                    params: { applicantID, rnid },
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+            console.log(res.data);
+
+            setFavoriteJobs(prev =>
+                prev.includes(rnid) ? prev.filter(id => id !== rnid) : [...prev, rnid]
+            );
+        } catch (err) {
+            console.error("Lỗi khi lưu yêu thích:", err);
+        }
+    };
+
+   const [favoriteJobs, setFavoriteJobs] = useState([]);
+
+    const applicantID = localStorage.getItem('applicantID')
+    const token = localStorage.getItem('token')
+    useEffect(() => {
+        const fetchSaveJob = async () => {
+            try {
+                const res = await axios.get(
+                    "http://localhost:8080/api/applicant/favourite-job",
+                    {
+                        params: { id: applicantID },
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }
+                );
+                  const savedIds = res.data.map(job => job.rnid);
+            setFavoriteJobs(savedIds);
+            } catch {
+                console.log('Loi khi tai tin yeu thich')
             }
 
-            // Lưu vào localStorage
-            // localStorage.setItem('favoriteJobs', JSON.stringify(newFavorites));
-            return newFavorites;
-        });
-    }
 
-    // Check xem job có được favorite không
-    const isFavorite = (rnid) => {
-        return favoriteJobs.includes(rnid);
-    }
+        }
+        fetchSaveJob([applicantID, token])
+    })
+
+
+
+
+    // const isFavorite = (rnid) => {
+    //     setSaveJobs(prev =>
+    //         prev.includes(rnid) ? prev.filter(id => id !== rnid) : [...prev, rnid]
+    //     );
+    // }
+    const isFavorite = (rnid) => { return favoriteJobs.includes(rnid); }
+
 
     if (loading) return <div>Loading...</div>;
     return (
         <div>
-            <ImageWithSearch searchText={searchText} onSearchChange={handleSearchChange} />
+            <ImageWithSearch
+                searchText={searchText}
+                onSearchChange={handleSearchChange}
+                skillName={skillName}
+                setSkillName={setSkillName}
+                position={position}
+                setPosition={setPosition}
+                level={level}
+                setLevel={setLevel}
+                location={location}
+                setLocation={setLocation}
+                onSearch={handleSearch}
+            />
             <div className="recruimentnews-page">
                 <div className="recruimentnews-container">
                     {displayrecruitments.map((recruiment, index) => (

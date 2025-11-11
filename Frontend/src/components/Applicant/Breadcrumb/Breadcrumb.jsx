@@ -1,14 +1,102 @@
-import { useLocation, Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './Breadcrumb.css';
-const breadcrumbMap = {
-  '/':                 [{ label: 'Trang chủ', link: '/dashboard' }],
-  '/cv-templates':     [{ label: 'Trang chủ', link: '/dashboard' }, { label: 'Mẫu CV', link: '/cv-templates' }],
-  '/recruitment/1':    [{ label: 'Trang chủ', link: '/dashboard' }, { label: 'Việc làm', link: '/recruitment/1' }, { label: 'Chi tiết tuyển dụng', link: '/recruitment/1' }],
-};
+import { useState, useEffect } from 'react';
+import axios from "axios"
+import { useLocation } from 'react-router-dom';
+
 
 export const Breadcrumb = () => {
+  const { employerId } = useParams()
+  const { rnid } = useParams()
   const location = useLocation();
-  const items = breadcrumbMap[location.pathname] || [{ label: 'Trang chủ', link: '/dashboard' }];
+  const [detail, setCompanyDetail] = useState(null);
+ const [loadingC, setLoadingC] = useState(Boolean(employerId));
+const [loadingR, setLoadingR] = useState(Boolean(rnid));
+
+
+  useEffect(() => {
+  //   const fetchDetail = async () => {
+  //     try {
+  //       const res = await axios.get("http://localhost:8080/api/applicant/companies/detail", { params: { id: employerId } })
+  //       setCompanyDetail(res.data);
+  //     } catch (thrown) {
+  //       console.error("Chi tiết lỗi:", thrown);
+  //     } finally {
+  //       setLoadingC(false);
+  //     }
+  //   };
+  //   if (employerId) fetchDetail();
+  // }, [employerId]);
+    if (!employerId) return;
+  setLoadingC(true);
+  axios.get("http://localhost:8080/api/applicant/companies/detail", {params: {id: employerId}})
+       .then(res => setCompanyDetail(res.data))
+       .finally(() => setLoadingC(false));
+}, [employerId]);
+
+  const [recruitmentDetail, setRecruitmentDetail] = useState(null);
+  useEffect(() => {
+  //   const fetchDetail = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:8080/api/detail", { params: { id: rnid } });
+  //       setRecruitmentDetail(response.data);
+  //     }
+  //     catch (error) {
+  //       console.error("Lỗi khi tải chi tiết tin tuyển dụng", error);
+  //       setLoadingR(false)
+  //     }
+  //   };
+  //   if (rnid) fetchDetail();
+  // }, [rnid]);
+  if (!rnid) return;
+  setLoadingR(true);
+  axios.get("http://localhost:8080/api/detail", {params: {id: rnid}})
+       .then(res => setRecruitmentDetail(res.data))
+       .finally(() => setLoadingR(false));
+}, [rnid]);
+
+
+  const breadcrumbMap = () => {
+    const base = [
+      { label: 'Trang chủ', link: '/dashboard' }
+
+
+    ];
+
+    if (location.pathname.startsWith('/companies/') && employerId) {
+      base.push(
+        { label: 'Công ty', link: '/companies' },
+        {
+          label: detail?.name || 'Đang tải...',
+          link: `/companies/${employerId}`
+        });
+    }
+    if (location.pathname.startsWith('/recruitment/') && rnid) {
+      base.push(
+        // { label: 'Tìm kiếm việc làm', link: '/dashboard' },
+        {
+          label: recruitmentDetail?.position || 'Đang tải...',
+          link: `/recruitment/${rnid}`
+        });
+    }
+
+
+    // các route cố định khác
+    if (location.pathname === '/cv-templates') {
+      return [...base.slice(0, 1), { label: 'Mẫu CV', link: '/cv-templates' }];
+    }
+    // if (location.pathname === '/recruitment') {
+    //   return [...base.slice(0, 1), { label: 'Việc làm', link: '/recruitment' }];
+    // }
+    // thêm các case khác nếu cần
+
+    return base;
+  };
+
+  const items = breadcrumbMap();
+
+const showLoading = (employerId && loadingC) || (rnid && loadingR);
+if (showLoading) return <div>Loading...</div>;
   return (
     <nav className="breadcrumb">
       {items.map((crumb, i) => (

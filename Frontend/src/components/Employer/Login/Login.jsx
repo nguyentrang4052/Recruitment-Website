@@ -19,9 +19,9 @@ function Login() {
 
         if (token && !isTokenExpired(token)) {
             if (roleName === "applicant") {
-                navigate('/dashboard')
+                navigate('/dashboard', { replace: true })
             } else if (roleName === "employer") {
-                navigate('/employer-dashboard')
+                navigate('/employer-dashboard', { replace: true })
             }
         }
     }, [navigate])
@@ -44,9 +44,9 @@ function Login() {
             if (employerID) localStorage.setItem('employerID', employerID)
 
             if (roleName === "applicant") {
-                navigate('/dashboard')
+                navigate('/dashboard', { replace: true })
             } else if (roleName === "employer") {
-                navigate('/employer-dashboard')
+                navigate('/employer-dashboard', { replace: true })
             }
         } catch (err) {
             if (err.response && err.response.status === 401) {
@@ -85,9 +85,9 @@ function Login() {
             if (employerID) localStorage.setItem('employerID', employerID)
 
             if (roleName === "applicant") {
-                navigate('/dashboard')
+                navigate('/dashboard', { replace: true })
             } else if (roleName === "employer") {
-                navigate('/employer-dashboard')
+                navigate('/employer-dashboard', { replace: true })
             } else {
                 console.warn("Role không xác định, chuyển về login")
                 navigate('/login')

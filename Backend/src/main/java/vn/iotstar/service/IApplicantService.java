@@ -29,7 +29,7 @@ public interface IApplicantService {
 
 	Applicant findByAccount_email(String email);
 
-	ApplicantDTO convertToDTO(Applicant applicant);
+	// ApplicantDTO convertToDTO(Applicant applicant);
 
 	ProfileDTO updateApplicant(Integer applicantID, ProfileDTO profileDTO);
 
@@ -38,7 +38,7 @@ public interface IApplicantService {
 
 	Optional<Applicant> findById(Integer id);
 
-	ApplicantDetailDTO convertToDetailDTO(Applicant applicant);
+	// ApplicantDetailDTO convertToDetailDTO(Applicant applicant);
 
 	ProfileDTO mapToDetail(Applicant applicant);
 

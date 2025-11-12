@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import './SearchApplicant.css';
 import provincesData from '../../../../data/provinces.json';
 import avatarPlaceholder from '../../../assets/avatar.png';
-
+import ViewCV from '../ViewApplicant/ViewApplicant.jsx'; // Import ViewCV
 
 const API_BASE_URL = 'http://localhost:8080/api/employer';
 const SKILLS_API_URL = 'http://localhost:8080/api/skills/list';
 const DEFAULT_PAGE_SIZE = 4;
-
-
 
 const SearchApplicant = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -29,10 +26,12 @@ const SearchApplicant = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [skillSearchTerm, setSkillSearchTerm] = useState('');
 
+    // State mới để hiển thị ViewCV
+    const [selectedApplicantId, setSelectedApplicantId] = useState(null);
+    const [showViewCV, setShowViewCV] = useState(false);
+
     const experienceLevels = ["Tất cả", "Fresher", "Junior", "Mid-level", "Senior", "Manager"];
-
     const token = localStorage.getItem('token');
-
 
     useEffect(() => {
         setCities(provincesData);
@@ -55,7 +54,6 @@ const SearchApplicant = () => {
         fetchSkills();
     }, []);
 
-
     const fetchCandidates = useCallback(async (page = 0) => {
         if (!token) {
             alert("Bạn cần đăng nhập với vai trò Nhà tuyển dụng để tìm kiếm ứng viên.");
@@ -64,7 +62,6 @@ const SearchApplicant = () => {
 
         setLoading(true);
         setCurrentPage(page);
-
 
         const searchPayload = {
             searchTerm: searchTerm || null,
@@ -91,7 +88,6 @@ const SearchApplicant = () => {
                 throw new Error(data?.message || `Lỗi ${res.status}: Không thể tìm kiếm ứng viên.`);
             }
 
-
             setCandidates(data.candidates || []);
             setTotalResults(data.totalResults || 0);
             setTotalPages(data.totalPages || 0);
@@ -110,7 +106,6 @@ const SearchApplicant = () => {
     useEffect(() => {
         fetchCandidates(0);
     }, [fetchCandidates]);
-
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -138,6 +133,28 @@ const SearchApplicant = () => {
         skill.toLowerCase().includes(skillSearchTerm.toLowerCase())
     );
 
+    // Handler mới để xem CV
+    const handleViewCV = (applicantId) => {
+        setSelectedApplicantId(applicantId);
+        setShowViewCV(true);
+    };
+
+    // Handler quay lại danh sách
+    const handleBackFromCV = () => {
+        setShowViewCV(false);
+        setSelectedApplicantId(null);
+    };
+
+    // Render ViewCV nếu đang ở chế độ xem chi tiết
+    if (showViewCV) {
+        return (
+            <ViewCV
+                applicantId={selectedApplicantId}
+                onBack={handleBackFromCV}
+                showActions={false} // Ẩn nút Duyệt/Từ chối
+            />
+        );
+    }
 
     return (
         <div className="search-applicant-container">
@@ -285,12 +302,13 @@ const SearchApplicant = () => {
 
                                     <p className="salary-expectation">Mức lương mong muốn: <strong>{candidate.desireSalary || "Thỏa thuận"}</strong></p>
 
-                                    <Link
-                                        to={`/employer/applicant/${candidate.applicantID}`}
+                                    {/* THAY THẾ Link BẰNG button */}
+                                    <button
+                                        onClick={() => handleViewCV(candidate.applicantID)}
                                         className="view-profile-button"
                                     >
                                         Xem hồ sơ
-                                    </Link>
+                                    </button>
                                 </div>
                             </div>
                         ))}

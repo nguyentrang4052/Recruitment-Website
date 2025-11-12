@@ -1,0 +1,166 @@
+package vn.iotstar.service.imp;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import vn.iotstar.dto.ActiveJobDTO;
+import vn.iotstar.dto.JobDetailDTO;
+import  vn.iotstar.dto.ApplicationDTO;
+import vn.iotstar.dto.SkillDTO;
+import vn.iotstar.entity.RecruitmentNews;
+import vn.iotstar.enums.EStatus;
+import vn.iotstar.repository.IApplicationRepository;
+import vn.iotstar.repository.IRecruitmentNewsRepository;
+import vn.iotstar.service.IEmployerJobService;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class EmployerJobService implements IEmployerJobService {
+
+    private final IRecruitmentNewsRepository recruitmentRepository;
+    private final IApplicationRepository applicationRepository;
+
+    @Override
+    public Page<ActiveJobDTO> getActiveJobs(Integer employerAccountId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<RecruitmentNews> recruitments = recruitmentRepository.findActiveJobsByEmployer(
+            employerAccountId, EStatus.APPROVED, pageable);
+        return recruitments.map(this::convertToActiveDTO);
+    }
+
+    @Override
+    public JobDetailDTO getJobDetail(Integer jobId) {
+        RecruitmentNews recruitment = recruitmentRepository.findByIdWithSkills(jobId)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy công việc"));
+        return convertToDetailDTO(recruitment);
+    }
+
+    @Override
+    @Transactional
+    public JobDetailDTO updateJob(Integer jobId, Integer employerAccountId, JobDetailDTO updateDTO) {
+        if (!recruitmentRepository.existsByIdAndEmployer(jobId, employerAccountId)) {
+            throw new RuntimeException("Bạn không có quyền cập nhật công việc này");
+        }
+
+        RecruitmentNews recruitment = recruitmentRepository.findById(jobId)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy công việc"));
+
+       
+        recruitment.setPosition(updateDTO.getTitle());
+        recruitment.setDescription(updateDTO.getDescription());
+        recruitment.setLocation(updateDTO.getLocation());
+        recruitment.setExperience(updateDTO.getExperience());
+        recruitment.setLiteracy(updateDTO.getLiteracy());
+        recruitment.setLevel(updateDTO.getLevel());
+        
+       
+        recruitment.setMinSalary(updateDTO.getMinSalary() != null ? 
+            BigDecimal.valueOf(updateDTO.getMinSalary()) : null);
+        recruitment.setMaxSalary(updateDTO.getMaxSalary() != null ? 
+            BigDecimal.valueOf(updateDTO.getMaxSalary()) : null);
+            
+        recruitment.setBenefit(updateDTO.getBenefit());
+        recruitment.setWorkingTime(updateDTO.getWorkingTime());
+        recruitment.setApplyBy(updateDTO.getApplyBy());
+        recruitment.setDeadline(updateDTO.getDeadline());
+
+        RecruitmentNews updated = recruitmentRepository.save(recruitment);
+        return convertToDetailDTO(updated);
+    }
+
+    @Override
+    @Transactional
+    public void deleteJob(Integer jobId, Integer employerAccountId) {
+        if (!recruitmentRepository.existsByIdAndEmployer(jobId, employerAccountId)) {
+            throw new RuntimeException("Bạn không có quyền xóa công việc này");
+        }
+
+        Long applicantCount = recruitmentRepository.countApplicantsByJobId(jobId);
+        if (applicantCount > 0) {
+            throw new RuntimeException("Không thể xóa tin tuyển dụng đã có " + applicantCount + " người ứng tuyển");
+        }
+
+        recruitmentRepository.deleteById(jobId);
+    }
+
+    private ActiveJobDTO convertToActiveDTO(RecruitmentNews recruitment) {
+        ActiveJobDTO dto = new ActiveJobDTO();
+        dto.setId(recruitment.getRNID());
+        dto.setTitle(recruitment.getPosition());
+        dto.setLocation(recruitment.getLocation());
+        dto.setPostedDate(recruitment.getPostedAt());
+        dto.setStatus(recruitment.getStatus().name());
+
+        Long applicantCount = recruitmentRepository.countApplicantsByJobId(recruitment.getRNID());
+        dto.setApplicants(applicantCount != null ? applicantCount.intValue() : 0);
+
+        return dto;
+    }
+
+    private JobDetailDTO convertToDetailDTO(RecruitmentNews recruitment) {
+        JobDetailDTO dto = new JobDetailDTO();
+        dto.setId(recruitment.getRNID());
+        dto.setTitle(recruitment.getPosition());
+        dto.setDescription(recruitment.getDescription());
+        dto.setLocation(recruitment.getLocation());
+        dto.setExperience(recruitment.getExperience());
+        dto.setLiteracy(recruitment.getLiteracy());
+        dto.setLevel(recruitment.getLevel());
+
+        dto.setMinSalary(recruitment.getMinSalary() != null ? recruitment.getMinSalary().intValue() : null);
+        dto.setMaxSalary(recruitment.getMaxSalary() != null ? recruitment.getMaxSalary().intValue() : null);
+
+        dto.setBenefit(recruitment.getBenefit());
+        dto.setFormOfWork(recruitment.getFormOfWork().name());
+        dto.setWorkingTime(recruitment.getWorkingTime());
+        dto.setApplyBy(recruitment.getApplyBy());
+        dto.setPostedDate(recruitment.getPostedAt());
+        dto.setDeadline(recruitment.getDeadline());
+        dto.setStatus(recruitment.getStatus().name());
+
+        dto.setNumbersOfViews(recruitment.getNumbersOfViews() != null ? recruitment.getNumbersOfViews() : 0);
+
+        Long applicants = recruitmentRepository.countApplicantsByJobId(recruitment.getRNID());
+        dto.setNumbersOfRecords(applicants != null ? applicants.intValue() : 0);
+
+        dto.setSkills(recruitment.getSkill().stream()
+            .map(skill -> {
+                SkillDTO skillDTO = new SkillDTO();
+                skillDTO.setSkillID(skill.getSkillID());
+                skillDTO.setSkillName(skill.getSkillName());
+                return skillDTO;
+            })
+            .collect(Collectors.toList()));
+
+      
+        List<EStatus> statuses = List.of(EStatus.PENDING, EStatus.APPROVED);
+
+        List<ApplicationDTO> applicationDTOs = applicationRepository
+            .findApplicationsWithDetailsByStatuses(recruitment.getRNID(), statuses)
+            .stream()
+            .map(app -> {
+                ApplicationDTO aDto = new ApplicationDTO();
+                aDto.setDate(app.getDate());
+                aDto.setStatus(app.getStatus().name());
+                aDto.setNote(app.getNote());
+                aDto.setCV(app.getCV());
+                aDto.setRecruitmentNewsTitle(app.getRecruitmentNews().getPosition());
+
+                return aDto;
+            })
+            .collect(Collectors.toList());
+
+        Long applicantCount = recruitmentRepository.countApplicantsByJobId(recruitment.getRNID());
+        dto.setApplicants(applicantCount != null ? applicantCount.intValue() : 0);
+
+
+        return dto;
+    }
+
+}

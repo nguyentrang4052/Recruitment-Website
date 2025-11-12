@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
 import { faHome, faBuilding, faFileAlt, faSearch, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import './EmployerDashboard.css';
 import MainContent from './MainContent';
@@ -10,14 +11,15 @@ import SearchApplicant from '../../Employer/SearchApplicant/SearchApplicant';
 import NewApplicant from '../NewApplicant/NewApplicant';
 import ActiveJobs from '../ActiveJobs/ActiveJobs';
 import ProfileViewsStats from '../ProfileViewsStats/ProfileViewsStats';
-// import { useNavigate } from 'react-router-dom';
+import ServicePackages from "../ServicePackages/ServicePackages";
+
 import logo from '../../../assets/Logo.png';
 
 function EmployerDashboard() {
-    // const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('dashboard');
+    const [username, setUsername] = useState('');
+    const navigate = useNavigate();
 
-    const [username, setUsername] = useState(''); // Khởi tạo rỗng
     useEffect(() => {
         const storedUser = localStorage.getItem('username');
         if (storedUser) {
@@ -25,11 +27,17 @@ function EmployerDashboard() {
         }
     }, []);
 
-    // const handleNavigate = (path) => {
 
-    //     setActiveTab('dashboard');
-    //     navigate(path);
-    // };
+    const handleLogoutClick = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        localStorage.removeItem('roleName');
+        localStorage.removeItem('username');
+        localStorage.removeItem('applicantID');
+        localStorage.removeItem('employerID');
+
+        navigate('/', { replace: true });
+    }
 
     const renderContent = () => {
         switch (activeTab) {
@@ -47,6 +55,8 @@ function EmployerDashboard() {
                 return <ActiveJobs setActiveTab={setActiveTab} />;
             case 'profileViewsStats':
                 return <ProfileViewsStats setActiveTab={setActiveTab} />;
+            case 'servicePackages':
+                return <ServicePackages />;
             case 'settings':
                 return <EmployerSetting activeTab="settings" setActiveTab={setActiveTab} />;
 
@@ -60,7 +70,7 @@ function EmployerDashboard() {
             <div className="sidebar">
                 <div className="sidebar-header">
                     <img src={logo} alt="Website Logo" className="website-logo" />
-                    <h3>GZ CONNECT</h3>
+                    <h3>GZCONNECT</h3>
                 </div>
                 <ul className="sidebar-menu">
                     <li className={activeTab === 'dashboard' ? 'active' : ''} onClick={() => setActiveTab('dashboard')}>
@@ -76,10 +86,14 @@ function EmployerDashboard() {
                         <FontAwesomeIcon icon={faSearch} /> Tìm kiếm ứng viên
                     </li>
 
+                    <li className={activeTab === 'servicePackages' ? 'active' : ''} onClick={() => setActiveTab('servicePackages')}>
+                        <FontAwesomeIcon icon={faFileAlt} /> Gói dịch vụ
+                    </li>
+
                     <li className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')}>
                         <FontAwesomeIcon icon={faCog} /> Quản lý tài khoản
                     </li>
-                    <li>
+                    <li onClick={handleLogoutClick} className="logout-item">
                         <FontAwesomeIcon icon={faSignOutAlt} /> Đăng xuất
                     </li>
                 </ul>

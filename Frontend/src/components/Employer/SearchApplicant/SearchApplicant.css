@@ -319,3 +319,10 @@
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.salary-expectation {
+    text-align: left;
+    color: #333;
+    font-size: 0.95em;
+    margin-top: 8px;
+}

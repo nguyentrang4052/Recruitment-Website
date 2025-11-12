@@ -25,7 +25,7 @@ import CompanyReviewDetail from './components/Applicant/Content/Company/CompanyR
 import ApplicantDetail from './components/Employer/ApplicantDetail/ApplicantDetail.jsx';
 import AdminDashboard from './components/Admin/Dashboard/Dashboard.jsx'
 import ChatBot from './components/ChatBot/ChatBot.jsx'
-
+import NewApplicant from './components/Employer/NewApplicant/NewApplicant.jsx'
 
 
 function App() {
@@ -54,6 +54,7 @@ function App() {
           <Route path="/" element={<RoleRedirect />} />
           <Route element={<LayoutWithHomePage />}>
             <Route index element={<RecruimentNews />} />
+
             <Route path="/login" element={<Login />} />
             <Route path="/applicant-login" element={<ApplicantLogin />} />
 
@@ -97,6 +98,9 @@ function App() {
           <Route path = "/admin" element=   {<AdminDashboard/>}/>
           {/* <Route path = "/admin/recruitment" element={<AdminRecruitmentDetail/>}/> */}
               <Route path="/chatbot" element={<ChatBot/>}/>
+          {/* <Route path="/employer/applicants/:recruitmentNewsId" element={<NewApplicant />} /> */}
+
+
 
         </Routes>
       </Router>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './NewApplicant.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faCheckCircle, faTimesCircle, faMapMarkerAlt, faBriefcase, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faMapMarkerAlt, faBriefcase, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import avatar from '../../../assets/avatar.png';
+import ViewCV from '../ViewApplicant/ViewApplicant.jsx';
 
 // Giả lập dữ liệu ứng viên mới nộp
 const initialApplicants = [
@@ -80,6 +81,8 @@ const initialApplicants = [
 
 const NewApplicant = ({ username, setActiveTab }) => {
     const [applicants, setApplicants] = useState(initialApplicants);
+    const [selectedApplicantId, setSelectedApplicantId] = useState(null);
+    const [showViewCV, setShowViewCV] = useState(false);
 
     // phân trang
     const [currentPage, setCurrentPage] = useState(1);
@@ -90,17 +93,47 @@ const NewApplicant = ({ username, setActiveTab }) => {
     const indexOfFirstApplicant = indexOfLastApplicant - applicantsPerPage;
     const currentApplicants = applicants.slice(indexOfFirstApplicant, indexOfLastApplicant);
 
+    // SỬA LẠI: Thêm handleBackFromCV vào trong các handler
     const handleApprove = (id) => {
-        setApplicants(applicants.map(app =>
-            app.id === id ? { ...app, status: 'approved' } : app
-        ));
+        setApplicants(prevApplicants => {
+            const updated = prevApplicants.map(app =>
+                app.id === id ? { ...app, status: 'approved' } : app
+            );
+            return updated;
+        });
         alert(`Đã duyệt hồ sơ của ứng viên ID: ${id}`);
+        handleBackFromCV(); // QUAY LẠI DANH SÁCH NGAY LẬP TỨC
     };
 
     const handleReject = (id) => {
-        setApplicants(applicants.filter(app => app.id !== id));
+        setApplicants(prevApplicants => {
+            const updated = prevApplicants.filter(app => app.id !== id);
+            return updated;
+        });
         alert(`Đã từ chối hồ sơ của ứng viên ID: ${id}`);
+        handleBackFromCV(); // QUAY LẠI DANH SÁCH NGAY LẬP TỨC
     };
+
+    const handleViewCV = (id) => {
+        setSelectedApplicantId(id);
+        setShowViewCV(true);
+    };
+
+    const handleBackFromCV = () => {
+        setShowViewCV(false);
+        setSelectedApplicantId(null);
+    };
+
+    if (showViewCV) {
+        return (
+            <ViewCV
+                applicantId={selectedApplicantId}
+                onBack={handleBackFromCV}
+                onApprove={handleApprove}
+                onReject={handleReject}
+            />
+        );
+    }
 
     return (
         <div className="new-applicants-container">
@@ -121,7 +154,13 @@ const NewApplicant = ({ username, setActiveTab }) => {
                             <div className="applicant-header">
                                 <img src={applicant.avatar} alt="Avatar" className="candidate-avatar" />
                                 <div className="applicant-info">
-                                    <h4 className="applicant-name">{applicant.name}</h4>
+                                    <h4 className="applicant-name">
+                                        {applicant.name}
+                                        {/* Hiển thị trạng thái Đã duyệt */}
+                                        {applicant.status === 'approved' && (
+                                            <span className="status-badge approved">Đã duyệt</span>
+                                        )}
+                                    </h4>
                                     <p className="applicant-position">{applicant.position}</p>
                                     <div className="applicant-details">
                                         <span><FontAwesomeIcon icon={faMapMarkerAlt} /> {applicant.location}</span>
@@ -136,24 +175,10 @@ const NewApplicant = ({ username, setActiveTab }) => {
                             </div>
 
                             <div className="applicant-actions">
-                                <a href={applicant.cvLink} className="action-button view-button">
-                                    <FontAwesomeIcon icon={faEye} /> Xem chi tiết
-                                </a>
-
-                                {applicant.status === 'pending' ? (
-                                    <>
-                                        <button onClick={() => handleApprove(applicant.id)} className="action-button approve-button">
-                                            <FontAwesomeIcon icon={faCheckCircle} /> Duyệt hồ sơ
-                                        </button>
-                                        <button onClick={() => handleReject(applicant.id)} className="action-button reject-button">
-                                            <FontAwesomeIcon icon={faTimesCircle} /> Từ chối
-                                        </button>
-                                    </>
-                                ) : (
-                                    <button className="action-button approve-button disabled" disabled>
-                                        <FontAwesomeIcon icon={faCheckCircle} /> Đã duyệt
-                                    </button>
-                                )}
+                                {/* CHỈ CÓ NÚT XEM CV */}
+                                <button onClick={() => handleViewCV(applicant.id)} className="action-button view-button">
+                                    <FontAwesomeIcon icon={faEye} /> Xem CV
+                                </button>
                             </div>
                         </div>
                     ))

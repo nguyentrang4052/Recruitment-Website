@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../../Employer/ActiveJobs/ActiveJobs.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faClock, faUsers } from '@fortawesome/free-solid-svg-icons';
+import JobDetail from '../JobDetail/JobDetail.jsx';
 
 const initialJobs = [
     { id: 1, title: 'Lập trình viên ReactJS', location: 'Hà Nội', applicants: 12, postedDate: '10/09/2025', status: 'Đang tuyển' },
@@ -16,6 +17,7 @@ const initialJobs = [
 const ActiveJobs = ({ setActiveTab }) => {
     const [jobs] = useState(initialJobs);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedJobId, setSelectedJobId] = useState(null);
     const jobsPerPage = 6;
 
     const indexOfLastJob = currentPage * jobsPerPage;
@@ -24,6 +26,25 @@ const ActiveJobs = ({ setActiveTab }) => {
 
     const totalPages = Math.ceil(jobs.length / jobsPerPage);
 
+    const handleJobClick = (jobId) => {
+        setSelectedJobId(jobId);
+    };
+
+    const handleBackToList = () => {
+        setSelectedJobId(null);
+    };
+
+    // Nếu đang xem chi tiết, hiển thị JobDetail
+    if (selectedJobId) {
+        return (
+            <JobDetail
+                jobId={selectedJobId}
+                onBack={handleBackToList}
+            />
+        );
+    }
+
+    // Nếu không, hiển thị danh sách
     return (
         <div className="joblist-container">
             <div className="joblist-header">
@@ -35,7 +56,12 @@ const ActiveJobs = ({ setActiveTab }) => {
 
             <div className="joblist-list">
                 {currentJobs.map(job => (
-                    <div key={job.id} className="joblist-card">
+                    <div
+                        key={job.id}
+                        className="joblist-card"
+                        onClick={() => handleJobClick(job.id)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <h3 className="joblist-title">{job.title}</h3>
                         <p className="joblist-meta">
                             <FontAwesomeIcon icon={faMapMarkerAlt} /> {job.location} |{' '}

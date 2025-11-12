@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShieldAlt, faCheckCircle, faArrowLeft, faUniversity } from '@fortawesome/free-solid-svg-icons';
+import { faShieldAlt, faCheckCircle, faArrowLeft, faUniversity, faQrcode } from '@fortawesome/free-solid-svg-icons';
+import { QRCodeCanvas } from 'qrcode.react'; // Import QR Code
 import './PaymentPage.css';
 
 import vietcom from '../../../assets/bank-logos/vietcombank.jpg';
@@ -74,16 +75,6 @@ function PaymentPage({ packageInfo, onGoBack }) {
         });
     };
 
-    // const handleBankFormChange = (e) => {
-    //     const { name, value, files } = e.target;
-    //     if (name === 'receipt') {
-    //         const fileName = files && files[0] ? files[0].name : '';
-    //         setBankForm(prev => ({ ...prev, receiptFileName: fileName }));
-    //     } else {
-    //         setBankForm(prev => ({ ...prev, [name]: value }));
-    //     }
-    // };
-
     const validateBankForm = () => {
         if (!selectedBank) return { ok: false, msg: 'Vui lòng chọn ngân hàng.' };
         if (!bankForm.transferDate) return { ok: false, msg: 'Vui lòng nhập ngày chuyển.' };
@@ -114,6 +105,11 @@ function PaymentPage({ packageInfo, onGoBack }) {
             return;
         }
 
+        if (paymentMethod === 'QR_CODE') {
+            alert(`Bạn đã chọn thanh toán qua QR Code gói ${currentPackage.name} với tổng ${formatCurrency(totalAmount)}. Vui lòng quét mã QR để hoàn tất thanh toán.`);
+            return;
+        }
+
         alert(`Bạn đã chọn thanh toán gói ${currentPackage.name} với tổng ${formatCurrency(totalAmount)} bằng ${paymentMethod}.`);
     };
 
@@ -123,15 +119,13 @@ function PaymentPage({ packageInfo, onGoBack }) {
                 <FontAwesomeIcon icon={faArrowLeft} /> Quay lại chọn gói
             </button>
 
-            <h1 className="payment-header">Xác Nhận & Thanh Toán Gói Dịch Vụ</h1>
+            <h1 className="payment-header">Xác nhận và Thanh toán dịch vụ</h1>
             <p className="payment-subheader">
                 Hoàn tất các bước dưới đây để kích hoạt gói <strong>{currentPackage.name}</strong>.
             </p>
 
             <div className="payment-layout">
                 <div className="payment-details-form">
-
-
                     <div className="section-card package-summary">
                         <h2>Thông tin Gói</h2>
                         <div className="summary-item">
@@ -149,9 +143,10 @@ function PaymentPage({ packageInfo, onGoBack }) {
                         </ul>
                     </div>
 
-
                     <div className="section-card payment-method-selection">
                         <h2>Phương thức Thanh toán</h2>
+
+                        {/* Phương thức Chuyển khoản */}
                         <div
                             className={`method-option bank-transfer-main ${paymentMethod === 'BANK_TRANSFER' ? 'selected' : ''}`}
                             onClick={() => setPaymentMethod('BANK_TRANSFER')}
@@ -159,12 +154,21 @@ function PaymentPage({ packageInfo, onGoBack }) {
                             <span>Thẻ nội địa và tài khoản ngân hàng</span>
                             <FontAwesomeIcon icon={faUniversity} className="bank-icon-lg" />
                         </div>
+
+                        {/* PHƯƠNG THỨC MỚI: Quét mã QR */}
+                        <div
+                            className={`method-option qr-payment ${paymentMethod === 'QR_CODE' ? 'selected' : ''}`}
+                            onClick={() => setPaymentMethod('QR_CODE')}
+                        >
+                            <span>Quét mã QR để thanh toán</span>
+                            <FontAwesomeIcon icon={faQrcode} className="qr-icon-lg" />
+                        </div>
                     </div>
 
+                    {/* Nội dung Chuyển khoản */}
                     {paymentMethod === 'BANK_TRANSFER' && (
                         <div className="section-card bank-transfer-block">
                             <h2>Chọn Ngân hàng</h2>
-
                             <div className="bank-search-wrapper">
                                 <input
                                     type="text"
@@ -174,7 +178,6 @@ function PaymentPage({ packageInfo, onGoBack }) {
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                             </div>
-
                             <div className="bank-grid">
                                 {filteredBanks.length > 0 ? (
                                     filteredBanks.map(bank => (
@@ -195,7 +198,6 @@ function PaymentPage({ packageInfo, onGoBack }) {
                                     <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#718096' }}>Không tìm thấy ngân hàng nào.</p>
                                 )}
                             </div>
-
                             {selectedBank && (
                                 <div className="bank-detail-form">
                                     <h3>Thông tin thanh toán từ {allBanks.find(b => b.id === selectedBank)?.name}</h3>
@@ -222,16 +224,67 @@ function PaymentPage({ packageInfo, onGoBack }) {
                                         value={bankForm.accountHolder}
                                         onChange={(e) => setBankForm(prev => ({ ...prev, accountHolder: e.target.value }))}
                                     />
-
                                     <div className="card-info-row">
                                         <div>
                                             <label>Ngày phát hành:</label>
                                             <input type="text" placeholder="MM/YY" required />
                                         </div>
-
+                                        <div>
+                                            <label>CVV:</label>
+                                            <input type="text" placeholder="XXX" required />
+                                        </div>
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    )}
+
+                    {/* NỘI DUNG MỚI: QR Code Section */}
+                    {paymentMethod === 'QR_CODE' && (
+                        <div className="section-card qr-payment-block">
+                            <h2>Quét mã QR để thanh toán</h2>
+                            <div className="qr-payment-section">
+                                <div className="qr-code-box">
+                                    <QRCodeCanvas
+                                        value={JSON.stringify({
+                                            amount: totalAmount,
+                                            description: `Thanh toán gói ${currentPackage.name}`,
+                                            currency: 'VND',
+                                            orderId: `ORDER_${Date.now()}`
+                                        })}
+                                        size={180}
+                                        includeMargin={true}
+                                        bgColor="#ffffff"
+                                        fgColor="#000000"
+                                    />
+                                </div>
+                                <div className="qr-info">
+                                    <h3>Hướng dẫn thanh toán</h3>
+                                    <div className="qr-info-row">
+                                        <span className="qr-info-label">Số tiền:</span>
+                                        <span className="qr-info-value qr-amount">{formatCurrency(totalAmount)}</span>
+                                    </div>
+                                    <div className="qr-info-row">
+                                        <span className="qr-info-label">Nội dung:</span>
+                                        <span className="qr-info-value">Thanh toán gói {currentPackage.name}</span>
+                                    </div>
+                                    <div className="qr-info-row">
+                                        <span className="qr-info-label">Bước 1:</span>
+                                        <span className="qr-info-value">Mở ứng dụng ngân hàng/Ví điện tử</span>
+                                    </div>
+                                    <div className="qr-info-row">
+                                        <span className="qr-info-label">Bước 2:</span>
+                                        <span className="qr-info-value">Quét mã QR bên cạnh</span>
+                                    </div>
+                                    <div className="qr-info-row">
+                                        <span className="qr-info-label">Bước 3:</span>
+                                        <span className="qr-info-value">Xác nhận thanh toán</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style={{ marginTop: '16px', color: '#666', fontSize: '13px', textAlign: 'center' }}>
+                                Sau khi thanh toán thành công, gói dịch vụ sẽ được kích hoạt tự động trong vòng 5-10 phút.
+                            </p>
                         </div>
                     )}
 
@@ -245,11 +298,13 @@ function PaymentPage({ packageInfo, onGoBack }) {
                         </div>
 
                         <button type="submit" className="complete-payment-btn">
-                            Hoàn Tất Thanh Toán {formatCurrency(totalAmount)}
+                            {paymentMethod === 'QR_CODE'
+                                ? `Xác nhận đã quét QR và thanh toán ${formatCurrency(totalAmount)}`
+                                : `Hoàn Tất Thanh Toán ${formatCurrency(totalAmount)}`
+                            }
                         </button>
                     </form>
                 </div>
-
 
                 <div className="payment-summary-box">
                     <h3>Chi tiết Thanh toán</h3>
@@ -265,7 +320,6 @@ function PaymentPage({ packageInfo, onGoBack }) {
                         <strong>Tổng cộng: </strong>
                         <strong>{formatCurrency(totalAmount)}</strong>
                     </div>
-
                     <div className="security-note">
                         <FontAwesomeIcon icon={faShieldAlt} />
                         Giao dịch của bạn được bảo mật tuyệt đối.

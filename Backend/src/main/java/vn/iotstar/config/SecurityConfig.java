@@ -90,24 +90,4 @@ public class SecurityConfig {
 			}
 		};
 	}
-
-    // @Bean
-    // public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager, JwtFilter jwtFilter)
-    //         throws Exception {
-
-    //     http
-    //         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-    //         .csrf(AbstractHttpConfigurer::disable)
-    //         .authorizeHttpRequests(auth -> auth
-    //             .requestMatchers("/api/auth/**", "/uploads/**", "/api/skills/list", "/api/employer/uploadLogo", "/api/employer/register",  "/api/employer/register/verify**").permitAll()
-    //             .requestMatchers(HttpMethod.POST, "/api/employer/recruitment/create").hasAuthority("ROLE_employer")
-    //             .requestMatchers("/api/employer/**").authenticated()
-    //             .anyRequest().permitAll()
-    //         )
-    //         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-    //         .authenticationManager(authManager)
-    //         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-    //     return http.build();
-    // }
 }

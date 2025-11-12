@@ -24,6 +24,7 @@ import './App.css';
 import CompanyReviewDetail from './components/Applicant/Content/Company/CompanyReviewDetail/ReviewDetail.jsx'
 import ApplicantDetail from './components/Employer/ApplicantDetail/ApplicantDetail.jsx';
 import AdminDashboard from './components/Admin/Dashboard/Dashboard.jsx'
+import ChatBot from './components/ChatBot/ChatBot.jsx'
 
 
 
@@ -95,7 +96,7 @@ function App() {
           <Route path="/employer/applicant/:id" element={<ApplicantDetail />} />
           <Route path = "/admin" element=   {<AdminDashboard/>}/>
           {/* <Route path = "/admin/recruitment" element={<AdminRecruitmentDetail/>}/> */}
-
+              <Route path="/chatbot" element={<ChatBot/>}/>
 
         </Routes>
       </Router>

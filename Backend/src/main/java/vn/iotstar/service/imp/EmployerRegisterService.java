@@ -21,7 +21,7 @@ import vn.iotstar.repository.IRoleRepository;
 import vn.iotstar.service.EmailService;
 import vn.iotstar.service.IEmployerRegisterService;
 
-// Lớp nội bộ để lưu trữ DTO và thời gian hết hạn của token
+
 class RegistrationAttempt {
     public EmployerRegisterDTO dto;
     public LocalDateTime expiryTime;

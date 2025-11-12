@@ -122,3 +122,20 @@
     max-width: 900px; 
     margin-top: 20px; 
 }
+
+.loading {
+    color: #666;
+    font-style: italic;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.stat-card.disabled {
+    opacity: 0.6;
+    background-color: #f5f5f5;
+}
+
+.stat-card.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}

@@ -70,7 +70,7 @@ function EmployerDashboard() {
             <div className="sidebar">
                 <div className="sidebar-header">
                     <img src={logo} alt="Website Logo" className="website-logo" />
-                    <h3>Tên Web</h3>
+                    <h3>GZCONNECT</h3>
                 </div>
                 <ul className="sidebar-menu">
                     <li className={activeTab === 'dashboard' ? 'active' : ''} onClick={() => setActiveTab('dashboard')}>

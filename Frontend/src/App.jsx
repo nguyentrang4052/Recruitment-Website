@@ -22,6 +22,7 @@ import { LayoutWithHeader, LayoutWithHomePage } from './components/Applicant/Lay
 import './App.css';
 import CompanyReviews from './components/Applicant/Content/Company/CompanyReviews/CompanyReviews.jsx'
 import ApplicantDetail from './components/Employer/ApplicantDetail/ApplicantDetail.jsx';
+import NewApplicant from './components/Employer/NewApplicant/NewApplicant.jsx'
 
 
 function App() {
@@ -41,7 +42,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<LayoutWithHomePage />}>
-           <Route path="/" element={<RecruimentNews />} />  
+            <Route path="/" element={<RecruimentNews />} />
             <Route path="/login" element={<Login />} />
             <Route path="/applicant-login" element={<ApplicantLogin />} />
 
@@ -54,13 +55,13 @@ function App() {
 
           </Route>
           <Route path="/" element={<LayoutWithHeader />}>
-             
+
             <Route path='/recruitment/:rnid' element={<RecruitmentDetail />} />
 
             <Route path="/dashboard" element={<RecruimentNews />} />
-            <Route path="/companies" element={<OverviewCompany/>}/>
+            <Route path="/companies" element={<OverviewCompany />} />
             <Route path="/companies/:id" element={<CompanyDetail />} />
-            <Route path="/companies/reviews" element={<CompanyReviews/>}/>
+            <Route path="/companies/reviews" element={<CompanyReviews />} />
             {/* <Route path ='/companies/intro' element={<CompanyDetail/>}/> */}
             <Route path="/profile" element={<Profile />} />
             <Route path="/save-jobs" element={<SaveJob />} />
@@ -75,6 +76,7 @@ function App() {
 
           <Route path="/employer-signup" element={<EmployerRegistration />} />
           <Route path="/employer/applicant/:id" element={<ApplicantDetail />} />
+          <Route path="/employer/applicants/:recruitmentNewsId" element={<NewApplicant />} />
 
 
         </Routes>

@@ -1,40 +1,60 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Send } from 'lucide-react';
 import './ApplyJob.css';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios"
+import { formatDate } from '../../../../../utils/Format'
 
 const AppliedJobs = () => {
-  // Giả lập dữ liệu - thay đổi hasJobs để test 2 trạng thái
-  const [hasJobs, setHasJobs] = useState(false);
-  
-  const appliedJobs = [
-    {
-      id: 1,
-      title: 'Power BI- Intern',
-      company: 'CÔNG TY TNHH THỰC PHẨM & NƯỚC GIẢI KHÁT Ý TƯỞNG VIỆT (STARBUCKS VIET NAM)',
-      logo: 'https://via.placeholder.com/60x60/00704A/FFFFFF?text=SB',
-      deadline: 'Hết hạn: 11 ngày tới'
-    },
-    // Thêm jobs khác nếu cần
-  ];
-    const navigate = useNavigate();
-  const handleFindJob = () =>  {
+  // const [hasJobs, setHasJobs] = useState(false);
+  const [appliedJobs, setAppliedJobs] = useState([])
+
+  const token = localStorage.getItem('token')
+  const applicantID = localStorage.getItem('applicantID')
+  useEffect(() => {
+    const fetchAppliedJob = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8080/api/applicant/applied-job",
+          {
+            params: { id: applicantID },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          },
+        )
+        setAppliedJobs(res.data)
+
+
+      } catch {
+        console.log('Khong co tin da ung tuyen')
+      }
+    };
+    fetchAppliedJob([applicantID, token])
+  })
+  const navigate = useNavigate();
+  const handleFindJob = () => {
     navigate("/dashboard")
   }
+  const hasJobs = appliedJobs.length > 0;
 
+
+  const viewDetail = (rnid) => {
+    navigate(`/recruitment/${rnid}`);
+  }
   return (
     <div className="applied-jobs-container">
       <div className="applied-jobs-header">
         <h1 className="applied-jobs-title">
-          Việc đã ứng tuyển ({hasJobs ? appliedJobs.length : 0})
+          Việc đã ứng tuyển ({appliedJobs.length})
         </h1>
         {/* Nút toggle để test - xóa khi deploy production */}
-        <button 
-          className="toggle-btn" 
+        {/* <button
+          className="toggle-btn"
           onClick={() => setHasJobs(!hasJobs)}
         >
           {hasJobs ? 'Xem trạng thái rỗng' : 'Xem có việc'}
-        </button>
+        </button> */}
       </div>
 
       {!hasJobs ? (
@@ -55,25 +75,26 @@ const AppliedJobs = () => {
       ) : (
         // Có việc đã ứng tuyển
         <div className="jobs-list-section">
-          <p className="filter-label">Hôm nay</p>
-          
+          {/* <p className="filter-label">Hôm nay</p> */}
+
           <div className="jobs-list">
             {appliedJobs.map((job) => (
-              <div key={job.id} className="applied-job-card">
-                <img 
-                  src={job.logo} 
-                  alt={job.company}
+              <div key={job.rnid} className="applied-job-card">
+                <img
+                  src={job.employer.logo}
+                  alt={"logo"}
                   className="job-logo"
                 />
-                
+
                 <div className="job-info">
-                  <h3 className="job-title">{job.title}</h3>
-                  <p className="job-company">{job.company}</p>
+                  <h3 className="job-title" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
+                  <p className="job-company">{job.employer.name}</p>
                 </div>
-                
+
                 <div className="job-deadline">
-                  <span className="deadline-text">{job.deadline}</span>
+                  <span className="deadline-text">{formatDate(job.application.date)}</span>
                 </div>
+                <a href={`http://localhost:8080/uploads/cv/${job.application.cv}`}> <button className="view-cv-btn">Xem CV</button></a>
               </div>
             ))}
           </div>

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.*;
+import vn.iotstar.entity.Application;
 import vn.iotstar.enums.EFormOfWork;
 import vn.iotstar.enums.EStatus;
 
@@ -31,5 +32,32 @@ public class RecruitmentCardDTO {
 	private EFormOfWork formOfWork;
 	private String workingTime;
 	private String applyBy;
+	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
+			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,
+			String experience, String literacy, String level, String other, String benefit, EFormOfWork formOfWork,
+			String workingTime, String applyBy) {
+		this.rnid = rnid;
+		this.position = position;
+		this.employer = employer;
+		this.salary = salary;
+		this.location = location;
+		this.deadline = deadline;
+		this.postedAt = postedAt;
+		this.skill = skill;
+		this.status = status;
+		this.description = description;
+		this.experience = experience;
+		this.literacy = literacy;
+		this.level = level;
+		this.other = other;
+		this.benefit = benefit;
+		this.formOfWork = formOfWork;
+		this.workingTime = workingTime;
+		this.applyBy = applyBy;
+	}
+	
+	
+	
+	private Application application;
 
 }

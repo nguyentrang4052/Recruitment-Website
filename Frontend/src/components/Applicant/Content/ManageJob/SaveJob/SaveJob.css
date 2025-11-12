@@ -188,35 +188,50 @@
   height: 18px;
 }
 
-.job-logo {
+/* .job-logo {
     width: 60px;
     height: 60px;
     object-fit: contain;
     border-radius: 6px;
     background: #f5f5f5;
     padding: 5px;
+} */
+
+.job-info-save{
+  display: flex;
+  align-items: flex-start; /* đổi từ center sang flex-start để logo không bị căn giữa */
+  gap: 50px;
+  margin-left: 10px;
 }
 
-.job-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.job-info-item:last-child {
+  display: flex;
+  flex-direction: column; /* để title và company nằm dưới nhau */
+  justify-content: center; /* căn giữa theo chiều dọc nếu cần */
+}
+
+.job-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
 .job-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    line-height: 1.4;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+  margin: 0;
+  cursor: pointer;
 }
 
 .job-company {
-    font-size: 0.9rem;
-    color: #666;
-    text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  margin: 0;
 }
-
 .job-deadline {
     display: flex;
     align-items: center;

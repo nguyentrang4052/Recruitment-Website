@@ -62,7 +62,6 @@ public class FavouriteJobService implements IFavouriteJobService{
 
             return "Added to favorites";
         }
-//        return "Khong co tin";
         
     }
 	

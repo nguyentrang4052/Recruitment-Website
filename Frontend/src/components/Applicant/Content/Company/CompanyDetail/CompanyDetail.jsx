@@ -41,6 +41,10 @@ function CompanyDetail() {
         navigate(`/recruitment/${rnid}`);
     }
 
+      const reviewDetail = (employerId) => {
+    navigate(`/companies/reviews/${employerId}`);
+  }
+
 
     if (loading) return <div className="loading">Loading…</div>;
     if (!companyDetail || !jobListings) return <div className="error">No data</div>;
@@ -73,8 +77,8 @@ function CompanyDetail() {
                                         <span>{companyDetail.jobs} job openings</span> */}
                                 </div>
                                 <div className="company-actions">
-                                    <button className="btn-write-review">Write review</button>
-                                    <button className="btn-follow">Follow</button>
+                                    <button className="btn-write-review" onClick={() => reviewDetail(companyDetail.employerId)}>Write review</button>
+                                    {/* <button className="btn-follow">Follow</button> */}
                                 </div>
                             </div>
                         </div>

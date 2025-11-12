@@ -17,5 +17,6 @@ public interface IRatingRepository extends JpaRepository<Rating, RatingID> {
 
 	@Query("SELECT AVG(r.score) FROM Rating r WHERE r.employer.employerID = :employerID")
 	BigDecimal avgScore(@Param("employerID") Integer employerID);
-
+	
+	boolean existsByEmployer_EmployerIDAndApplicant_ApplicantID(Integer employerID, Integer applicantID);
 }

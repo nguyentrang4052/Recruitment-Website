@@ -22,7 +22,7 @@ const SavedJobs = () => {
             }
           }
         );
-   
+
         setSaveJobs(res.data)
         const savedIds = res.data.map(job => job.rnid);
         setFavoriteJobs(savedIds);
@@ -55,10 +55,18 @@ const SavedJobs = () => {
   };
 
   const navigate = useNavigate();
-  const handleFindJob = () =>  {
+  const handleFindJob = () => {
     navigate("/dashboard")
   }
   const hasJobs = savedJobs.length > 0;
+
+  const onApply = (rnid) => {
+    navigate(`/recruitment/${rnid}`);
+  }
+
+  const viewDetail = (rnid) => {
+    navigate(`/recruitment/${rnid}`);
+  }
   return (
     <>
 
@@ -93,50 +101,42 @@ const SavedJobs = () => {
             </button>
           </div>
         ) : (
-          // Có việc đã lưu
           <div className="jobs-list-section">
-            <p className="filter-label">Hôm nay</p>
+            {/* <p className="filter-label"></p> */}
 
             <div className="jobs-list">
               {savedJobs.map((job) => (
                 <div key={job.rnid} className="saved-job-card">
 
-                    {/* <Heart size={24} fill="#0d6efd" color="#0d6efd" /> */}
-                    {/* <button
-                      className={`favorite-btn ${favoriteJobs.includes(job.rnid) ? 'active' : ''}`}
-                      onClick={() => toggleFavorite(job.rnid)}
-                    ></button>
-                    <Heart /> */}
-                    {/* <button
-                      className={`favorite-btn ${favoriteJobs(job.rnid) ? 'active' : ''}`}
-                      onClick={() => toggleFavorite(job.rnid)}
-                    >
-                      {favoriteJobs(job.rnid) ? <FaHeart /> : <LuHeart />}
-                    </button> */}
-                    <button
-                      className={`favorite-btn ${favoriteJobs.includes(job.rnid) ? 'active' : ''}`}
-                      onClick={() => toggleFavorite(job.rnid)}
-                    >
-                      {favoriteJobs.includes(job.rnid) ? <FaHeart /> : <LuHeart />}
-                    </button>
+
+                  <button
+                    className={`favorite-btn ${favoriteJobs.includes(job.rnid) ? 'active' : ''}`}
+                    onClick={() => toggleFavorite(job.rnid)}
+                  >
+                    {favoriteJobs.includes(job.rnid) ? <FaHeart /> : <LuHeart />}
+                  </button>
 
 
-                  <img
-                    src={job.employer.logo}
-                    alt="logo"
-                    className="job-logo"
-                  />
 
-                  <div className="job-info">
-                    <h3 className="job-title">{job.position}</h3>
-                    <p className="job-company">{job.employer.name}</p>
+                  <div className="job-info-save">
+                    <div className="job-info-item">
+                      <img
+                        src={job.employer.logo}
+                        alt="logo"
+                        className="job-logo"
+                      />
+                    </div>
+                    <div className="job-info-item">
+                      <h3 className="job-title" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
+                      <p className="job-company">{job.employer.name}</p>
+                    </div>
                   </div>
 
                   <div className="job-deadline">
                     <span className="deadline-text">{job.deadline}</span>
                   </div>
 
-                  <button className="apply-btn">
+                  <button className="apply-btn" onClick={() => onApply(job.rnid)}>
                     <Send size={20} />
                   </button>
                 </div>

@@ -73,4 +73,12 @@ public class ApplicationService implements IApplicationService {
 		
 		return apRepository.save(application);
 	}
+
+	@Override
+	public Application findByApplicant_ApplicantIDAndRecruitmentNews_RNID(Integer applicantID, Integer RNID) {
+		return apRepository.findByApplicant_ApplicantIDAndRecruitmentNews_RNID(applicantID, RNID);
+	}
+
+
+	
 }

@@ -1,4 +1,3 @@
-// CompanyReviews.jsx
 import { MapPin, Briefcase, Star, Users } from 'lucide-react';
 import './ReviewDetail.css';
 import { StarRating } from '../StartRating';
@@ -9,95 +8,41 @@ import { formatDate, formatDateTime } from '../../../../../utils/Format';
 import { BsCalendarDate } from "react-icons/bs";
 import companyImage from '../../../../../assets/company-image.jpg'
 
-
-// const companies = [
-//   {
-//     id: 1,
-//     name: 'MB Bank',
-//     logo: '🏦',
-//     rating: 4.9,
-//     fullName: 'Ngân hàng TMCP Quân Đội (MB)',
-//     location: 'Ha Noi',
-//     jobs: 31,
-//     reviews: 123,
-//     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=200&fit=crop',
-//     banner: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=300&fit=crop'
-//   }
-// ];
-
-// const reviewsList = [
-//   {
-//     id: 1,
-//     date: '12-2025',
-//     rating: 4,
-//     content: 'Công ty ngân hàng hàng đầu Việt Nam và tôi tin rằng mình có cơ hội khi làm việc ở nơi đây. Chính sách tốt, phúc lợi xã hội khá tốt. Đây là điều tôi cảm thấy hài lòng.\n Cần hỗ trợ phúc lợi, lương hữu cho nhân viên. Tăng lương nhân viên'
-
-//   },
-//   {
-//     id: 2,
-//     date: 'January 2025',
-//     rating: 4.5,
-//     content: 'Môi trường làm việc năng động, nhiều cơ hội phát triển bản thân.\n Cần cải thiện văn hóa công ty, tăng cường giao tiếp nội bộ'
-//   },
-//   {
-//     id: 3,
-//     date: 'December 2024',
-//     rating: 5,
-//     content: 'Lương thưởng hợp lý, đồng nghiệp thân thiện, được đào tạo bài bản.\n Áp lực công việc cao vào những thời điểm cuối tháng'
-//   }
-// ];
-
-// const jobListings = [
-//   {
-//     id: 1,
-//     title: 'Data Engineer (SQL/ PLSQL / NoSQL / Java)',
-//     company: 'MB Bank',
-//     logo: '🏦',
-//     postedDate: 'Posted 4 days ago',
-//     isHot: true,
-//     location: 'Ha Noi',
-//     workType: 'At office',
-//     position: 'Data Engineer',
-//     tags: ['SQL', 'Data Engineer', 'Tableau', 'Oracle', 'Java', '+1'],
-//     benefits: [
-//       'Mức lương cạnh tranh, hấp dẫn',
-//       'Môi trường làm việc chuyên nghiệp, thân thiện',
-//       'Được làm việc với các hệ thống hiện đại, tiên tiến'
-//     ]
-//   },
-//   {
-//     id: 2,
-//     title: 'Full-Stack Developer - React & Node.js',
-//     company: 'MB Bank',
-//     logo: '🏦',
-//     postedDate: 'Posted 6 days ago',
-//     isHot: true,
-//     location: 'Ha Noi',
-//     workType: 'At office',
-//     position: 'Full Stack Developer',
-//     tags: ['React', 'Node.js', 'TypeScript', 'MongoDB', '+2'],
-//     benefits: [
-//       'Competitive salary package',
-//       'Health insurance and annual health check',
-//       'Professional training programs'
-//     ]
-//   }
-// ];
-
-
 function CompanyReviews() {
 
   const { employerId } = useParams();
 
   const [company, setCompanies] = useState(null);
   const [jobListings, setJobListings] = useState(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const [score, setScore] = useState(0);
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const applicantID = localStorage.getItem('applicantID');
 
-
-  // Chuyển thành định dạng ngày (chỉ lấy ngày, tháng, năm)
-
+  const submit = async () => {
+    
+    if (!score || !content.trim()) return alert('Vui lòng chọn sao và nhập nội dung!');
+    setLoading(true);
+    try {
+      await axios.post(
+            "http://localhost:8080/api/applicant/companies/review", 
+            { employerID: employerId, score, content }, // This should be in the body
+            { 
+                params: { applicantId: applicantID }, // Query parameter
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            }
+        );
+      alert('Gửi đánh giá thành công!');
+      setScore(0);
+      setContent('');
+    } catch{
+      alert('Bạn đã đánh giá công ty này rồi');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchCompany = async () => {
@@ -118,29 +63,38 @@ function CompanyReviews() {
     };
     if (employerId) fetchCompany();
   }, [employerId]);
+  
   const viewDetail = (rnid) => {
     navigate(`/recruitment/${rnid}`);
   }
 
+  const scrollToReview = () => {
+    if (token)
+      document.getElementById('review-anchor')?.scrollIntoView({ behavior: 'smooth' });
+    else
+      navigate("/applicant-login")
+  };
+
 
   if (loading) return <div className="loading">Loading…</div>;
   if (!company) return <div>Không tìm thấy công ty</div>;
+  
   return (
     <div className="company-reviews-page">
       {/* Header Banner */}
       <div className="company-banner">
         <div className="banner-image">
           {
-            company.image && company.image? ( <img src={company.image}/>): (<img src={companyImage}/>)
+            company.image && company.image ? (<img src={company.image} alt="company banner" />) : (<img src={companyImage} alt="default banner" />)
           }
-         
         </div>
         <div className="banner-overlay">
           <div className="banner-content">
             <div className="company-header-info">
               <div className="company-logo-large">
                 <div className="logo-box">
-                  <img src={company.logo} alt="logo" /> </div>
+                  <img src={company.logo} alt="logo" /> 
+                </div>
               </div>
               <div className="company-title-section">
                 <h1 className="company-name-large">{company.name}</h1>
@@ -152,8 +106,7 @@ function CompanyReviews() {
                   <span>{company.jobs} job openings</span>
                 </div>
                 <div className="company-actions">
-                  <button className="btn-write-review">Write review</button>
-                  <button className="btn-follow">Follow</button>
+                  <button className="btn-write-review" onClick={scrollToReview}>Write review</button>
                 </div>
               </div>
             </div>
@@ -162,7 +115,7 @@ function CompanyReviews() {
                 <div className="rating-number">{company.ranking}</div>
                 <div className="rating-stars">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} className="star-filled" />
+                    <Star key={`banner-star-${i}`} size={16} className="star-filled" />
                   ))}
                 </div>
                 <div className="rating-count">{company.reviews} reviews</div>
@@ -171,7 +124,6 @@ function CompanyReviews() {
           </div>
         </div>
       </div>
-
 
       <div className="detail-content">
         <div className="detail-grid">
@@ -187,14 +139,9 @@ function CompanyReviews() {
                     <div className="review-rating">
                       <StarRating rating={review.score} />
                       <span className="rating-text">{review.score}</span>
-
                     </div>
 
                     <div className="review-content">
-                      {/* <div className="content-section">
-                        <h4 className="content-label">What I liked:</h4>
-                        <p className="content-text">{review.content.liked}</p>
-                      </div> */}
                       <div className="content-section">
                         <p className="content-text">{review.content}</p>
                       </div>
@@ -210,32 +157,67 @@ function CompanyReviews() {
                   </div>
                 )
               }
+            </div>
+            
+            {/* Write Review Form */}
+            <div id="review-anchor">
+              <div className="write-review-mini">
+                <h4>Viết đánh giá</h4>
 
+                {/* Chọn sao */}
+                <div className="stars-wrapper">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <span
+                      key={s}
+                      className={`star ${s <= score ? 'filled' : ''}`}
+                      onClick={() => setScore(s)}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+
+                {/* Nhập nội dung */}
+                <textarea
+                  className="review-textarea"
+                  rows={4}
+                  placeholder="Nhập nội dung đánh giá..."
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                />
+
+                <button className="btn-submit" onClick={submit} disabled={loading}>
+                  {loading ? 'Đang gửi...' : 'Gửi đánh giá'}
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Right Column - Job Listings */}
           <div className="right-column">
-            <div className="jobs-card">
-              <h2 className="jobs-title">{company.jobs} job openings</h2>
-              <div className="jobs-list">
-                {jobListings.map((job) => (
-                  <div key={job.employerId} className="job-card">
+            {jobListings && jobListings.length > 0 && (
+              <div className="jobs-card">
+                <h2 className="jobs-title">{company.jobs} job openings</h2>
+                <div className="jobs-list">
+                  {jobListings.map((job) => (
+                  <div key={job.rnid} className="job-card">
                     <h3 className="job-title-detail" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
                     <div className="job-posted">{job.postedDate}</div>
-                    {/* <h3 className="job-title">{job.title}</h3> */}
 
                     <div className="job-company">
                       <div className="job-company-logo">
-                        <img src={job.employer.logo} alt="logo" /></div>
+                        <img src={job.employer.logo} alt="logo" />
+                      </div>
                       <span className="job-company-name">{job.employer.name}</span>
                     </div>
 
-                    {!token && (<div className="job-salary">
-                      <span className="salary-icon">💰</span>
-                      <a href="/applicant-login" className="salary-link">Đăng nhập để xem mức lương</a>
-                    </div>
+                    {!token && (
+                      <div className="job-salary">
+                        <span className="salary-icon">💰</span>
+                        <a href="/applicant-login" className="salary-link">Đăng nhập để xem mức lương</a>
+                      </div>
                     )}
+                    
                     <div className="job-meta">
                       <div className="job-benefit-text">
                         <Briefcase size={13} />
@@ -248,16 +230,16 @@ function CompanyReviews() {
 
                       <div className="job-posted-detail"><BsCalendarDate /> Hạn nộp {formatDate(job.deadline)}</div>
                     </div>
-
                   </div>
                 ))}
               </div>
             </div>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default CompanyReviews;

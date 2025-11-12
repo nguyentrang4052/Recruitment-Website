@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import vn.iotstar.dto.applicant.RecruitmentCardDTO;
+import vn.iotstar.entity.Applicant;
 import vn.iotstar.entity.RecruitmentNews;
 
 public interface IRecruitmentService {
@@ -29,5 +30,7 @@ public interface IRecruitmentService {
 	List<RecruitmentNews> findBySkill_SkillName(String skillName);
 
 	List<RecruitmentNews> findByApplication_Applicant_ApplicantID(Integer id);
+
+	RecruitmentCardDTO mapToApplication(Applicant applicant, RecruitmentNews rn);
 
 }

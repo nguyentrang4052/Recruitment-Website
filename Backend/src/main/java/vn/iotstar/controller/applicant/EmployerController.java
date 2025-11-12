@@ -5,17 +5,24 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.iotstar.dto.applicant.EmployerCardDTO;
+import vn.iotstar.dto.applicant.RatingDTO;
 import vn.iotstar.dto.applicant.RecruitmentCardDTO;
 import vn.iotstar.entity.Employer;
+import vn.iotstar.entity.Rating;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.service.EmailService;
 import vn.iotstar.service.IEmployerService;
+import vn.iotstar.service.IRatingService;
 import vn.iotstar.service.IRecruitmentService;
 
 @RestController
@@ -29,6 +36,9 @@ public class EmployerController {
 
 	@Autowired
 	private IRecruitmentService reService;
+	
+	@Autowired
+	private IRatingService ratingService;
 
 	EmployerController(EmailService emailService) {
 		this.emailService = emailService;
@@ -53,4 +63,10 @@ public class EmployerController {
 		return reService.findByEmployer_EmployerID(id).stream().map(reService::mapToDetail).toList();
 
 	}
+	
+	@PostMapping("/companies/review")
+	public ResponseEntity<RatingDTO> createReview(@RequestBody RatingDTO dto, @RequestParam Integer applicantId) {
+        RatingDTO saved = ratingService.create(dto, applicantId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
 }

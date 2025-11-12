@@ -20,50 +20,47 @@ import vn.iotstar.service.IApplicantService;
 @RequestMapping("/api/applicant")
 public class ManageInfoController {
 
-    private final IApplicantService applicantService_1;
+	private final IApplicantService applicantService_1;
 
 	@Autowired
 	private IApplicantService applicantService;
-	
+
 	@Autowired
 	private IAccountService accountService;
 
-
-    ManageInfoController(IApplicantService applicantService_1) {
-        this.applicantService_1 = applicantService_1;
-    }
-
+	ManageInfoController(IApplicantService applicantService_1) {
+		this.applicantService_1 = applicantService_1;
+	}
 
 	@GetMapping("/profile/info")
 	public ProfileDTO getInfo(@RequestParam String email) {
 		Applicant applicant = applicantService.findByAccount_email(email);
 		return applicantService.mapToDetail(applicant);
 	}
-	
+
 	@PostMapping("/profile/upload-photo/{email}")
-	public ResponseEntity<Map<String, String>> uploadPhoto(
-	        @PathVariable String email,
-	        @RequestParam("photo") MultipartFile file) {
+	public ResponseEntity<Map<String, String>> uploadPhoto(@PathVariable String email,
+			@RequestParam("photo") MultipartFile file) {
 
 		Account acc = accountService.findByEmail(email);
 
-	    // Xóa ảnh cũ (nếu có và là file nội bộ)
-	    String oldPhoto = acc.getPhoto();
-	    if (oldPhoto != null && !oldPhoto.startsWith("http")) {
-	        applicantService.deleteFile(oldPhoto);
-	    }
+		// Xóa ảnh cũ (nếu có và là file nội bộ)
+		String oldPhoto = acc.getPhoto();
+		if (oldPhoto != null && !oldPhoto.startsWith("http")) {
+			applicantService.deleteFile(oldPhoto);
+		}
 
-	    // Lưu ảnh mới
-	    String newPhoto = applicantService.storeFile(file);
+		// Lưu ảnh mới
+		String newPhoto = applicantService.storeFile(file);
 
-	    // Cập nhật DB
-	    acc.setPhoto(newPhoto);
-	    accountService.save(acc);
-	    Integer accId = acc.getAccountID();
-	    Applicant applicant = applicantService.findByAccount_accountID(accId);
-	    applicant.setAccount(acc);
+		// Cập nhật DB
+		acc.setPhoto(newPhoto);
+		accountService.save(acc);
+		Integer accId = acc.getAccountID();
+		Applicant applicant = applicantService.findByAccount_accountID(accId);
+		applicant.setAccount(acc);
 
-	    return ResponseEntity.ok(Map.of("photo", newPhoto));
+		return ResponseEntity.ok(Map.of("photo", newPhoto));
 	}
 
 	@PutMapping("/profile/update/{applicantID}")
@@ -72,35 +69,30 @@ public class ManageInfoController {
 
 		try {
 			ProfileDTO result = applicantService.updateApplicant(applicantID, updatedApplicantDTO);
-			
+
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); 
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
 	}
-	
-	 @DeleteMapping("/delete/photo")
-	    public ResponseEntity<?> deletePhoto(@RequestParam String email) {
-		 Account acc = accountService.findByEmail(email);
 
-	        String oldPhoto = acc.getPhoto();
-	        if (oldPhoto == null || oldPhoto.isBlank()) {
-	            return ResponseEntity.badRequest().body("Không có ảnh để xóa");
-	        }
+	@DeleteMapping("/delete/photo")
+	public ResponseEntity<?> deletePhoto(@RequestParam String email) {
+		Account acc = accountService.findByEmail(email);
 
-	        if (oldPhoto != null && !oldPhoto.startsWith("http")) {
-	        	applicantService.deleteFile(oldPhoto);
-	        }
-	        
+		String oldPhoto = acc.getPhoto();
+		if (oldPhoto == null || oldPhoto.isBlank()) {
+			return ResponseEntity.badRequest().body("Không có ảnh để xóa");
+		}
 
-	        acc.setPhoto(null);
-	        accountService.save(acc);
-	        
-//	        applicantService.save(applicant); // hoặc updateApplicant(...)
+		if (oldPhoto != null && !oldPhoto.startsWith("http")) {
+			applicantService.deleteFile(oldPhoto);
+		}
 
-	        return ResponseEntity.ok("Xóa ảnh thành công");
-	    }
-	
-	
+		acc.setPhoto(null);
+		accountService.save(acc);
+
+		return ResponseEntity.ok("Xóa ảnh thành công");
+	}
 
 }

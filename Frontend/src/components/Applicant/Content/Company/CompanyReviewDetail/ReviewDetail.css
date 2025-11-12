@@ -179,14 +179,20 @@
 .left-column {
   display: flex;
   flex-direction: column;
+  gap: 3rem;
+   overflow-y: auto; /* Khoảng cách giữa reviews-card và write-review-mini */
 }
 
 /* Reviews Card */
 .reviews-card {
-  background-color: white;
+  background-color: #fff;
   border-radius: 0.5rem;
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+
+  max-height: 100vh; 
+  overflow-y: auto;
 }
 
 .section-title {
@@ -219,7 +225,6 @@
   text-align: left;
 }
 
-
 .review-rating {
   display: flex;
   align-items: center;
@@ -238,12 +243,10 @@
   color: #111827;
 }
 
-
 .review-content {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  
 }
 
 .content-section {
@@ -251,7 +254,6 @@
   flex-direction: column;
   gap: 0.5rem;
 }
-
 
 .content-text {
   font-size: 0.875rem;
@@ -279,6 +281,82 @@
 
 .sign-in-text {
   color: #374151;
+}
+
+/* Write Review Section - FIXED: Xóa margin-top: 1000px */
+.write-review-mini {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+}
+.write-review-mini h4 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.stars-wrapper {
+  font-size: 32px;
+  cursor: pointer;
+  user-select: none;
+  margin: 12px 0;
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  color: #d1d5db;
+  transition: color 0.2s;
+}
+
+.star:hover {
+  color: #fbbf24;
+}
+
+.star.filled {
+  color: #fbbf24;
+}
+
+.review-textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.btn-submit {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Job Listings (Right Column) */
@@ -327,11 +405,18 @@
   margin-bottom: 0.5rem;
 }
 
-.job-title {
+.job-title,
+.job-title-detail {
   font-size: 1.125rem;
   font-weight: bold;
   color: #111827;
   margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.job-title-detail:hover {
+  color: #3b82f6;
+  text-decoration: underline;
 }
 
 .job-company {
@@ -353,7 +438,7 @@
   border: 1px solid #e5e7eb;
 }
 
-.job-company-logo img{
+.job-company-logo img {
   width: 100%;
   height: 100%;
   object-fit: fill;
@@ -390,7 +475,9 @@
   color: #6b7280;
 }
 
-.job-meta-item {
+.job-meta-item,
+.job-benefit-text,
+.job-posted-detail {
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -428,6 +515,10 @@
 .benefit-dot {
   color: #ef4444;
   font-weight: bold;
+}
+
+.benefit-content {
+  line-height: 1.4;
 }
 
 /* Responsive Design */

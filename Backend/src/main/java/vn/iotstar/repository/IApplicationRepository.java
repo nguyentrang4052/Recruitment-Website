@@ -11,4 +11,6 @@ import vn.iotstar.key.ApplicationID;
 @Repository
 public interface IApplicationRepository extends JpaRepository<Application, ApplicationID>{
 	boolean existsByApplicantAndRecruitmentNews(Applicant applicant, RecruitmentNews reNews);
+	
+	Application findByApplicant_ApplicantIDAndRecruitmentNews_RNID(Integer applicantID, Integer RNID);
 }

@@ -12,9 +12,14 @@ import org.springframework.stereotype.Service;
 
 import vn.iotstar.dto.applicant.EmployerCardDTO;
 import vn.iotstar.dto.applicant.RecruitmentCardDTO;
+import vn.iotstar.entity.Applicant;
+import vn.iotstar.entity.Application;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.entity.Skill;
+import vn.iotstar.repository.IApplicationRepository;
 import vn.iotstar.repository.IRecruitmentRepository;
+import vn.iotstar.service.IApplicantService;
+import vn.iotstar.service.IApplicationService;
 import vn.iotstar.service.IRecruitmentService;
 
 @Service
@@ -22,6 +27,9 @@ public class RecruitmentService implements IRecruitmentService {
 
 	@Autowired
 	private IRecruitmentRepository recruitmentRepository;
+	
+	@Autowired
+	private IApplicationService appService;
 
 	@Override
 	public List<RecruitmentNews> findAll() {
@@ -53,6 +61,26 @@ public class RecruitmentService implements IRecruitmentService {
 				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
 				rn.getLevel(), rn.getOther(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(),
 				rn.getApplyBy());
+	}
+	
+
+	@Override
+	public RecruitmentCardDTO mapToApplication(Applicant applicant, RecruitmentNews rn) {
+		String salary = (rn.getMinSalary() != null && rn.getMaxSalary() != null)
+				? rn.getMinSalary() + " VND" + " - " + rn.getMaxSalary() + " VND"
+				: "Thỏa thuận";
+
+		EmployerCardDTO emp = new EmployerCardDTO(rn.getEmployer().getEmployerName(), rn.getEmployer().getCompanyLogo(),
+				countApprovedJobs(rn.getEmployer().getEmployerID()), rn.getEmployer().getAddress());
+
+		List<String> skillNames = rn.getSkill().stream().map(Skill::getSkillName).toList();
+		
+		Application application = appService.findByApplicant_ApplicantIDAndRecruitmentNews_RNID(applicant.getApplicantID(), rn.getRNID());
+		
+		return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(),
+				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
+				rn.getLevel(), rn.getOther(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(),
+				rn.getApplyBy(), application);
 	}
 
 	@Override

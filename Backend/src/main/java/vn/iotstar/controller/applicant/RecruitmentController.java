@@ -2,6 +2,7 @@ package vn.iotstar.controller.applicant;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collector;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.iotstar.dto.applicant.ApplyRequestDTO;
 import vn.iotstar.dto.applicant.RecruitmentCardDTO;
+import vn.iotstar.entity.Applicant;
 import vn.iotstar.entity.Application;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.enums.EStatus;
+import vn.iotstar.service.IApplicantService;
 import vn.iotstar.service.IApplicationService;
 import vn.iotstar.service.IFavouriteJobService;
 import vn.iotstar.service.IRecruitmentService;
@@ -37,10 +40,12 @@ public class RecruitmentController {
 
 	@Autowired
 	private IRecruitmentService rService;
-	
+
 	@Autowired
 	private IFavouriteJobService fService;
 	
+	@Autowired
+	private IApplicantService applicantService;
 
 	@PostMapping("/apply")
 	public ResponseEntity<?> apply(@RequestPart("CV") MultipartFile cvFile, @ModelAttribute ApplyRequestDTO dto,
@@ -61,25 +66,26 @@ public class RecruitmentController {
 		return rService.getRelateJob(id).stream().filter(rn -> rn.getStatus() == EStatus.APPROVED)
 				.map(rService::mapToDetail).toList();
 	}
-	
+
 	@GetMapping("/applied-job")
-	public List<RecruitmentCardDTO> getAppliedJob(@RequestParam Integer id){
-		return rService.findByApplication_Applicant_ApplicantID(id).stream().map(rService::mapToDetail).toList();
+	public List<RecruitmentCardDTO> getAppliedJob(@RequestParam Integer id) {
+		Optional<Applicant> applicant = applicantService.findById(id);
+		return rService.findByApplication_Applicant_ApplicantID(id).stream()
+				.map(rn -> rService.mapToApplication(applicant.get(), rn)).toList();
 	}
-	
+
 	@PostMapping("/toggle")
-	 public ResponseEntity<String> toggleFavorite(@RequestParam Integer applicantID, @RequestParam Integer rnid) {
-        try {
-            String message = fService.toggleFavorite(applicantID, rnid);
-            return ResponseEntity.ok(message);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-        }
-    }
-	
+	public ResponseEntity<String> toggleFavorite(@RequestParam Integer applicantID, @RequestParam Integer rnid) {
+		try {
+			String message = fService.toggleFavorite(applicantID, rnid);
+			return ResponseEntity.ok(message);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+		}
+	}
+
 	@GetMapping("/favourite-job")
-	public List<RecruitmentCardDTO> getFavouriteJob(@RequestParam Integer id){
-//		List <RecruitmentNews> rn = fService.getFavorites(id);
+	public List<RecruitmentCardDTO> getFavouriteJob(@RequestParam Integer id) {
 		return fService.getFavorites(id).stream().map(rService::mapToDetail).toList();
 	}
 

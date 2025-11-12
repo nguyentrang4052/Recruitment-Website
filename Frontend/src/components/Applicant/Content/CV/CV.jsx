@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import './CV.css';
 const categories = ['Tất cả', 'Đơn giản', 'Hiện đại', 'Chuyên nghiệp'];
@@ -46,30 +46,30 @@ const TEMPLATE_MAP = {
 
 const CvTemplates = () => {
   //   const [selected, setSelected] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('Tất cả');
 
   const handleUse = (tpl) => {
     window.open(`https://www.canva.com/design/${tpl.id}/edit`, '_blank');
   };
 
-  const handleFile = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-    const { data } = await axios.post('/api/cv/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    await axios.post('/api/cv', {
-      userId: 1,
-      title: `CV ${file.name}`,
-      fileUrl: data.fileUrl,
-    });
-    setLoading(false);
-    alert('Đã lưu CV!');
-  };
+  // const handleFile = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+  //   setLoading(true);
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+  //   const { data } = await axios.post('/api/cv/upload', formData, {
+  //     headers: { 'Content-Type': 'multipart/form-data' },
+  //   });
+  //   await axios.post('/api/cv', {
+  //     userId: 1,
+  //     title: `CV ${file.name}`,
+  //     fileUrl: data.fileUrl,
+  //   });
+  //   setLoading(false);
+  //   alert('Đã lưu CV!');
+  // };
 
   return (
     <>
@@ -96,14 +96,14 @@ const CvTemplates = () => {
           </div>
         )}
 
-        <section className="upload-section">
+        {/* <section className="upload-section">
           <h2>1. Design xong → tải PDF</h2>
           <p>Trong Canva: Share → Download → chọn PDF → Download.</p>
 
           <h2>2. Upload lên hệ thống</h2>
           <input type="file" accept=".pdf" onChange={handleFile} disabled={loading} />
           {loading && <span>Đang upload...</span>}
-        </section>
+        </section> */}
       </div>
     </>
   );

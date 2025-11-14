@@ -34,4 +34,6 @@ public class ApplicantDTO {
     
  
 	private List<String> skillNames;
+	private List<ApplicationDTO> applications;
+
 }

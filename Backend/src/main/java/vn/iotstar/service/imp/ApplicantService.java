@@ -31,6 +31,7 @@ import vn.iotstar.dto.applicant.EmployerCardDTO;
 import vn.iotstar.dto.applicant.ProfileDTO;
 import vn.iotstar.dto.applicant.RecruitmentCardDTO;
 import vn.iotstar.dto.ApplicantDetailDTO;
+import vn.iotstar.dto.ApplicationDTO;
 import vn.iotstar.entity.CareerInformation;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.entity.Skill;
@@ -38,7 +39,7 @@ import vn.iotstar.entity.Skill;
 import lombok.RequiredArgsConstructor;
 import vn.iotstar.entity.Account;
 import vn.iotstar.entity.Applicant;
-
+import vn.iotstar.entity.Application;
 import vn.iotstar.repository.IAccountRepository;
 import vn.iotstar.repository.IApplicantRepository;
 import vn.iotstar.repository.IRecruitmentRepository;
@@ -99,95 +100,283 @@ public class ApplicantService implements IApplicantService {
 		return stored;
 	}
 
-	@Override
-	public ApplicantDTO convertToDTO(Applicant applicant) {
-		ApplicantDTO dto = new ApplicantDTO();
-		dto.setApplicantID(applicant.getApplicantID());
-		dto.setApplicantName(applicant.getApplicantName());
-		dto.setBirthday(applicant.getBirthday());
-		dto.setGender(applicant.getGender());
-		dto.setAddress(applicant.getAddress());
-		dto.setPhone(applicant.getPhone());
-		dto.setGoal(applicant.getGoal());
+	// @Override
+	// public ApplicantDTO convertToDTO(Applicant applicant) {
+	// 	ApplicantDTO dto = new ApplicantDTO();
+	// 	dto.setApplicantID(applicant.getApplicantID());
+	// 	dto.setApplicantName(applicant.getApplicantName());
+	// 	dto.setBirthday(applicant.getBirthday());
+	// 	dto.setGender(applicant.getGender());
+	// 	dto.setAddress(applicant.getAddress());
+	// 	dto.setPhone(applicant.getPhone());
+	// 	dto.setGoal(applicant.getGoal());
+	// 	CareerInformation ciForSearch = applicant.getCareerInformation();
+	// 	if (ciForSearch != null && ciForSearch.getDesireLevel() != null) {
+	// 		dto.setExperience(ciForSearch.getDesireLevel());
+	// 	} else {
+	// 		dto.setExperience(applicant.getExperience());
+	// 	}
 
-		// Dùng desireLevel cho trường experience trong ApplicantDTO (cho Search)
-		CareerInformation ciForSearch = applicant.getCareerInformation();
-		if (ciForSearch != null && ciForSearch.getDesireLevel() != null) {
-			dto.setExperience(ciForSearch.getDesireLevel());
-		} else {
-			dto.setExperience(applicant.getExperience());
-		}
+//    private ApplicantDTO convertToDTO(Applicant applicant) {
+//        ApplicantDTO dto = new ApplicantDTO();
+//        dto.setApplicantID(applicant.getApplicantID());
+//        dto.setApplicantName(applicant.getApplicantName());
+//        dto.setBirthday(applicant.getBirthday());
+//        dto.setGender(applicant.getGender());
+//        dto.setAddress(applicant.getAddress());
+//        dto.setPhone(applicant.getPhone());
+//        dto.setGoal(applicant.getGoal());
+//        
+//        // Dùng desireLevel cho trường experience trong ApplicantDTO (cho Search)
+//        CareerInformation ciForSearch = applicant.getCareerInformation();
+//        if (ciForSearch != null && ciForSearch.getDesireLevel() != null) {
+//            dto.setExperience(ciForSearch.getDesireLevel());
+//        } else {
+//            dto.setExperience(applicant.getExperience());
+//        }
+//        
+//        dto.setLiteracy(applicant.getLiteracy());
+//
+//        if (applicant.getAccount() != null) {
+//            dto.setEmail(applicant.getAccount().getEmail());
+//            dto.setPhoto(applicant.getAccount().getPhoto());
+//        }
+//
+//        CareerInformation ci = applicant.getCareerInformation();
+//        if (ci != null) {
+//            dto.setJobTitle(ci.getTitle());
+//            dto.setDesireLevel(ci.getDesireLevel());
+//            dto.setFormOfWork(ci.getFormOfWork() != null ? ci.getFormOfWork().toString() : null);
+//            dto.setLocation(ci.getLocation());
+//            
+//            if (ci.getDesireSalary() != null) {
+//                DecimalFormat formatter = new DecimalFormat("#,### VND"); 
+//                dto.setDesireSalary(formatter.format(ci.getDesireSalary()));
+//            }
+//        }
+//
+//        if (applicant.getSkill() != null) {
+//            List<String> skillNames = applicant.getSkill().stream()
+//                                            .map(Skill::getSkillName)
+//                                            .collect(Collectors.toList());
+//            dto.setSkillNames(skillNames);
+//        }
+//
+//        return dto;
+//    }
 
-		dto.setLiteracy(applicant.getLiteracy());
 
-		if (applicant.getAccount() != null) {
-			dto.setEmail(applicant.getAccount().getEmail());
-			dto.setPhoto(applicant.getAccount().getPhoto());
-		}
+//   @Override
+//    @Transactional(readOnly = true)
+//    public Optional<ApplicantDetailDTO> getApplicantDetailById(Integer applicantID) {
+//        return applicantRepository.findByApplicantID(applicantID)
+//                .map(this::convertToDetailDTO);
+//    }
+//    
+//
+//    private ApplicantDetailDTO convertToDetailDTO(Applicant applicant) {
+//        ApplicantDetailDTO dto = new ApplicantDetailDTO();
+//        DecimalFormat formatter = new DecimalFormat("#,### VND"); 
+//
+//        dto.setApplicantID(applicant.getApplicantID());
+//        dto.setApplicantName(applicant.getApplicantName());
+//        dto.setExperience(applicant.getExperience()); 
+//        dto.setPhone(applicant.getPhone());
+//        dto.setSummary(applicant.getGoal()); 
+//        
+//        dto.setLiteracy(applicant.getLiteracy());
+//
+//        if (applicant.getAccount() != null) {
+//            dto.setEmail(applicant.getAccount().getEmail());
+//            dto.setPhoto(applicant.getAccount().getPhoto());
+//        }
+//        
+//        CareerInformation ci = applicant.getCareerInformation();
+//        if (ci != null) {
+//            dto.setJobTitle(ci.getTitle());
+//            dto.setLocation(ci.getLocation());
+//            
+//            dto.setLevel(ci.getDesireLevel()); 
+//            
+//            if (ci.getDesireSalary() != null) {
+//                dto.setDesireSalary(formatter.format(ci.getDesireSalary()));
+//            } else {
+//                dto.setDesireSalary("Thỏa thuận");
+//            }
+//        } else {
+//             dto.setDesireSalary("Thỏa thuận");
+//             dto.setLevel("Chưa rõ"); 
+//        }
+//
+//        if (applicant.getSkill() != null) { 
+//            List<String> skillNames = applicant.getSkill().stream()
+//                                            .map(Skill::getSkillName)
+//                                            .collect(Collectors.toList());
+//            dto.setSkillNames(skillNames);
+//        } else {
+//             dto.setSkillNames(Collections.emptyList());
+//        }
+//       
+//
+//        return dto;
+//    }
 
-		CareerInformation ci = applicant.getCareerInformation();
-		if (ci != null) {
-			dto.setJobTitle(ci.getTitle());
-			dto.setDesireLevel(ci.getDesireLevel());
-			dto.setFormOfWork(ci.getFormOfWork() != null ? ci.getFormOfWork().toString() : null);
-			dto.setLocation(ci.getLocation());
 
-			if (ci.getDesireSalary() != null) {
-				DecimalFormat formatter = new DecimalFormat("#,### VND");
-				dto.setDesireSalary(formatter.format(ci.getDesireSalary()));
-			}
-		}
+    // @Override
+    // @Transactional(readOnly = true)
+    // public Page<ApplicantDTO> searchAndFilterApplicants(ApplicantSearchDTO searchDTO) {
+        
+    //     String keyword = (searchDTO.getSearchTerm() == null || searchDTO.getSearchTerm().trim().isEmpty()) 
+    //                         ? null : searchDTO.getSearchTerm().trim();
+                            
+    //     String location = (searchDTO.getLocation() == null || searchDTO.getLocation().trim().isEmpty()) 
+    //                         ? null : searchDTO.getLocation().trim();
+                            
+    //     String desireLevel = (searchDTO.getExperience() == null || searchDTO.getExperience().trim().isEmpty() 
+    //                         || "Tất cả".equalsIgnoreCase(searchDTO.getExperience())) 
+    //                         ? null : searchDTO.getExperience().trim();
 
-		if (applicant.getSkill() != null) {
-			List<String> skillNames = applicant.getSkill().stream().map(Skill::getSkillName)
-					.collect(Collectors.toList());
-			dto.setSkillNames(skillNames);
-		}
+    //     List<String> skills = (searchDTO.getSkills() == null || searchDTO.getSkills().isEmpty()) 
+    //                             ? null : searchDTO.getSkills();
+                                
+    //     Long skillCount = skills != null ? (long) skills.size() : 0L;
+        
+    //     Pageable pageable = PageRequest.of(searchDTO.getPage(), searchDTO.getSize());
+        
+    //     Page<Applicant> applicantsPage;
+    //     if (skills == null || skills.isEmpty()) {
+    //         applicantsPage = applicantRepository.searchWithoutSkills(keyword, location, desireLevel, pageable);
+    //     } else {
+    //         applicantsPage = applicantRepository.searchWithSkills(keyword, location, desireLevel, skills, skillCount, pageable);
+    //     }
 
-		return dto;
-	}
+    //     return applicantsPage.map(this::convertToDTO);
+    // }
+    private ApplicantDTO convertToDTO(Applicant applicant) {
+        ApplicantDTO dto = new ApplicantDTO();
+        
+        dto.setApplicantID(applicant.getApplicantID());
+        dto.setApplicantName(applicant.getApplicantName());
+        dto.setBirthday(applicant.getBirthday());
+        dto.setGender(applicant.getGender());
+        dto.setAddress(applicant.getAddress());
+        dto.setPhone(applicant.getPhone());
+    
+        
+        if (applicant.getAccount() != null) {
+            dto.setEmail(applicant.getAccount().getEmail());
+            dto.setPhoto(applicant.getAccount().getPhoto());
+        }
+        
+        dto.setGoal(applicant.getGoal());
+        dto.setExperience(applicant.getExperience());
+        dto.setLiteracy(applicant.getLiteracy());
 
-	@Override
-	@Transactional(readOnly = true)
-	public Optional<ApplicantDetailDTO> getApplicantDetailById(Integer applicantID) {
-		return applicantRepository.findByApplicantID(applicantID).map(this::convertToDetailDTO);
-	}
+        CareerInformation ci = applicant.getCareerInformation();
+        if (ci != null) {
+            dto.setJobTitle(ci.getTitle());
+            dto.setLocation(ci.getLocation());
+            dto.setDesireLevel(ci.getDesireLevel());
+            dto.setFormOfWork(ci.getFormOfWork() != null ? ci.getFormOfWork().toString() : null);
+            dto.setDesireSalary(ci.getDesireSalary() != null ? ci.getDesireSalary() + " VND" : "Thỏa thuận");
+        }
 
-	@Override
-	public ApplicantDetailDTO convertToDetailDTO(Applicant applicant) {
-		ApplicantDetailDTO dto = new ApplicantDetailDTO();
-		DecimalFormat formatter = new DecimalFormat("#,### VND");
+        if (applicant.getSkill() != null) {
+            List<String> skillNames = applicant.getSkill().stream()
+                .map(Skill::getSkillName)
+                .collect(Collectors.toList());
+            dto.setSkillNames(skillNames);
+        }
 
-		dto.setApplicantID(applicant.getApplicantID());
-		dto.setApplicantName(applicant.getApplicantName());
-		dto.setExperience(applicant.getExperience());
-		dto.setPhone(applicant.getPhone());
-		dto.setSummary(applicant.getGoal());
+        if (applicant.getApplication() != null && !applicant.getApplication().isEmpty()) {
+            List<ApplicationDTO> appDtos = applicant.getApplication().stream()
+                .map(app -> {
+                    ApplicationDTO aDto = new ApplicationDTO();
+                    aDto.setDate(app.getDate());
+                    aDto.setStatus(app.getStatus().name());
+                    aDto.setNote(app.getNote());
+                    aDto.setCV(app.getCV());
+                    aDto.setRecruitmentNewsTitle(app.getRecruitmentNews().getPosition());
+                    return aDto;
+                })
+                .collect(Collectors.toList());
+            dto.setApplications(appDtos);
+        } else {
+            dto.setApplications(Collections.emptyList());
+        }
 
-		dto.setLiteracy(applicant.getLiteracy());
+        return dto;
+    }
 
-		if (applicant.getAccount() != null) {
-			dto.setEmail(applicant.getAccount().getEmail());
-			dto.setPhoto(applicant.getAccount().getPhoto());
-		}
 
-		CareerInformation ci = applicant.getCareerInformation();
-		if (ci != null) {
-			dto.setJobTitle(ci.getTitle());
-			dto.setLocation(ci.getLocation());
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<ApplicantDetailDTO> getApplicantDetailById(Integer applicantID) {
+        return applicantRepository.findByApplicantID(applicantID)
+                .map(this::convertToDetailDTO);
+    }
 
-			dto.setLevel(ci.getDesireLevel());
+    private ApplicantDetailDTO convertToDetailDTO(Applicant applicant) {
+        ApplicantDetailDTO dto = new ApplicantDetailDTO();
+        DecimalFormat formatter = new DecimalFormat("#,###");
 
-			if (ci.getDesireSalary() != null) {
-				dto.setDesireSalary(formatter.format(ci.getDesireSalary()));
-			} else {
-				dto.setDesireSalary("Thỏa thuận");
-			}
-		} else {
-			dto.setDesireSalary("Thỏa thuận");
-			dto.setLevel("Chưa rõ");
-		}
+        dto.setApplicantID(applicant.getApplicantID());
+        dto.setApplicantName(applicant.getApplicantName());
+        dto.setSummary(applicant.getGoal());
+        dto.setExperience(applicant.getExperience());
+        dto.setLiteracy(applicant.getLiteracy());
+        dto.setPhone(applicant.getPhone());
+        dto.setBirthday(applicant.getBirthday());
+        dto.setGender(applicant.getGender());
+        dto.setAddress(applicant.getAddress());
 
+        if (applicant.getAccount() != null) {
+            dto.setEmail(applicant.getAccount().getEmail());
+            dto.setPhoto(applicant.getAccount().getPhoto());
+        }
+
+        CareerInformation ci = applicant.getCareerInformation();
+        if (ci != null) {
+            dto.setJobTitle(ci.getTitle());
+            dto.setLocation(ci.getLocation());
+            dto.setLevel(ci.getDesireLevel());
+            dto.setDesireSalary(ci.getDesireSalary() != null ? 
+                formatter.format(ci.getDesireSalary()) + " VND" : "Thỏa thuận");
+        } else {
+            dto.setDesireSalary("Thỏa thuận");
+            dto.setLevel("Chưa rõ");
+        }
+
+        // Kỹ năng
+        if (applicant.getSkill() != null && !applicant.getSkill().isEmpty()) {
+            List<String> skillNames = applicant.getSkill().stream()
+                                            .map(Skill::getSkillName)
+                                            .collect(Collectors.toList());
+            dto.setSkillNames(skillNames);
+        } else {
+            dto.setSkillNames(Collections.emptyList());
+        }
+
+        // Applications
+        if (applicant.getApplication() != null && !applicant.getApplication().isEmpty()) {
+            List<ApplicationDTO> appDtos = applicant.getApplication().stream()
+                .map(app -> {
+                    ApplicationDTO aDto = new ApplicationDTO();
+                    aDto.setDate(app.getDate());
+                    aDto.setStatus(app.getStatus() != null ? app.getStatus().name() : null);
+                    aDto.setNote(app.getNote());
+                    aDto.setCV("/uploads/cv/" + app.getCV());
+                    aDto.setRecruitmentNewsTitle(app.getRecruitmentNews() != null ? 
+                                                 app.getRecruitmentNews().getPosition() : null);
+                    return aDto;
+                })
+                .collect(Collectors.toList());
+            dto.setApplications(appDtos);
+        } else {
+            dto.setApplications(Collections.emptyList());
+        }
+
+		
 		if (applicant.getSkill() != null) {
 			List<String> skillNames = applicant.getSkill().stream().map(Skill::getSkillName)
 					.collect(Collectors.toList());

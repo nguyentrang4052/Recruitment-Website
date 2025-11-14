@@ -8,15 +8,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import vn.iotstar.service.EmailService;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,16 +25,17 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final EmailService emailService;
-	@Autowired
-	private CustomUserDetailsService userDetailsService;
 
-	@Autowired
-	private JwtUtil jwtUtil;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
-	@Autowired
-	private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    JwtFilter(EmailService emailService) {
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    public JwtFilter(EmailService emailService) {
         this.emailService = emailService;
     }
 
@@ -45,9 +45,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
+       
         if (path.equals("/api/logout") || path.equals("/api/") || path.equals("/api/detail")
                 || path.equals("/api/applicant/relate-jobs") || path.equals("/api/applicant/companies")
-                || path.equals("/api/applicant/companies/detail") || path.equals("/api/applicant/companies/job") || path.equals("/api/job/search")) {
+                || path.equals("/api/applicant/companies/detail") || path.equals("/api/applicant/companies/job")
+                || path.equals("/api/job/search")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -77,7 +79,6 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-
         if (Boolean.TRUE.equals(redisTemplate.hasKey("blacklist:" + jti))) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token revoked");
@@ -87,33 +88,38 @@ public class JwtFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UsernamePasswordAuthenticationToken authToken;
 
-            if ("google".equalsIgnoreCase(provider)) {
-                authToken = new UsernamePasswordAuthenticationToken(username, null, List.of());
-            } else {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            try {
+         
+                CustomUserDetail userDetails = (CustomUserDetail) userDetailsService.loadUserByUsername(username);
 
- 
                 if (!jwtUtil.validateToken(token, userDetails)) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token hết hạn hoặc không hợp lệ");
                     return;
                 }
 
-
-                String expectedProvider = ((CustomUserDetail) userDetails).getAccount().getProvider();
+                String expectedProvider = userDetails.getAccount().getProvider();
                 if (!provider.equalsIgnoreCase(expectedProvider)) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.getWriter().write("Invalid token");
                     return;
                 }
 
-                String role = ((CustomUserDetail) userDetails).getAccount().getRole().getRoleName();
-                
-                var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-                authToken = new UsernamePasswordAuthenticationToken(username, null,authorities);
-                if ("google".equalsIgnoreCase(provider)) {
-                    authToken = new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
-                }
+               
+                authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities()
+                );
 
+            } catch (RuntimeException e) {
+
+                if ("google".equalsIgnoreCase(provider)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("User chưa đăng ký. Vui lòng đăng ký trước khi login bằng Google.");
+                    return;
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("User không tồn tại hoặc token không hợp lệ");
+                    return;
+                }
             }
 
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -123,54 +129,14 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-
-
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.startsWith("/api/auth/")
-                || path.startsWith("/api/employer/register")
+        return path.startsWith("/api/auth/") 
+                || path.startsWith("/api/employer/register") 
                 || path.startsWith("/api/skills/list");
     }
-
-    // @Override
-    // protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-    //         throws ServletException, IOException {
-
-    //     String authHeader = request.getHeader("Authorization");
-    //     String username = null;
-    //     String token = null;
-
-    //     if (authHeader != null && authHeader.startsWith("Bearer ")) {
-    //         token = authHeader.substring(7);
-    //         try {
-    //             username = jwtUtil.extractUsername(token);
-    //         } catch (Exception e) {
-    //             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token không hợp lệ");
-    //             return;
-    //         }
-    //     }
-
-    //     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-    //         CustomUserDetail userDetails = (CustomUserDetail) userDetailsService.loadUserByUsername(username);
-
-    //         if (jwtUtil.validateToken(token, userDetails)) {
-
-    //             String role = userDetails.getAccount().getRole().getRoleName(); 
-    //             var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-    //             var authToken = new UsernamePasswordAuthenticationToken(
-    //                     userDetails, null, authorities
-    //             );
-    //             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-    //             SecurityContextHolder.getContext().setAuthentication(authToken);
-    //         } else {
-    //             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token hết hạn hoặc không hợp lệ");
-    //             return;
-    //         }
-    //     }
-
-    //     filterChain.doFilter(request, response);
-    // }
-
 }
+
+
+

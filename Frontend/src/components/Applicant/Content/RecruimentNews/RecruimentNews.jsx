@@ -250,7 +250,7 @@ function RecruimentNews() {
                                             <span key={index} className="skill">{skill}</span>))
                                         }
                                     </div>
-                                    <div className="btn">
+                                    <div className="recruit-btn">
                                         <button
                                             className={`favorite-btn ${isFavorite(recruiment.rnid) ? 'active' : ''}`}
                                             onClick={() => toggleFavorite(recruiment.rnid)}

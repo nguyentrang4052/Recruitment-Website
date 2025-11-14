@@ -106,8 +106,9 @@ public class LoginController {
 
 	        CustomUserDetail userDetails = (CustomUserDetail) uService.loadUserByUsername(loginRequest.getUsername());
 	        Account account = userDetails.getAccount();
-
-	        String token = jwtUtil.generateToken(account.getUsername(), account.getRole().getRoleName());
+	        
+	        
+	        String token = jwtUtil.generateToken(account.getUsername(), account.getProvider());
 
 	        LoginResponseDTO response = new LoginResponseDTO();
 	        response.setToken(token);

@@ -18,7 +18,6 @@ import vn.iotstar.entity.Role;
 import vn.iotstar.repository.IAccountRepository;
 import vn.iotstar.repository.IEmployerRegisterRepository;
 import vn.iotstar.repository.IRoleRepository;
-import vn.iotstar.service.EmailService;
 import vn.iotstar.service.IEmployerRegisterService;
 
 

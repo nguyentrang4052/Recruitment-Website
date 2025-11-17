@@ -77,6 +77,8 @@ public class EmployerInfoService implements IEmployerInfoService, InitializingBe
         dto.setCompanyWebsite(employer.getCompanyWebsite());
         dto.setCompanyProfile(employer.getCompanyProfile());
         dto.setCompanyLogo(employer.getCompanyLogo());
+        dto.setCompanyImage(employer.getCompanyImage());
+        dto.setCompanySize(employer.getCompanySize());
 
         parseAddressToDTO(employer.getAddress(), dto);
 
@@ -99,7 +101,8 @@ public class EmployerInfoService implements IEmployerInfoService, InitializingBe
         if(dto.getCompanyWebsite() != null) employer.setCompanyWebsite(dto.getCompanyWebsite());
         if(dto.getCompanyProfile() != null) employer.setCompanyProfile(dto.getCompanyProfile());
         if(dto.getCompanyLogo() != null) employer.setCompanyLogo(dto.getCompanyLogo());
-
+        if(dto.getCompanyImage() != null) employer.setCompanyImage(dto.getCompanyImage());
+        if(dto.getCompanySize() != null) employer.setCompanySize(dto.getCompanySize());
 
         if(dto.getRegisteredWard() != null)
             dto.setRegisteredWard(wardMap.getOrDefault(dto.getRegisteredWard(), dto.getRegisteredWard()));

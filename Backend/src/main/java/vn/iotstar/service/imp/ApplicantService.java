@@ -366,8 +366,10 @@ public class ApplicantService implements IApplicantService {
                     aDto.setStatus(app.getStatus() != null ? app.getStatus().name() : null);
                     aDto.setNote(app.getNote());
                     aDto.setCV("/uploads/cv/" + app.getCV());
-                    aDto.setRecruitmentNewsTitle(app.getRecruitmentNews() != null ? 
-                                                 app.getRecruitmentNews().getPosition() : null);
+                    if (app.getRecruitmentNews() != null) {
+                        aDto.setRecruitmentNewsTitle(app.getRecruitmentNews().getPosition());
+                        aDto.setRecruitmentNewsId(app.getRecruitmentNews().getRNID()); 
+                    }
                     return aDto;
                 })
                 .collect(Collectors.toList());

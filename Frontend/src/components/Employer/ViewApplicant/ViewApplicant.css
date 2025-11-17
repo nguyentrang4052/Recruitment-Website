@@ -1,7 +1,5 @@
 .view-cv-container {
-    /* padding: 15px 20px; */
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    /* min-height: 100vh; */
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     width: 1000px;
     margin-left: 350px;
@@ -53,7 +51,7 @@
     gap: 25px;
 }
 
-/* Left Sidebar */
+
 .cv-sidebar {
     background: white;
     border-radius: 15px;
@@ -62,7 +60,6 @@
     position: sticky;
     top: 20px;
     height: fit-content;
-    /* width: 300px; */
 }
 
 .avatar-section {
@@ -101,7 +98,7 @@
     z-index: 1;
 }
 
-.applicant-title {
+.avatar-section h3 {
     font-size: 18px;
     font-weight: 700;
     color: white;
@@ -112,7 +109,7 @@
     word-wrap: break-word;
 }
 
-.applicant-subtitle {
+.avatar-section p {
     color: rgba(255, 255, 255, 0.9);
     font-size: 13px;
     font-weight: 500;
@@ -149,7 +146,7 @@
     flex-shrink: 0;
 }
 
-.info-label {
+.info-item > div > div:first-child {
     font-weight: 600;
     color: #2c3e50;
     font-size: 11px;
@@ -208,7 +205,7 @@
     box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
 }
 
-/* Main Content */
+
 .cv-main-content {
     display: flex;
     flex-direction: column;
@@ -245,7 +242,7 @@
     font-size: 18px;
 }
 
-.content-text {
+.content-section p {
     color: #555;
     line-height: 1.7;
     font-size: 14px;
@@ -268,7 +265,7 @@
     border-left: 3px solid #667eea;
 }
 
-.grid-label {
+.grid-item span:first-child {
     font-weight: 600;
     color: #2c3e50;
     font-size: 11px;
@@ -276,7 +273,7 @@
     letter-spacing: 0.5px;
 }
 
-.grid-value {
+.grid-item span:last-child {
     color: #495057;
     font-size: 14px;
     font-weight: 500;
@@ -306,77 +303,53 @@
     color: white;
 }
 
+
 .cv-file-section {
-    text-align: center;
-    padding: 35px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: white;
+    padding: 25px;
     border-radius: 15px;
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.cv-file-section::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    animation: pulse 4s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 0.8;
-    }
-}
-
-.cv-file-section h3 {
-    border: none;
-    color: white;
-    position: relative;
-    z-index: 1;
-    justify-content: center;
-    font-size: 18px;
-}
-
-.cv-file-section p {
-    font-size: 14px;
-    position: relative;
-    z-index: 1;
-}
-
-.cv-download-btn {
-    background-color: white;
-    color: #667eea;
-    padding: 12px 30px;
-    border: none;
-    border-radius: 25px;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    display: inline-flex;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 12px;
     align-items: center;
-    gap: 10px;
-    transition: all 0.3s;
-    margin-top: 15px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    justify-content: center;
     position: relative;
-    z-index: 1;
-    text-decoration: none;
+    z-index: 100;
 }
 
-.cv-download-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+
+.cv-view-btn {
+    padding: 12px 24px !important;
+    background: #007bff !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 101 !important;
+    box-shadow: 0 3px 12px rgba(0, 123, 255, 0.3) !important;
+}
+
+.cv-view-btn:hover {
+    background: #0056b3 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 18px rgba(0, 123, 255, 0.4) !important;
+}
+
+.cv-view-btn.secondary {
+    background: #6c757d !important;
+}
+
+.cv-view-btn.secondary:hover {
+    background: #5a6268 !important;
 }
 
 .action-buttons {
@@ -431,6 +404,48 @@
     box-shadow: none;
 }
 
+
+.cv-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.cv-modal-content {
+    width: 90%;
+    height: 90%;
+    background: white;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cv-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 10000;
+    font-size: 20px;
+}
+
+.cv-modal-close:hover {
+    background: #c82333;
+}
+
 @media (max-width: 1024px) {
     .cv-content {
         grid-template-columns: 1fr;
@@ -445,13 +460,78 @@
 @media (max-width: 768px) {
     .view-cv-container {
         padding: 15px;
+        margin-left: 0;
+        width: 100%;
     }
 
     .info-grid {
         grid-template-columns: 1fr;
     }
 
-    .action-buttons {
+    .action-buttons,
+    .cv-file-section {
         flex-direction: column;
     }
+
+    .cv-view-btn {
+        width: 100%;
+    }
+}
+
+.interview-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* === FORM MODAL === */
+.interview-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+.interview-modal-content label {
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+}
+
+.interview-modal-content input,
+.interview-modal-content select,
+.interview-modal-content textarea {
+    width: 100%;                
+    box-sizing: border-box;      
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 6px;
+    height: 42px;               
+}
+
+.interview-modal-content textarea {
+    appearance: none;          
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    line-height: normal;       
+    font-family: inherit;
+}
+
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 10px;
 }

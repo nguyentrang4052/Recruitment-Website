@@ -16,6 +16,6 @@ public class LoginResponseDTO {
     private String roleName;
     private Integer applicantID;
     private Integer employerID; 
-
+    private String employerName;
   
 }

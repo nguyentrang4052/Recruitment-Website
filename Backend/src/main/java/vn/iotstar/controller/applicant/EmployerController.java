@@ -20,10 +20,10 @@ import vn.iotstar.dto.applicant.RecruitmentCardDTO;
 import vn.iotstar.entity.Employer;
 import vn.iotstar.entity.Rating;
 import vn.iotstar.entity.RecruitmentNews;
-import vn.iotstar.service.EmailService;
 import vn.iotstar.service.IEmployerService;
 import vn.iotstar.service.IRatingService;
 import vn.iotstar.service.IRecruitmentService;
+import vn.iotstar.service.imp.EmailService;
 
 @RestController
 @RequestMapping("/api/applicant")

@@ -125,7 +125,11 @@ public class LoginController {
 	        } 
 	        else if (role.equals("EMPLOYER")) {
 	            Employer employer = employerService.findByAccount_accountID(account.getAccountID());
-	            if (employer != null) response.setEmployerID(employer.getEmployerID());
+	            if (employer != null) {
+	            	response.setEmployerID(employer.getEmployerID());
+	            	response.setEmployerName(employer.getEmployerName());
+	           
+	            }
 	        }
 
 	        return ResponseEntity.ok(response);

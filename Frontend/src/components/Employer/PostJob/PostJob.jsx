@@ -1,5 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './PostJob.css';
+
+const RichTextEditor = ({ name, value, onChange, placeholder }) => {
+    const editorRef = useRef(null);
+    const isComposingRef = useRef(false);
+
+    useEffect(() => {
+
+        if (editorRef.current && !isComposingRef.current) {
+            const currentContent = editorRef.current.innerHTML;
+            if (currentContent !== value) {
+                editorRef.current.innerHTML = value || '';
+            }
+        }
+    }, [value]);
+
+    const handleCommand = (command) => {
+        document.execCommand(command, false, null);
+        editorRef.current.focus();
+
+        handleInput();
+    };
+
+    const handleInput = () => {
+        isComposingRef.current = true;
+        onChange({
+            target: {
+                name: name,
+                value: editorRef.current.innerHTML
+            }
+        });
+
+        setTimeout(() => {
+            isComposingRef.current = false;
+        }, 0);
+    };
+
+    return (
+        <div className="rich-text-editor">
+            <div className="editor-toolbar">
+                <button type="button" onClick={() => handleCommand('bold')} title="In đậm">
+                    <b>B</b>
+                </button>
+                <button type="button" onClick={() => handleCommand('italic')} title="In nghiêng">
+                    <i>I</i>
+                </button>
+                <button type="button" onClick={() => handleCommand('underline')} title="Gạch chân">
+                    <u>U</u>
+                </button>
+                <button type="button" onClick={() => handleCommand('insertUnorderedList')} title="Danh sách đấu">
+                    • List
+                </button>
+                <button type="button" onClick={() => handleCommand('insertOrderedList')} title="Danh sách số">
+                    1. List
+                </button>
+            </div>
+            <div
+                ref={editorRef}
+                className="editor-content"
+                contentEditable
+                onInput={handleInput}
+                onBlur={handleInput}
+                suppressContentEditableWarning={true}
+                data-placeholder={placeholder}
+            />
+        </div>
+    );
+};
 
 const PostJob = () => {
     const initialJobData = {
@@ -25,6 +92,14 @@ const PostJob = () => {
     const [loading, setLoading] = useState(false);
     const [availableSkills, setAvailableSkills] = useState([]);
     const [skillsLoading, setSkillsLoading] = useState(true);
+
+    const levelOptions = [
+        { value: 'INTERN', label: 'Intern' },
+        { value: 'FRESHER', label: 'Fresher' },
+        { value: 'JUNIOR', label: 'Junior' },
+        { value: 'MID_LEVEL', label: 'Mid Level' },
+        { value: 'SENIOR', label: 'Senior' }
+    ];
 
     useEffect(() => {
         const fetchSkills = async () => {
@@ -69,7 +144,6 @@ const PostJob = () => {
             setLoading(false);
             return;
         }
-
 
         const employerID = localStorage.getItem('employerID');
         if (!employerID) {
@@ -125,7 +199,6 @@ const PostJob = () => {
         <div className="post-job-container">
             <h3>ĐĂNG TIN TUYỂN DỤNG</h3>
             <form onSubmit={handleSubmit} className="post-job-form">
-
                 <div className="form-group">
                     <label>Vị trí tuyển dụng</label>
                     <input type="text" name="position" value={jobData.position} onChange={handleInputChange} required />
@@ -136,16 +209,18 @@ const PostJob = () => {
                         <label>Trình độ học vấn</label>
                         <input type="text" name="literacy" value={jobData.literacy} onChange={handleInputChange} />
                     </div>
-                    <div className="form-group-inline">
-                        <div className="form-group full-width">
-                            <label>Kinh nghiệm</label>
-                            <input type="text" name="experience" value={jobData.experience} onChange={handleInputChange} />
-                        </div>
+                    <div className="form-group">
+                        <label>Số năm kinh nghiệm</label>
+                        <input type="text" name="experience" value={jobData.experience} onChange={handleInputChange} />
                     </div>
-
                     <div className="form-group">
                         <label>Cấp bậc</label>
-                        <input type="text" name="level" value={jobData.level} onChange={handleInputChange} />
+                        <select name="level" value={jobData.level} onChange={handleInputChange}>
+                            <option value="">Chọn cấp bậc</option>
+                            {levelOptions.map(option => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
@@ -192,8 +267,13 @@ const PostJob = () => {
                 </div>
 
                 <div className="form-group">
-                    <label>Mô tả công việc</label>
-                    <textarea name="description" value={jobData.description} onChange={handleInputChange} rows="6" required />
+                    <label>Mô tả và yêu cầu công việc</label>
+                    <RichTextEditor
+                        name="description"
+                        value={jobData.description}
+                        onChange={handleInputChange}
+                        placeholder="Nhập mô tả và yêu cầu công việc..."
+                    />
                 </div>
 
                 <div className="form-group">
@@ -239,7 +319,12 @@ const PostJob = () => {
 
                 <div className="form-group">
                     <label>Quyền lợi</label>
-                    <textarea name="benefit" value={jobData.benefit} onChange={handleInputChange} rows="4" />
+                    <RichTextEditor
+                        name="benefit"
+                        value={jobData.benefit}
+                        onChange={handleInputChange}
+                        placeholder="Nhập quyền lợi..."
+                    />
                 </div>
 
                 <div className="form-group">
@@ -252,7 +337,7 @@ const PostJob = () => {
                         {loading ? 'Đang lưu...' : 'Đăng tin'}
                     </button>
                     <button type="button" className="cancel-button" onClick={() => setJobData(initialJobData)}>
-                        Hủy
+                        Làm trống
                     </button>
                 </div>
             </form>

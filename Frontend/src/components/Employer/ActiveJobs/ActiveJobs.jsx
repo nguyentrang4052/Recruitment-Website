@@ -44,8 +44,20 @@ const ActiveJobs = ({ setActiveTab }) => {
                 params: { page: currentPage },
             });
 
+
             setJobs(response.data.content || []);
             setTotalPages(response.data.totalPages || 1);
+            // const response = await api.get('/api/employer/jobs/active', { params: { page: currentPage } });
+
+            // console.log("📋 Raw API response:", response.data); // Xem cấu trúc thật
+
+            // const jobs = response.data.content || [];
+            // jobs.forEach((job, idx) => {
+            //     console.log(`Job ${idx}:`, { id: job.id, title: job.title, applicants: job.applicants });
+            //     // Kiểm tra: job.id có phải là số không? có undefined không?
+            // });
+
+            // setJobs(jobs);
         } catch (err) {
             console.error('❌ Lỗi chi tiết:', err);
 
@@ -79,10 +91,12 @@ const ActiveJobs = ({ setActiveTab }) => {
     const handleBack = () => {
         setSelectedJobId(null);
         setViewingApplicants(false);
+        fetchActiveJobs();
     };
 
     if (selectedJobId && viewingApplicants) {
         return (
+
             <NewApplicant
                 recruitmentNewsId={selectedJobId}
                 onBack={handleBack}

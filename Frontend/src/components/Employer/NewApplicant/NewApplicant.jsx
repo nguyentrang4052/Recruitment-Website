@@ -1,11 +1,24 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./NewApplicant.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faMapMarkerAlt, faBriefcase, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import avatarPlaceholder from "../../../assets/avatar.png";
 import ViewApplicant from "../ViewApplicant/ViewApplicant.jsx";
 
-const NewApplicant = ({ username, setActiveTab, recruitmentNewsId, onBack }) => {
+const NewApplicant = ({ recruitmentNewsId, onBack }) => {
+
+    // console.log("3️⃣ Received recruitmentNewsId:", recruitmentNewsId, typeof recruitmentNewsId);
+
+    // useEffect(() => {
+    //     if (!recruitmentNewsId) {
+    //         console.error("❌ recruitmentNewsId is undefined!");
+    //         setError("Không tìm thấy ID tin tuyển dụng");
+    //         setLoading(false);
+    //         return;
+    //     }
+    //     fetchApplicants();
+    // }, [recruitmentNewsId]);
+
     const [applicants, setApplicants] = useState([]);
     const [selectedApplicantId, setSelectedApplicantId] = useState(null);
     const [showViewCV, setShowViewCV] = useState(false);
@@ -47,28 +60,30 @@ const NewApplicant = ({ username, setActiveTab, recruitmentNewsId, onBack }) => 
                 headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
             });
             if (!res.ok) throw new Error("Không thể duyệt hồ sơ");
-            alert(`Đã duyệt hồ sơ của ứng viên ID: ${applicantId}`);
+            alert(`✅ Đã duyệt hồ sơ ứng viên ID: ${applicantId}`);
             await fetchApplicants();
             handleBackFromCV();
         } catch (err) {
             console.error("handleApprove", err);
-            alert("Có lỗi xảy ra khi duyệt ứng viên.");
+            alert("❌ Có lỗi xảy ra khi duyệt ứng viên.");
         }
     };
 
     const handleReject = async (applicantId) => {
+        if (!window.confirm('Bạn có chắc chắn muốn TỪ CHỐI ứng viên này?')) return;
+
         try {
-            const res = await fetch(`${API_BASE}/${recruitmentNewsId}/${applicantId}`, {
-                method: "DELETE",
-                headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+            const res = await fetch(`${API_BASE}/${recruitmentNewsId}/${applicantId}/reject`, {
+                method: "PUT",
+                headers: { "Authorization": `Bearer ${token}` }
             });
             if (!res.ok) throw new Error("Không thể từ chối hồ sơ");
-            alert(`Đã từ chối hồ sơ của ứng viên ID: ${applicantId}`);
+            alert(`✅ Đã từ chối hồ sơ ứng viên ID: ${applicantId}`);
             await fetchApplicants();
             handleBackFromCV();
         } catch (err) {
             console.error("handleReject", err);
-            alert("Có lỗi xảy ra khi từ chối ứng viên.");
+            alert("❌ Có lỗi xảy ra khi từ chối ứng viên.");
         }
     };
 
@@ -96,12 +111,17 @@ const NewApplicant = ({ username, setActiveTab, recruitmentNewsId, onBack }) => 
     );
 
     if (showViewCV) {
+        const selectedApplicant = applicants.find(a => a.applicantId === selectedApplicantId);
+
         return (
             <ViewApplicant
                 applicantId={selectedApplicantId}
+                recruitmentNewsId={recruitmentNewsId}
                 onBack={handleBackFromCV}
                 onApprove={handleApprove}
                 onReject={handleReject}
+
+                showActions={selectedApplicant?.status === 'PENDING'}
             />
         );
     }
@@ -109,11 +129,10 @@ const NewApplicant = ({ username, setActiveTab, recruitmentNewsId, onBack }) => 
     return (
         <div className="new-applicants-container">
             <header className="main-header">
-                <button className="back-button" onClick={onBack || (() => setActiveTab("dashboard"))}>
+                <button className="back-button" onClick={onBack}>
                     <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
                 </button>
-                <h2>ỨNG VIÊN ỨNG TUYỂN</h2>
-                {username && <div className="user-info"><span>{username}</span></div>}
+                <h2>ỨNG VIÊN ĐÃ ỨNG TUYỂN</h2>
             </header>
 
             <div className="applicants-list">
@@ -124,16 +143,16 @@ const NewApplicant = ({ username, setActiveTab, recruitmentNewsId, onBack }) => 
                                 <img src={applicant.avatar} alt="Avatar" className="candidate-avatar" />
                                 <div className="applicant-info">
                                     <h4 className="applicant-name">
-                                        {applicant.name}
-                                        {applicant.status === "approved" && (
-                                            <span className="status-badge approved">Đã duyệt</span>
+                                        {applicant.applicantName}
+                                        {applicant.status === "APPROVED" && (
+                                            <span className="status-badge approved">✅ Đã duyệt</span>
                                         )}
                                     </h4>
                                     <p className="applicant-position">{applicant.position}</p>
-                                    <div className="applicant-details">
+                                    {/* <div className="applicant-details">
                                         <span><FontAwesomeIcon icon={faMapMarkerAlt} /> {applicant.location}</span>
                                         <span><FontAwesomeIcon icon={faBriefcase} /> {applicant.experience}</span>
-                                    </div>
+                                    </div> */}
                                     {applicant.skills && (
                                         <div className="applicant-skills">
                                             {applicant.skills.map(skill => (
@@ -151,18 +170,18 @@ const NewApplicant = ({ username, setActiveTab, recruitmentNewsId, onBack }) => 
                         </div>
                     ))
                 ) : (
-                    <p className="no-applicants">Không có ứng viên nào nộp cho tin tuyển dụng này.</p>
+                    <p className="no-applicants">📭 Không có ứng viên</p>
                 )}
             </div>
 
             {totalPages > 1 && (
                 <div className="pagination">
                     <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>
-                        Trang trước
+                        ← Trang trước
                     </button>
                     <span>Trang {currentPage} / {totalPages}</span>
                     <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
-                        Trang sau
+                        Trang sau →
                     </button>
                 </div>
             )}

@@ -85,44 +85,41 @@ public class ApplicationService implements IApplicationService {
 
 
     
-    @Override
-    public List<NewApplicantResponseDTO> getNewApplicantsByRecruitmentNewsId(Integer recruitmentNewsId) {
-        RecruitmentNews recruitmentNews = recruitmentRepo.findById(recruitmentNewsId)
-                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy tin tuyển dụng ID: " + recruitmentNewsId));
+	@Override
+	public List<NewApplicantResponseDTO> getNewApplicantsByRecruitmentNewsId(Integer recruitmentNewsId) {
+	    RecruitmentNews recruitmentNews = recruitmentRepo.findById(recruitmentNewsId)
+	            .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy tin tuyển dụng ID: " + recruitmentNewsId));
 
-        List<EStatus> statuses = List.of(EStatus.PENDING, EStatus.APPROVED);
-        List<Application> applications = apRepository.findApplicationsWithDetailsByStatuses(recruitmentNewsId, statuses);
+	    // ✅ LẤY CẢ PENDING VÀ APPROVED
+	    List<EStatus> statuses = List.of(EStatus.PENDING, EStatus.APPROVED);
+	    List<Application> applications = apRepository.findApplicationsWithDetailsByStatuses(recruitmentNewsId, statuses);
 
-        return applications.stream().map(app -> {
-            Applicant applicant = app.getApplicant();
-            CareerInformation careerInfo = applicant.getCareerInformation();
+	    return applications.stream().map(app -> {
+	        Applicant applicant = app.getApplicant();
+	        CareerInformation careerInfo = applicant.getCareerInformation();
 
-            List<String> skillNames = applicant.getSkill().stream()
-                    .map(Skill::getSkillName)
-                    .collect(Collectors.toList());
+	        List<String> skillNames = applicant.getSkill().stream()
+	                .map(Skill::getSkillName)
+	                .collect(Collectors.toList());
 
-            String position = careerInfo != null ? careerInfo.getTitle() : "Chưa cập nhật";
-            String location = careerInfo != null ? careerInfo.getLocation() : "Chưa cập nhật";
+	        String position = careerInfo != null ? careerInfo.getTitle() : "Chưa cập nhật";
+	        String location = careerInfo != null ? careerInfo.getLocation() : "Chưa cập nhật";
 
-            // ✅ Tạo DTO chính cho ứng viên
-            NewApplicantResponseDTO dto = new NewApplicantResponseDTO(
-                    applicant.getApplicantID(),
-                    applicant.getApplicantName(),
-                    position,
-                    location,
-                    applicant.getExperience(),
-                    skillNames,
-                    app.getDate() != null ? app.getDate().toString() : "",
-                    app.getStatus() != null ? app.getStatus().toString() : "",
-                    app.getCV(),
-                    (applicant.getAccount() != null) ? applicant.getAccount().getPhoto() : null,
-                    (app.getRecruitmentNews() != null) ? app.getRecruitmentNews().getRNID() : recruitmentNewsId // ✅ luôn có RNID
-            );
-
-            return dto;
-        }).collect(Collectors.toList());
-    }
-
+	        return new NewApplicantResponseDTO(
+	                applicant.getApplicantID(),
+	                applicant.getApplicantName(),
+	                position,
+	                location,
+	                applicant.getExperience(),
+	                skillNames,
+	                app.getDate() != null ? app.getDate().toString() : "",
+	                app.getStatus() != null ? app.getStatus().toString() : "PENDING",
+	                app.getCV(),
+	                applicant.getAccount() != null ? applicant.getAccount().getPhoto() : null,
+	                recruitmentNewsId // ✅ ĐẢM BẢO TRẢ VỀ ĐÚNG recruitmentNewsId
+	        );
+	    }).collect(Collectors.toList());
+	}
 
     @Override
     @Transactional

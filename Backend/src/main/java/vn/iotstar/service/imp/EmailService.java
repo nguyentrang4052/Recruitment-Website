@@ -1,4 +1,4 @@
-package vn.iotstar.service;
+package vn.iotstar.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,6 +22,15 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(content);
 
+        mailSender.send(message);
+    }
+    
+    public void sendSimpleEmail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("gzconnect.team@gmail.com");
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
         mailSender.send(message);
     }
 }

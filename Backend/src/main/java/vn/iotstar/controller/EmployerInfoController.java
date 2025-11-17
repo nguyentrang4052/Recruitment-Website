@@ -51,7 +51,27 @@ public class EmployerInfoController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Upload thất bại");
         }
     }
+    
+    @PostMapping("/uploadImage")
+    public Map<String, String> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            if (file.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chưa chọn file");
+            }
 
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String uploadDir = System.getProperty("user.dir") + "/uploads/company/";
+            File dest = new File(uploadDir + fileName);
+            dest.getParentFile().mkdirs();
+            file.transferTo(dest);
+
+            String fileUrl = "/uploads/company/" + fileName;
+            return Map.of("url", fileUrl);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Upload ảnh thất bại");
+        }
+    }
+    
     static class ResponseMessage {
         private String message;
         public ResponseMessage(String message) { this.message = message; }

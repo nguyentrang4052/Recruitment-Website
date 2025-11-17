@@ -1,6 +1,7 @@
 package vn.iotstar.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -33,5 +34,8 @@ public class TransactionDetail implements Serializable{
 	@ManyToMany
 	@JoinTable(name = "TransDetailPackage", joinColumns = @JoinColumn(name = "transactionID"), inverseJoinColumns = @JoinColumn(name = "packageID"))
 	private List<PostPackage> postPackage;
+	
+	@Column(name = "expiry_date")
+	private LocalDate expiryDate;
 	
 }

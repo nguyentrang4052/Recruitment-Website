@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShieldAlt, faCheckCircle, faArrowLeft, faUniversity, faQrcode } from '@fortawesome/free-solid-svg-icons';
-import { QRCodeCanvas } from 'qrcode.react'; // Import QR Code
+import { QRCodeCanvas } from 'qrcode.react';
 import './PaymentPage.css';
 
 import vietcom from '../../../assets/bank-logos/vietcombank.jpg';
@@ -25,7 +25,14 @@ function PaymentPage({ packageInfo, onGoBack }) {
         taxRate: 0.1,
     };
 
-    const currentPackage = packageInfo || defaultPackage;
+    const currentPackage = {
+        name: packageInfo?.packageName || defaultPackage.name,
+        price: packageInfo?.price ?? defaultPackage.price,
+        duration: packageInfo?.duration || defaultPackage.duration,
+        description: packageInfo?.description || defaultPackage.description,
+        features: packageInfo?.features || defaultPackage.features,
+        taxRate: packageInfo?.taxRate ?? defaultPackage.taxRate,
+    };
     const [paymentMethod, setPaymentMethod] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedBank, setSelectedBank] = useState(null);

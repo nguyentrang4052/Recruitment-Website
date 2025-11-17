@@ -259,3 +259,66 @@
     color: #007bff;
     font-weight: bold;
 }
+
+
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+}
+
+
+.rich-text-editor {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.editor-toolbar {
+    background-color: #f5f5f5;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    gap: 5px;
+}
+
+.editor-toolbar button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.editor-toolbar button:hover {
+    background-color: #e0e0e0;
+}
+
+.editor-content {
+    min-height: 150px;
+    padding: 10px;
+    outline: none;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.editor-content:empty:before {
+    content: attr(data-placeholder);
+    color: #999;
+    font-style: italic;
+}
+
+
+.editor-content ul, .editor-content ol {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.editor-content li {
+    margin-bottom: 5px;
+}

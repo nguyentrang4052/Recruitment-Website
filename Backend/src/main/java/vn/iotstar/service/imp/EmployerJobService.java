@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.iotstar.dto.ActiveJobDTO;
 import vn.iotstar.dto.JobDetailDTO;
-import  vn.iotstar.dto.ApplicationDTO;
+import vn.iotstar.dto.ApplicationDTO;
 import vn.iotstar.dto.SkillDTO;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.enums.EStatus;
@@ -51,7 +51,6 @@ public class EmployerJobService implements IEmployerJobService {
         RecruitmentNews recruitment = recruitmentRepository.findById(jobId)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy công việc"));
 
-       
         recruitment.setPosition(updateDTO.getTitle());
         recruitment.setDescription(updateDTO.getDescription());
         recruitment.setLocation(updateDTO.getLocation());
@@ -97,7 +96,10 @@ public class EmployerJobService implements IEmployerJobService {
         dto.setPostedDate(recruitment.getPostedAt());
         dto.setStatus(recruitment.getStatus().name());
 
-        Long applicantCount = recruitmentRepository.countApplicantsByJobId(recruitment.getRNID());
+        // ✅ ĐẾM CẢ PENDING VÀ APPROVED (KHÔNG ĐẾM REJECTED)
+        List<EStatus> includeStatuses = List.of(EStatus.PENDING, EStatus.APPROVED);
+        Long applicantCount = applicationRepository.countByRecruitmentNews_RNIDAndStatusIn(
+            recruitment.getRNID(), includeStatuses);
         dto.setApplicants(applicantCount != null ? applicantCount.intValue() : 0);
 
         return dto;
@@ -124,8 +126,7 @@ public class EmployerJobService implements IEmployerJobService {
         dto.setDeadline(recruitment.getDeadline());
         dto.setStatus(recruitment.getStatus().name());
 
-        dto.setNumbersOfViews(recruitment.getNumbersOfViews() != null ? recruitment.getNumbersOfViews() : 0);
-
+        // ĐẾM ỨNG VIÊN KHÔNG BỊ TỪ CHỐI
         Long applicants = recruitmentRepository.countApplicantsByJobId(recruitment.getRNID());
         dto.setNumbersOfRecords(applicants != null ? applicants.intValue() : 0);
 
@@ -138,11 +139,9 @@ public class EmployerJobService implements IEmployerJobService {
             })
             .collect(Collectors.toList()));
 
-      
-        List<EStatus> statuses = List.of(EStatus.PENDING, EStatus.APPROVED);
-
-        List<ApplicationDTO> applicationDTOs = applicationRepository
-            .findApplicationsWithDetailsByStatuses(recruitment.getRNID(), statuses)
+        // Query applications (bao gồm cả REJECTED nếu cần)
+        List<EStatus> statuses = List.of(EStatus.PENDING, EStatus.APPROVED, EStatus.REJECTED);
+        List<ApplicationDTO> applicationDTOs = applicationRepository.findApplicationsWithDetailsByStatuses(recruitment.getRNID(), statuses)
             .stream()
             .map(app -> {
                 ApplicationDTO aDto = new ApplicationDTO();
@@ -151,16 +150,12 @@ public class EmployerJobService implements IEmployerJobService {
                 aDto.setNote(app.getNote());
                 aDto.setCV(app.getCV());
                 aDto.setRecruitmentNewsTitle(app.getRecruitmentNews().getPosition());
-
                 return aDto;
             })
             .collect(Collectors.toList());
 
-        Long applicantCount = recruitmentRepository.countApplicantsByJobId(recruitment.getRNID());
-        dto.setApplicants(applicantCount != null ? applicantCount.intValue() : 0);
-
+        dto.setApplicants(applicationDTOs.size());
 
         return dto;
     }
-
 }

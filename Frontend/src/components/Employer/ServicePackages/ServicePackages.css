@@ -115,6 +115,7 @@
     justify-content: center;
     max-width: 100%;
     box-sizing: border-box;
+    /* overflow: visible; */
 }
 
 .service-card {
@@ -122,6 +123,7 @@
     border-radius: 16px;
     padding: 32px;
     position: relative;
+    /* overflow: visible;  */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     border: 1px solid rgba(0, 0, 0, 0.06);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -152,20 +154,18 @@
 }
 
 .badge {
-    position: absolute;
-    top: -12px;
-    right: 24px;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
-    padding: 6px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+  display: flex !important;
+  position: absolute !important;
+  top: -12px !important;
+  right: 24px !important;
+  background: red !important; 
+  color: white !important;
+  padding: 6px 16px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 20px !important;
+  z-index: 9999 !important; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
 .service-card.recommended .badge {
@@ -208,7 +208,7 @@
     background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
 }
 
-.gradient-purple {
+.gra.badient-purple {
     background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
 }
 
@@ -471,4 +471,14 @@
     .features li {
         font-size: 12px;
     }
+}
+
+.active-tag {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #10b981;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
 }

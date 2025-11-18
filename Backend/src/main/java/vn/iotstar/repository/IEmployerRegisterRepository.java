@@ -6,4 +6,6 @@ import vn.iotstar.entity.Account;
 
 public interface IEmployerRegisterRepository extends JpaRepository<Employer, Integer> {
 	Employer findByAccount(Account account);
+	
+	boolean existsByPhone(String phone);
 }

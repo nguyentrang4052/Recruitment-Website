@@ -60,6 +60,9 @@ public class RecruitmentNews implements Serializable {
 
 	@Column(name = "location", nullable = true, length = 255)
 	private String location;
+	
+	@Column(name = "isActive", nullable = true)
+    private Boolean isActive = true;
 
 	@Enumerated(EnumType.STRING)
 	private EFormOfWork formOfWork;

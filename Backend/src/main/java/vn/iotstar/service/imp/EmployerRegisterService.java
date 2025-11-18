@@ -19,6 +19,8 @@ import vn.iotstar.repository.IAccountRepository;
 import vn.iotstar.repository.IEmployerRegisterRepository;
 import vn.iotstar.repository.IRoleRepository;
 import vn.iotstar.service.IEmployerRegisterService;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.hibernate.exception.ConstraintViolationException;
 
 
 class RegistrationAttempt {
@@ -56,10 +58,14 @@ public class EmployerRegisterService implements IEmployerRegisterService {
     @Override
     public String registerEmployer(EmployerRegisterDTO dto) {
         
-        if (accountRepository.findByUsername(dto.getEmail()) != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email đã tồn tại");
+    	if (accountRepository.findByEmail(dto.getEmail()) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email đã tồn tại. Vui lòng đăng nhập hoặc dùng email khác.");
         }
         
+    	if (employerRegisterRepository.existsByPhone(dto.getPhoneNumber())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+                "Số điện thoại đã được đăng ký bởi nhà tuyển dụng khác.");
+        }
        
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         dto.setPassword(encodedPassword);
@@ -77,9 +83,9 @@ public class EmployerRegisterService implements IEmployerRegisterService {
 
     @Override
     public String verifyEmail(String token) {
-        
+
         RegistrationAttempt attempt = verificationTokens.get(token);
-        
+
         if (attempt == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token không hợp lệ.");
         }
@@ -87,44 +93,55 @@ public class EmployerRegisterService implements IEmployerRegisterService {
             verificationTokens.remove(token); 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token đã hết hạn.");
         }
-        
-      
-        if (accountRepository.findByUsername(attempt.dto.getEmail()) != null) {
-             verificationTokens.remove(token); // Xóa token 
-             return "Lỗi: Email đã được đăng ký bởi tài khoản khác trong thời gian chờ!";
-        }
-        
+
         EmployerRegisterDTO dto = attempt.dto;
-        
+
+     
+        if (accountRepository.findByEmail(dto.getEmail()) != null) {
+            verificationTokens.remove(token);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+                "Email đã được đăng ký bởi tài khoản khác.");
+        }
+
+       
+        if (employerRegisterRepository.existsByPhone(dto.getPhoneNumber())) {
+            verificationTokens.remove(token);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+                "Số điện thoại đã được đăng ký bởi nhà tuyển dụng khác.");
+        }
+
         try {
-            Role role = roleRepository.findById(2).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Role không tồn tại")
-            );
-            
-      
+            Role role = roleRepository.findById(2)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role không tồn tại"));
+
             Account account = new Account();
-            account.setUsername(dto.getUsername()); 
-            account.setEmail(dto.getEmail());       
-            account.setPassword(dto.getPassword()); 
-            account.setActive(1);                 
+            account.setUsername(dto.getUsername());
+            account.setEmail(dto.getEmail());
+            account.setPassword(dto.getPassword());
+            account.setActive(1);
             account.setRole(role);
             account.setProvider("local");
+
             Account savedAccount = accountRepository.save(account);
 
-           
             Employer employer = new Employer();
             employer.setEmployerName(dto.getCompanyName());
             employer.setRepresentative(dto.getContactPerson());
             employer.setPhone(dto.getPhoneNumber());
-            employer.setAccount(savedAccount); 
+            employer.setAccount(savedAccount);
+
             employerRegisterRepository.save(employer);
-            
+
             verificationTokens.remove(token);
-            
+
             return "Xác thực email thành công!";
-            
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi lưu dữ liệu sau khi xác thực: " + e.getMessage());
+
+        } catch (DataIntegrityViolationException | ConstraintViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.toString());
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Có lỗi xảy ra, vui lòng thử lại sau.");
         }
     }
+
 }

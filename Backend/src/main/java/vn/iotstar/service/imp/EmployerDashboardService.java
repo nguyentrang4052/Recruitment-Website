@@ -9,7 +9,7 @@ import vn.iotstar.dto.EmployerDashboardStatsDTO;
 import vn.iotstar.enums.EStatus;
 import vn.iotstar.repository.IApplicationRepository;
 import vn.iotstar.repository.IRecruitmentNewsRepository;
-import vn.iotstar.repository.IViewLogRepository; // THÊM
+import vn.iotstar.repository.IViewLogRepository; 
 import vn.iotstar.service.IEmployerDashboardService;
 
 @Service

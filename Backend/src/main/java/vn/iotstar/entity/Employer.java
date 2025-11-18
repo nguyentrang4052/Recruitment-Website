@@ -79,7 +79,7 @@ public class Employer implements Serializable {
 	@JoinColumn(name = "accountID", referencedColumnName = "accountID")
 	private Account account;
 
-	@OneToMany(mappedBy = "employer")
-	private List<ViewLog> viewLog = new ArrayList<>();
+//	@OneToMany(mappedBy = "employer")
+//	private List<ViewLog> viewLog = new ArrayList<>();
 
 }

@@ -3,6 +3,7 @@ package vn.iotstar.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -49,4 +50,8 @@ public interface IRecruitmentNewsRepository extends JpaRepository<RecruitmentNew
            "AND rn.employer.account.accountID = :employerAccountId")
     boolean existsByIdAndEmployer(@Param("jobId") Integer jobId, 
                                    @Param("employerAccountId") Integer employerAccountId);
+    
+    @Modifying
+    @Query("UPDATE RecruitmentNews r SET  r.isActive = false WHERE r.RNID = :jobId AND r.employer.account.accountID = :employerAccountId")
+    int deactivateJob(@Param("jobId") Integer jobId, @Param("employerAccountId") Integer employerAccountId);
 }

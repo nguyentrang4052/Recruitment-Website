@@ -14,4 +14,6 @@ public interface IEmployerJobService {
     JobDetailDTO updateJob(Integer jobId, Integer employerAccountId, JobDetailDTO updateDTO);
     
     void deleteJob(Integer jobId, Integer employerAccountId);
+
+	void deactivateJob(Integer jobId, Integer employerAccountId);
 }

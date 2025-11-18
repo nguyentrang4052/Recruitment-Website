@@ -40,6 +40,7 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
         news.setPostedAt(LocalDate.now());
         news.setNumbersOfViews(0);
         news.setNumbersOfRecords(0);
+        news.setIsActive(true);
         news.setStatus(EStatus.PENDING);
 
         return recruitmentRepo.save(news);

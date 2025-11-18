@@ -82,4 +82,23 @@ public class EmployerJobController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+    
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<Map<String, Object>> deactivateJob(
+            @PathVariable Integer id,
+            @AuthenticationPrincipal CustomUserDetail userDetails) {
+
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Integer employerAccountId = userDetails.getAccount().getAccountID();
+            employerJobService.deactivateJob(id, employerAccountId);
+            response.put("success", true);
+            response.put("message", "Đã ngừng tuyển dụng");
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 }

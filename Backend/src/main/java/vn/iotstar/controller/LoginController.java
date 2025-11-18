@@ -3,6 +3,7 @@ package vn.iotstar.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.hc.core5.http.protocol.ResponseServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.authentication.*;
@@ -128,7 +129,6 @@ public class LoginController {
 	            if (employer != null) {
 	            	response.setEmployerID(employer.getEmployerID());
 	            	response.setEmployerName(employer.getEmployerName());
-	           
 	            }
 	        }
 

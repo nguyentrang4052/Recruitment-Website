@@ -14,6 +14,7 @@ import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.enums.EStatus;
 import vn.iotstar.repository.IApplicationRepository;
 import vn.iotstar.repository.IRecruitmentNewsRepository;
+import vn.iotstar.repository.IViewLogRepository;
 import vn.iotstar.service.IEmployerJobService;
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,6 +26,7 @@ public class EmployerJobService implements IEmployerJobService {
 
     private final IRecruitmentNewsRepository recruitmentRepository;
     private final IApplicationRepository applicationRepository;
+    private final IViewLogRepository viewLogRepository;
 
     @Override
     public Page<ActiveJobDTO> getActiveJobs(Integer employerAccountId, int page, int size) {
@@ -58,7 +60,6 @@ public class EmployerJobService implements IEmployerJobService {
         recruitment.setLiteracy(updateDTO.getLiteracy());
         recruitment.setLevel(updateDTO.getLevel());
         
-       
         recruitment.setMinSalary(updateDTO.getMinSalary() != null ? 
             BigDecimal.valueOf(updateDTO.getMinSalary()) : null);
         recruitment.setMaxSalary(updateDTO.getMaxSalary() != null ? 
@@ -84,8 +85,19 @@ public class EmployerJobService implements IEmployerJobService {
         if (applicantCount > 0) {
             throw new RuntimeException("Không thể xóa tin tuyển dụng đã có " + applicantCount + " người ứng tuyển");
         }
-
+        applicationRepository.deleteByRecruitmentNews_RNID(jobId);
+        viewLogRepository.deleteByRecruitmentNews_RNID(jobId);
         recruitmentRepository.deleteById(jobId);
+    }
+
+    @Override
+    @Transactional
+    public void deactivateJob(Integer jobId, Integer employerAccountId) {
+      
+        int updated = recruitmentRepository.deactivateJob(jobId, employerAccountId);
+        if (updated == 0) {
+            throw new RuntimeException("Không tìm thấy tin tuyển dụng hoặc bạn không có quyền");
+        }
     }
 
     private ActiveJobDTO convertToActiveDTO(RecruitmentNews recruitment) {
@@ -96,7 +108,6 @@ public class EmployerJobService implements IEmployerJobService {
         dto.setPostedDate(recruitment.getPostedAt());
         dto.setStatus(recruitment.getStatus().name());
 
-        // ✅ ĐẾM CẢ PENDING VÀ APPROVED (KHÔNG ĐẾM REJECTED)
         List<EStatus> includeStatuses = List.of(EStatus.PENDING, EStatus.APPROVED);
         Long applicantCount = applicationRepository.countByRecruitmentNews_RNIDAndStatusIn(
             recruitment.getRNID(), includeStatuses);
@@ -124,9 +135,14 @@ public class EmployerJobService implements IEmployerJobService {
         dto.setApplyBy(recruitment.getApplyBy());
         dto.setPostedDate(recruitment.getPostedAt());
         dto.setDeadline(recruitment.getDeadline());
-        dto.setStatus(recruitment.getStatus().name());
+        
+    
+        if (recruitment.getIsActive() != null && !recruitment.getIsActive()) {
+            dto.setStatus("INACTIVE");
+        } else {
+            dto.setStatus(recruitment.getStatus().name());
+        }
 
-        // ĐẾM ỨNG VIÊN KHÔNG BỊ TỪ CHỐI
         Long applicants = recruitmentRepository.countApplicantsByJobId(recruitment.getRNID());
         dto.setNumbersOfRecords(applicants != null ? applicants.intValue() : 0);
 
@@ -139,7 +155,6 @@ public class EmployerJobService implements IEmployerJobService {
             })
             .collect(Collectors.toList()));
 
-        // Query applications (bao gồm cả REJECTED nếu cần)
         List<EStatus> statuses = List.of(EStatus.PENDING, EStatus.APPROVED, EStatus.REJECTED);
         List<ApplicationDTO> applicationDTOs = applicationRepository.findApplicationsWithDetailsByStatuses(recruitment.getRNID(), statuses)
             .stream()
@@ -158,4 +173,6 @@ public class EmployerJobService implements IEmployerJobService {
 
         return dto;
     }
+    
+   
 }

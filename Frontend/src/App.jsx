@@ -56,6 +56,8 @@ function App() {
             <Route path="/companies/:employerId" element={<CompanyDetail />} />
             <Route path="/companies/reviews/:employerId" element={<CompanyReviewDetail />} />
             <Route path="/companies/reviews" element={<CompanyReview />} />
+            {/* <Route path="/admin" element={<AdminDashboard />} /> */}
+
           </Route>
 
           {/* Applicant area */}

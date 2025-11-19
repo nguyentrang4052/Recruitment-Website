@@ -85,6 +85,7 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
         entity.setLiteracy(dto.getLiteracy());
         entity.setExperience(dto.getExperience());
         entity.setLevel(dto.getLevel());
+        entity.setQuantity(dto.getQuantity());
 
  
         if (dto.getRequirements() != null && !dto.getRequirements().isEmpty()) {

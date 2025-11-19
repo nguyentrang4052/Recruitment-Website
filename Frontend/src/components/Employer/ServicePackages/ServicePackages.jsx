@@ -114,7 +114,7 @@ function ServicePackages() {
         const pkg = activePkgs.find((p) => p.packageID === packageID);
         if (!pkg?.expiryDate) return null;
         const days = Math.ceil((new Date(pkg.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
-        return days > 0 ? days : null;
+        return days > 0 ? `${days} ngày` : null;
     };
 
     const handleSelectPackage = async (packageName) => {
@@ -181,8 +181,9 @@ function ServicePackages() {
                                 <p className="description">{pkg.description}</p>
                                 <p className="price">
                                     {pkg.price.toLocaleString('vi-VN')} VND
-                                    <span className="duration"> / {pkg.duration}</span>
+                                    <span className="duration"> / {pkg.duration} ngày</span>
                                 </p>
+
                             </div>
 
                             <ul className="features">
@@ -196,7 +197,7 @@ function ServicePackages() {
 
                             {active ? (
                                 <div className="active-tag">
-                                    Đang sử dụng {days ? `(còn ${days} ngày)` : ''}
+                                    Đang sử dụng {days ? `(còn ${days})` : ''}
                                 </div>
                             ) : (
                                 <button

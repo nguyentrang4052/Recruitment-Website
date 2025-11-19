@@ -29,6 +29,7 @@ public class RecruitmentNewsDTO {
     private Integer employerID;
     private BigDecimal maxSalary;
     private EStatus status;
+    private Integer quantity;
     private List<String> requirements; 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;

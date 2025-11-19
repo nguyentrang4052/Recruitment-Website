@@ -91,7 +91,9 @@ public class RecruitmentNews implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "employerID")
 	private Employer employer;
-
+	
+	@Column(name = "quantity", nullable = true)
+	private Integer quantity;
 
 	@OneToMany(mappedBy = "recruitmentNews")
 	@JsonManagedReference

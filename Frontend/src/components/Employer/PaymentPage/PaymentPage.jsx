@@ -4,7 +4,7 @@ import {
     faShieldAlt,
     faCheckCircle,
     faArrowLeft,
-    faUniversity,
+    // faUniversity,
     faQrcode,
 } from '@fortawesome/free-solid-svg-icons';
 import './PaymentPage.css';
@@ -295,7 +295,7 @@ function PaymentPage({ packageInfo, onGoBack }) {
                             <span className="package-name-summary">{currentPackage.name}</span>
                         </div>
                         <div className="summary-item">
-                            <span>Thời hạn: </span>
+                            <span>Thời hạn (ngày): </span>
                             <span>{currentPackage.duration}</span>
                         </div>
                         <ul className="feature-list-summary">
@@ -308,14 +308,14 @@ function PaymentPage({ packageInfo, onGoBack }) {
                     </div>
 
                     <div className="section-card payment-method-selection">
-                        <h2>Phương thức Thanh toán</h2>
-                        <div
+                        <h2>Thanh toán</h2>
+                        {/* <div
                             className={`method-option bank-transfer-main ${paymentMethod === 'BANK_TRANSFER' ? 'selected' : ''}`}
                             onClick={() => setPaymentMethod('BANK_TRANSFER')}
                         >
                             <span>Thẻ nội địa và tài khoản ngân hàng</span>
                             <FontAwesomeIcon icon={faUniversity} className="bank-icon-lg" />
-                        </div>
+                        </div> */}
                         <div
                             className={`method-option qr-payment ${paymentMethod === 'QR_CODE' ? 'selected' : ''}`}
                             onClick={() => setPaymentMethod('QR_CODE')}
@@ -464,10 +464,10 @@ function PaymentPage({ packageInfo, onGoBack }) {
                                         <span className="qr-info-label">Số tiền:</span>
                                         <span className="qr-info-value qr-amount">{formatCurrency(totalAmount)}</span>
                                     </div>
-                                    <div className="qr-info-row">
+                                    {/* <div className="qr-info-row">
                                         <span className="qr-info-label">Nội dung:</span>
                                         <span className="qr-info-value">Thanh toán gói {currentPackage.name}</span>
-                                    </div>
+                                    </div> */}
                                     <div className="qr-info-row">
                                         <span className="qr-info-label">Bước 1:</span>
                                         <span className="qr-info-value">Mở ứng dụng ngân hàng/Ví điện tử</span>

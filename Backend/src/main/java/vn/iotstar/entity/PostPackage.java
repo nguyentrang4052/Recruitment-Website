@@ -50,7 +50,10 @@ public class PostPackage implements Serializable {
 
 	@Column(name = "tax_rate", precision = 4, scale = 2)
 	private BigDecimal taxRate;
-
+	
+	@Column(name = "is_hidden")
+	private Boolean isHidden = false;
+	
 	@Column(name = "is_recommended")
 	private Boolean isRecommended = false;
 	

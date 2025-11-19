@@ -1,21 +1,23 @@
-	package vn.iotstar.repository;
-	
-	import java.time.LocalDate;
-	import java.util.List;
-	
-	import org.springframework.data.jpa.repository.JpaRepository;
-	import org.springframework.data.jpa.repository.Modifying;
-	import org.springframework.data.jpa.repository.Query;
-	import org.springframework.stereotype.Repository;
-	
-	import org.springframework.data.repository.query.Param;
-	import jakarta.transaction.Transactional;
-	import vn.iotstar.entity.Applicant;
-	import vn.iotstar.entity.Application;
-	import vn.iotstar.entity.RecruitmentNews;
-	import vn.iotstar.enums.EStatus;
-	import vn.iotstar.key.ApplicationID;
-	
+package vn.iotstar.repository;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+import org.springframework.data.repository.query.Param;
+import jakarta.transaction.Transactional;
+import vn.iotstar.entity.Applicant;
+import vn.iotstar.entity.Application;
+import vn.iotstar.entity.RecruitmentNews;
+import vn.iotstar.enums.EStatus;
+import vn.iotstar.key.ApplicationID;
+
 	@Repository
 	public interface IApplicationRepository extends JpaRepository<Application, ApplicationID>{
 		
@@ -83,8 +85,19 @@
 		    
 		    @Query("SELECT COUNT(a) FROM Application a WHERE a.recruitmentNews.RNID = :jobId AND a.status != 'REJECTED'")
 		    Long countApplicantsByJobId(@Param("jobId") Integer jobId);
-
+		    
+		    
+		    @Query("SELECT COUNT(a) FROM Application a WHERE a.recruitmentNews.RNID = :rnId")
+			Long countByRecruitmentNews_RNID(@Param("rnId") Integer rnId);
+		    
+		    
 		    @Modifying
 		    @Query("DELETE FROM Application a where a.recruitmentNews.RNID = :rnId")
 		    void deleteByRecruitmentNews_RNID(@Param("rnId") Integer rnId);
+
+		    
+
+
+
+		   
 	}

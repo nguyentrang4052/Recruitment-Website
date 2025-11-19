@@ -8,6 +8,7 @@ import vn.iotstar.dto.InterviewMailRequestDTO;
 import vn.iotstar.entity.Application;
 import vn.iotstar.enums.EStatus;
 import vn.iotstar.repository.IApplicationRepository;
+import vn.iotstar.repository.IRecruitmentRepository;
 import vn.iotstar.service.IInterviewService;
 
 @Service
@@ -19,6 +20,8 @@ public class InterviewService implements IInterviewService {
     @Autowired
     private IApplicationRepository applicationRepository;
 
+  
+    
     @Override
     public void sendInterviewEmail(InterviewMailRequestDTO request) {
         String subject = "📅 Lịch phỏng vấn - " + request.getCompanyName();

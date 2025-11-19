@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faEdit, faTrash, faMapMarkerAlt, faClock,
     faBriefcase, faMoneyBill, faUsers, faEye, faFileAlt,
-    faGraduationCap, faCalendar, faStar, faPauseCircle
+    faGraduationCap, faCalendar, faStar, faPauseCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 const api = axios.create({
@@ -335,6 +335,7 @@ const JobDetail = ({ jobId, onBack }) => {
                                     Yêu cầu khác
                                 </h3>
                                 <div className="jd-section-content formatted-content">
+                                    <p><strong>Số lượng tuyển:</strong> {job.quantity || 'Không xác định'}</p>
                                     <p><strong>Kinh nghiệm:</strong> {job.experience || 'Không yêu cầu'}</p>
                                     <p><strong>Học vấn:</strong> {job.literacy || 'Không yêu cầu'}</p>
                                     <p><strong>Cấp bậc:</strong> {job.level || 'Không yêu cầu'}</p>
@@ -467,6 +468,17 @@ const JobDetail = ({ jobId, onBack }) => {
                             </div>
 
                             <div className="jd-form-group">
+                                <label>Số lượng tuyển</label>
+                                <input
+                                    type="number"
+                                    name="quantity"
+                                    value={editData.quantity || ''}
+                                    onChange={handleInputChange}
+                                    min="1"
+                                    placeholder="Nhập số lượng cần tuyển"
+                                />
+                            </div>
+                            <div className="jd-form-group">
                                 <label>Thời gian làm việc</label>
                                 <input
                                     type="text"
@@ -531,14 +543,18 @@ const JobDetail = ({ jobId, onBack }) => {
                             </span>
                         </div>
                         <div className="jd-info-row">
+                            <span className="jd-label">Số lượng tuyển:</span>
+                            <span className="jd-value">{job.quantity || 'N/A'}</span>
+                        </div>
+                        <div className="jd-info-row">
                             <span className="jd-label">Hạn nộp:</span>
                             <span className="jd-value">{formatDate(job.deadline)}</span>
                         </div>
                         <div className="jd-info-row">
                             <span className="jd-label">Trạng thái:</span>
                             <span className={`jd-status ${job.status === 'INACTIVE' ? 'jd-status-inactive' :
-                                    isExpired() ? 'jd-status-expired' :
-                                        'jd-status-active'
+                                isExpired() ? 'jd-status-expired' :
+                                    'jd-status-active'
                                 }`}>
                                 {job.status === 'INACTIVE' ? 'Đã ngừng tuyển' :
                                     isExpired() ? 'Hết hạn' :

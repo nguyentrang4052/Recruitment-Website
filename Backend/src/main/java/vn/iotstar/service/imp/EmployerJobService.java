@@ -26,7 +26,7 @@ public class EmployerJobService implements IEmployerJobService {
 
     private final IRecruitmentNewsRepository recruitmentRepository;
     private final IApplicationRepository applicationRepository;
-    private final IViewLogRepository viewLogRepository;
+    private final IViewLogRepository viewLogRepository;  
 
     @Override
     public Page<ActiveJobDTO> getActiveJobs(Integer employerAccountId, int page, int size) {
@@ -69,6 +69,7 @@ public class EmployerJobService implements IEmployerJobService {
         recruitment.setWorkingTime(updateDTO.getWorkingTime());
         recruitment.setApplyBy(updateDTO.getApplyBy());
         recruitment.setDeadline(updateDTO.getDeadline());
+        recruitment.setQuantity(updateDTO.getQuantity());
 
         RecruitmentNews updated = recruitmentRepository.save(recruitment);
         return convertToDetailDTO(updated);
@@ -81,19 +82,18 @@ public class EmployerJobService implements IEmployerJobService {
             throw new RuntimeException("Bạn không có quyền xóa công việc này");
         }
 
-        Long applicantCount = recruitmentRepository.countApplicantsByJobId(jobId);
+        Long applicantCount = applicationRepository.countByRecruitmentNews_RNID(jobId);
         if (applicantCount > 0) {
-            throw new RuntimeException("Không thể xóa tin tuyển dụng đã có " + applicantCount + " người ứng tuyển");
+            throw new RuntimeException("Không thể xóa tin tuyển dụng đã có " + applicantCount + 
+                " người ứng tuyển. Vui lòng sử dụng chức năng 'Ngừng tuyển' thay thế.");
         }
-        applicationRepository.deleteByRecruitmentNews_RNID(jobId);
-        viewLogRepository.deleteByRecruitmentNews_RNID(jobId);
+
         recruitmentRepository.deleteById(jobId);
     }
 
     @Override
     @Transactional
     public void deactivateJob(Integer jobId, Integer employerAccountId) {
-      
         int updated = recruitmentRepository.deactivateJob(jobId, employerAccountId);
         if (updated == 0) {
             throw new RuntimeException("Không tìm thấy tin tuyển dụng hoặc bạn không có quyền");
@@ -135,15 +135,20 @@ public class EmployerJobService implements IEmployerJobService {
         dto.setApplyBy(recruitment.getApplyBy());
         dto.setPostedDate(recruitment.getPostedAt());
         dto.setDeadline(recruitment.getDeadline());
+        dto.setQuantity(recruitment.getQuantity());
         
-    
+      
         if (recruitment.getIsActive() != null && !recruitment.getIsActive()) {
             dto.setStatus("INACTIVE");
         } else {
             dto.setStatus(recruitment.getStatus().name());
         }
 
-        Long applicants = recruitmentRepository.countApplicantsByJobId(recruitment.getRNID());
+        
+        Long viewCount = viewLogRepository.countByReNews_RNID(recruitment.getRNID());
+        dto.setNumbersOfViews(viewCount != null ? viewCount.intValue() : 0);
+
+        Long applicants = applicationRepository.countByRecruitmentNews_RNID(recruitment.getRNID());
         dto.setNumbersOfRecords(applicants != null ? applicants.intValue() : 0);
 
         dto.setSkills(recruitment.getSkill().stream()
@@ -173,6 +178,4 @@ public class EmployerJobService implements IEmployerJobService {
 
         return dto;
     }
-    
-   
 }

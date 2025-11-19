@@ -51,6 +51,9 @@ function Login() {
             } else if (roleName === "employer") {
                 navigate('/employer-dashboard', { replace: true })
             }
+            else if (roleName.toLowerCase() === "admin") {
+                navigate('/admin', { replace: true })
+            }
         } catch (err) {
             if (err.response && err.response.status === 401) {
                 setError(err.response.data?.message || "Sai tên người dùng hoặc mật khẩu")

@@ -84,6 +84,7 @@ const PostJob = () => {
         literacy: '',
         experience: '',
         level: '',
+        quantity: '',
     };
 
     const [jobData, setJobData] = useState(initialJobData);
@@ -263,6 +264,23 @@ const PostJob = () => {
                     <div className="form-group">
                         <label>Hạn nộp hồ sơ</label>
                         <input type="date" name="deadline" value={jobData.deadline} onChange={handleInputChange} />
+                    </div>
+                </div>
+
+                <div className="form-group-inline">
+                    <div className="form-group">
+                        <label>Số lượng tuyển</label>
+                        <input
+                            type="number"
+                            name="quantity"
+                            value={jobData.quantity}
+                            onChange={handleInputChange}
+                            min="1"
+                            placeholder="Nhập số lượng cần tuyển"
+                        />
+                    </div>
+                    <div className="form-group">
+                        {/* Để trống hoặc thêm field khác nếu cần */}
                     </div>
                 </div>
 

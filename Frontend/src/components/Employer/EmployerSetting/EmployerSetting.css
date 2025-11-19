@@ -54,12 +54,14 @@ main, #app {
 
 .form-emp {
     margin-bottom: 20px; 
+    position: relative;
 }
 
 .form-emp input {
     margin-top: 20px;
     width: 370px;
     padding: 10px;
+    padding-right: 40px;
     border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
@@ -115,4 +117,23 @@ main, #app {
   color: red;
   font-size: 0.9rem;
   margin-top: 4px;
+}
+
+.form-emp span {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.form-emp span i {
+    color: #666;
+    font-size: 16px;
+}
+
+.form-emp span:hover i {
+    color: #000;
 }

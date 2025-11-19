@@ -32,18 +32,14 @@ public class ApplicationController {
             @PathVariable Integer rnId,
             @PathVariable Integer applicantId) {
         applicationService.approveApplicant(rnId, applicantId);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("success", true);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("success", true));
     }
 
-    @DeleteMapping("/{rnId}/{applicantId}")
+    @PutMapping("/{rnId}/{applicantId}/reject")
     public ResponseEntity<Map<String, Boolean>> rejectApplicant(
             @PathVariable Integer rnId,
             @PathVariable Integer applicantId) {
         applicationService.rejectApplicant(rnId, applicantId);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("success", true);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("success", true));
     }
 }

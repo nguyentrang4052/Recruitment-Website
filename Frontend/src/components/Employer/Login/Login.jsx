@@ -34,14 +34,17 @@ function Login() {
 
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', { username, password })
-            const { token, email, roleName, applicantID, employerID } = response.data
+            const { token, email, roleName, applicantID, employerID, employerName } = response.data
 
             localStorage.setItem('token', token)
             localStorage.setItem('email', email)
             localStorage.setItem('roleName', roleName)
             localStorage.setItem('username', username)
             if (applicantID) localStorage.setItem('applicantID', applicantID)
-            if (employerID) localStorage.setItem('employerID', employerID)
+            if (employerID) {
+                localStorage.setItem('employerID', employerID);
+                localStorage.setItem('employerName', employerName);
+            }
 
             if (roleName === "applicant") {
                 navigate('/dashboard', { replace: true })

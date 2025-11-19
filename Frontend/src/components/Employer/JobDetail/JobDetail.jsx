@@ -24,6 +24,48 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+const formatHtmlContent = (text) => {
+    if (!text) return '';
+
+    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    if (lines.length === 0) return '';
+
+    let html = '';
+    let inList = false;
+
+    // SỬ DỤNG new RegExp để tránh lỗi ESLint
+    const bulletRegex = new RegExp('^[•*-]\\s+');
+    const numberRegex = /^\d+\.\s+/;
+
+    lines.forEach(line => {
+        const isBullet = bulletRegex.test(line);
+        const isNumbered = numberRegex.test(line);
+
+        if (isBullet || isNumbered) {
+            if (!inList) {
+                html += '<ul>';
+                inList = true;
+            }
+            const content = isBullet ? line.replace(bulletRegex, '') : line.replace(numberRegex, '');
+            html += `<li>${content}</li>`;
+        } else {
+            if (inList) {
+                html += '</ul>';
+                inList = false;
+            }
+            if (line) {
+                html += `<p>${line}</p>`;
+            }
+        }
+    });
+
+    if (inList) {
+        html += '</ul>';
+    }
+
+    return html;
+};
+
 const JobDetail = ({ jobId, onBack }) => {
     const [job, setJob] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -55,7 +97,6 @@ const JobDetail = ({ jobId, onBack }) => {
             setLoading(false);
         }
     }, [jobId]);
-
 
     useEffect(() => {
         if (jobId) {
@@ -243,7 +284,10 @@ const JobDetail = ({ jobId, onBack }) => {
                                     <FontAwesomeIcon icon={faFileAlt} />
                                     Mô tả công việc
                                 </h3>
-                                <p className="jd-section-content">{job.description}</p>
+                                <div
+                                    className="jd-section-content formatted-content"
+                                    dangerouslySetInnerHTML={{ __html: formatHtmlContent(job.description) }}
+                                />
                             </div>
 
                             {job.skills && job.skills.length > 0 && (
@@ -267,7 +311,7 @@ const JobDetail = ({ jobId, onBack }) => {
                                     <FontAwesomeIcon icon={faGraduationCap} />
                                     Yêu cầu khác
                                 </h3>
-                                <div className="jd-section-content">
+                                <div className="jd-section-content formatted-content">
                                     <p><strong>Kinh nghiệm:</strong> {job.experience || 'Không yêu cầu'}</p>
                                     <p><strong>Học vấn:</strong> {job.literacy || 'Không yêu cầu'}</p>
                                     <p><strong>Cấp bậc:</strong> {job.level || 'Không yêu cầu'}</p>
@@ -280,7 +324,10 @@ const JobDetail = ({ jobId, onBack }) => {
                                         <FontAwesomeIcon icon={faMoneyBill} />
                                         Quyền lợi
                                     </h3>
-                                    <p className="jd-section-content">{job.benefit}</p>
+                                    <div
+                                        className="jd-section-content formatted-content"
+                                        dangerouslySetInnerHTML={{ __html: formatHtmlContent(job.benefit) }}
+                                    />
                                 </div>
                             )}
 
@@ -289,10 +336,14 @@ const JobDetail = ({ jobId, onBack }) => {
                                     <FontAwesomeIcon icon={faFileAlt} />
                                     Cách thức ứng tuyển
                                 </h3>
-                                <p className="jd-section-content">{job.applyBy}</p>
+                                <div
+                                    className="jd-section-content formatted-content"
+                                    dangerouslySetInnerHTML={{ __html: formatHtmlContent(job.applyBy) }}
+                                />
                             </div>
                         </>
                     ) : (
+                        // Form chỉnh sửa
                         <form className="jd-form">
                             <div className="jd-form-group">
                                 <label>Vị trí tuyển dụng</label>
@@ -411,6 +462,7 @@ const JobDetail = ({ jobId, onBack }) => {
                                     onChange={handleInputChange}
                                     rows="6"
                                     required
+                                    placeholder="Nhập mô tả công việc (xuống dòng mỗi ý, dùng dấu - cho bullet points)"
                                 />
                             </div>
 
@@ -421,6 +473,7 @@ const JobDetail = ({ jobId, onBack }) => {
                                     value={editData.benefit || ''}
                                     onChange={handleInputChange}
                                     rows="4"
+                                    placeholder="Nhập quyền lợi (xuống dòng mỗi ý, dùng dấu - cho bullet points)"
                                 />
                             </div>
 

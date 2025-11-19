@@ -113,7 +113,7 @@ function MainContent({ activeTab, username, setActiveTab }) {
                                     }}
                                     style={{ cursor: stats.weeklyProfileViews === 0 ? 'not-allowed' : 'pointer' }}
                                 >
-                                    <h4><FontAwesomeIcon icon={faChartLine} /> Lượt xem hồ sơ tuần này</h4>
+                                    <h4><FontAwesomeIcon icon={faChartLine} /> Lượt xem tin tuần này</h4>
                                     {statsLoading ? (
                                         <p className="loading">Đang tải...</p>
                                     ) : (

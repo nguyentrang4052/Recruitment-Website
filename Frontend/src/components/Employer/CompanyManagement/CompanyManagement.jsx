@@ -16,13 +16,18 @@ const CompanyManagement = () => {
         registeredProvince: '',
         registeredWard: '',
         detailedAddress: '',
+        companyImage: null,
+        companyImagePreview: null,
+        companySize: 0,
     });
 
     const [isEditing, setIsEditing] = useState(false);
     const [provinces, setProvinces] = useState([]);
     const [wards, setWards] = useState([]);
     const [errors, setErrors] = useState({});
-    const fileInputRef = useRef(null);
+
+    const logoInputRef = useRef(null);
+    const imageInputRef = useRef(null);
 
     useEffect(() => {
         setProvinces(provincesData);
@@ -30,16 +35,15 @@ const CompanyManagement = () => {
 
     const loadCompanyInfo = async () => {
         const storedUsername = localStorage.getItem('username');
-        console.log(storedUsername)
         const token = localStorage.getItem('token');
         if (!storedUsername || !token) return;
 
         try {
             const res = await fetch(`http://localhost:8080/api/employer/info?username=${storedUsername}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
             });
 
             if (!res.ok) {
@@ -51,6 +55,7 @@ const CompanyManagement = () => {
             setCompanyInfo({
                 employerID: data.employerID,
                 employerName: data.employerName || '',
+                companySize: data.companySize || 0,
                 representative: data.representative || '',
                 phone: data.phone || '',
                 companyWebsite: data.companyWebsite || '',
@@ -64,6 +69,11 @@ const CompanyManagement = () => {
                 registeredProvince: data.registeredProvince || '',
                 registeredWard: data.registeredWard || '',
                 detailedAddress: data.detailedAddress || '',
+                companyImagePreview: data.companyImage
+                    ? data.companyImage.startsWith('http')
+                        ? data.companyImage
+                        : `http://localhost:8080${data.companyImage}?t=${new Date().getTime()}`
+                    : null,
             });
         } catch (err) {
             console.error('Lỗi khi load thông tin công ty:', err);
@@ -111,20 +121,29 @@ const CompanyManagement = () => {
     const handleLogoChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onloadend = () => {
-            setCompanyInfo(prev => ({
-                ...prev,
-                logoPreview: reader.result,
-                logo: file
-            }));
+            setCompanyInfo(prev => ({ ...prev, logoPreview: reader.result, logo: file }));
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setCompanyInfo(prev => ({ ...prev, companyImagePreview: reader.result, companyImage: file }));
         };
         reader.readAsDataURL(file);
     };
 
     const handleLogoClick = () => {
-        if (isEditing) fileInputRef.current.click();
+        if (isEditing) logoInputRef.current.click();
+    };
+
+    const handleImageClick = () => {
+        if (isEditing) imageInputRef.current.click();
     };
 
     const validatePhoneNumber = (phone) => /^(0)[0-9]{9}$/.test(phone);
@@ -140,23 +159,42 @@ const CompanyManagement = () => {
         }
 
         let logoUrl = companyInfo.logoPreview;
+        let imageUrl = companyInfo.companyImagePreview;
+
 
         if (companyInfo.logo) {
             try {
                 const formData = new FormData();
-                formData.append("file", companyInfo.logo);
-                const uploadRes = await fetch("http://localhost:8080/api/employer/uploadLogo", {
-                    method: "POST",
+                formData.append('file', companyInfo.logo);
+                const uploadRes = await fetch('http://localhost:8080/api/employer/uploadLogo', {
+                    method: 'POST',
                     body: formData,
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
                 });
                 const uploadData = await uploadRes.json();
                 logoUrl = `http://localhost:8080${uploadData.url}?t=${new Date().getTime()}`;
             } catch (err) {
                 console.error('Upload logo thất bại:', err);
                 alert('Upload logo thất bại!');
+                return;
+            }
+        }
+
+
+        if (companyInfo.companyImage) {
+            try {
+                const formData = new FormData();
+                formData.append('file', companyInfo.companyImage);
+                const uploadRes = await fetch('http://localhost:8080/api/employer/uploadImage', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+                });
+                const uploadData = await uploadRes.json();
+                imageUrl = `http://localhost:8080${uploadData.url}?t=${new Date().getTime()}`;
+            } catch (err) {
+                console.error('Upload ảnh công ty thất bại:', err);
+                alert('Upload ảnh công ty thất bại!');
                 return;
             }
         }
@@ -172,6 +210,8 @@ const CompanyManagement = () => {
             registeredProvince: companyInfo.registeredProvince,
             registeredWard: companyInfo.registeredWard,
             companyLogo: logoUrl,
+            companyImage: imageUrl,
+            companySize: companyInfo.companySize,
         };
 
         try {
@@ -180,9 +220,9 @@ const CompanyManagement = () => {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
+                    Authorization: 'Bearer ' + token,
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
             });
             if (!res.ok) {
                 alert('Cập nhật thất bại. HTTP status ' + res.status);
@@ -204,6 +244,7 @@ const CompanyManagement = () => {
 
             {isEditing ? (
                 <div className="company-edit-form">
+
                     <div className="logo-upload-section">
                         <label>Logo Công ty</label>
                         <div className="logo-preview-wrapper" onClick={handleLogoClick}>
@@ -212,9 +253,26 @@ const CompanyManagement = () => {
                             ) : (
                                 <div className="logo-placeholder"><span>Tải logo</span></div>
                             )}
-                            <input type="file" accept="image/*" onChange={handleLogoChange} ref={fileInputRef} style={{ display: 'none' }} />
+                            <input type="file" accept="image/*" onChange={handleLogoChange} ref={logoInputRef} style={{ display: 'none' }} />
                         </div>
                     </div>
+
+
+                    <div className="image-upload-section rectangle">
+                        <label>Ảnh công ty</label>
+                        <div className="image-box" onClick={handleImageClick}>
+                            {companyInfo.companyImagePreview ? (
+                                <img src={companyInfo.companyImagePreview} alt="Company" className="company-img" />
+                            ) : (
+                                <div className="import-hint">
+                                    <span className="import-icon">📷</span>
+                                    <span>Chọn ảnh</span>
+                                </div>
+                            )}
+                            <input type="file" accept="image/*" onChange={handleImageChange} ref={imageInputRef} style={{ display: 'none' }} />
+                        </div>
+                    </div>
+
 
                     <div className="form-group">
                         <label>Tên Công ty</label>
@@ -228,16 +286,16 @@ const CompanyManagement = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="registeredProvince">Tỉnh / Thành phố</label>
-                        <select id="registeredProvince" value={companyInfo.registeredProvince} onChange={handleProvinceChange}>
+                        <label>Tỉnh / Thành phố</label>
+                        <select value={companyInfo.registeredProvince} onChange={handleProvinceChange}>
                             <option value="">-- Chọn Tỉnh/Thành phố --</option>
                             {provinces.map(p => <option key={p.code} value={p.name}>{p.name}</option>)}
                         </select>
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="registeredWard">Xã / Phường</label>
-                        <select id="registeredWard" value={companyInfo.registeredWard} onChange={handleWardChange} disabled={!companyInfo.registeredProvince}>
+                        <label>Xã / Phường</label>
+                        <select value={companyInfo.registeredWard} onChange={handleWardChange} disabled={!companyInfo.registeredProvince}>
                             <option value="">-- Chọn Xã/Phường --</option>
                             {wards.map((w, idx) => <option key={idx} value={w}>{w}</option>)}
                         </select>
@@ -246,6 +304,18 @@ const CompanyManagement = () => {
                     <div className="form-group">
                         <label>Địa chỉ chi tiết</label>
                         <input type="text" name="detailedAddress" value={companyInfo.detailedAddress} onChange={handleInputChange} placeholder="Số nhà, tên đường..." />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Số lượng nhân sự</label>
+                        <input
+                            type="number"
+                            name="companySize"
+                            value={companyInfo.companySize || ''}
+                            onChange={handleInputChange}
+                            min="1"
+                            placeholder="VD: 120"
+                        />
                     </div>
 
                     <div className="form-group">
@@ -261,7 +331,7 @@ const CompanyManagement = () => {
 
                     <div className="form-group">
                         <label>Mô tả công ty</label>
-                        <textarea name="companyProfile" value={companyInfo.companyProfile} onChange={handleInputChange} rows="5"></textarea>
+                        <textarea name="companyProfile" value={companyInfo.companyProfile} onChange={handleInputChange} rows="6" placeholder="- Tên công ty: ABC&#10;- Địa chỉ: 123 Nguyễn Trãi&#10;- Quy mô: 100 người" />
                     </div>
 
                     <div className="button-group">
@@ -278,12 +348,29 @@ const CompanyManagement = () => {
                             <div className="logo-placeholder"><span>Logo</span></div>
                         )}
                     </div>
+
+                    {isEditing && companyInfo.companyImagePreview && (
+                        <div className="image-upload-section rectangle">
+                            <label>Ảnh công ty</label>
+                            <div className="image-box" onClick={handleImageClick}>
+                                <img src={companyInfo.companyImagePreview} alt="Company" className="company-img" />
+                                <input type="file" accept="image/*" onChange={handleImageChange} ref={imageInputRef} style={{ display: 'none' }} />
+                            </div>
+                        </div>
+                    )}
+
                     <p><strong>Tên Công ty:</strong> {companyInfo.employerName}</p>
                     <p><strong>Tên người liên hệ:</strong> {companyInfo.representative}</p>
                     <p><strong>Địa chỉ:</strong> {`${companyInfo.detailedAddress || ''}${companyInfo.registeredWard ? ', ' + companyInfo.registeredWard : ''}${companyInfo.registeredProvince ? ', ' + companyInfo.registeredProvince : ''}` || 'Chưa cập nhật'}</p>
+                    <p>
+                        <strong>Số lượng nhân sự:</strong>{' '}
+                        {companyInfo.companySize ? `${companyInfo.companySize} người` : 'Chưa cập nhật'}
+                    </p>
                     <p><strong>Điện thoại:</strong> {companyInfo.phone}</p>
                     <p><strong>Website:</strong> <a href={companyInfo.companyWebsite} target="_blank" rel="noopener noreferrer">{companyInfo.companyWebsite}</a></p>
-                    <p><strong>Mô tả:</strong> {companyInfo.companyProfile}</p>
+                    <p><strong>Mô tả:</strong></p>
+                    <pre className="company-profile-display">{companyInfo.companyProfile}</pre>
+
                     <button onClick={() => setIsEditing(true)} className="edit-button">Chỉnh sửa</button>
                 </div>
             )}

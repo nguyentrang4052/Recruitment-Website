@@ -18,10 +18,13 @@ import vn.iotstar.key.ApplicationID;
 
 @Repository
 public interface IApplicationRepository extends JpaRepository<Application, ApplicationID>{
+	
 	boolean existsByApplicantAndRecruitmentNews(Applicant applicant, RecruitmentNews reNews);
 	
+	Long countByRecruitmentNews_RNIDAndStatusIn(Integer rnId, List<EStatus> statuses);
 
 	Application findByApplicant_ApplicantIDAndRecruitmentNews_RNID(Integer applicantID, Integer RNID);
+	
 	@Query("SELECT COUNT(a) FROM Application a " +
 	           "JOIN a.recruitmentNews rn " +
 	           "JOIN rn.employer e " +
@@ -51,20 +54,13 @@ public interface IApplicationRepository extends JpaRepository<Application, Appli
 
 
 
+		@Modifying
+	    @Query("UPDATE Application a SET a.status = :status WHERE a.recruitmentNews.RNID = :rnId AND a.applicant.applicantID = :applicantId")
+	    void updateApplicationStatus(@Param("rnId") Integer rnId, 
+	                                 @Param("applicantId") Integer applicantId, 
+	                                 @Param("status") EStatus status);
+	    
 
-	    
-	
-	    @Modifying
-	    @Transactional
-	    @Query("UPDATE Application a SET a.status = :newStatus " +
-	           "WHERE a.recruitmentNews.RNID = :rnId " +
-	           "AND a.applicant.applicantID = :applicantId")
-	    void updateApplicationStatus(
-	        @Param("rnId") Integer recruitmentNewsId,
-	        @Param("applicantId") Integer applicantId,
-	        @Param("newStatus") EStatus newStatus
-	    );
-	    
 	
 	    @Modifying
 	    @Transactional
@@ -84,5 +80,7 @@ public interface IApplicationRepository extends JpaRepository<Application, Appli
 	    	       "JOIN FETCH a.recruitmentNews rn " +
 	    	       "WHERE a.applicant.applicantID = :applicantId")
 	    	List<Application> findApplicationsWithRecruitmentNews(@Param("applicantId") Integer applicantId);
-
+	    
+	    @Query("SELECT COUNT(a) FROM Application a WHERE a.recruitmentNews.RNID = :jobId AND a.status != 'REJECTED'")
+	    Long countApplicantsByJobId(@Param("jobId") Integer jobId);
 }

@@ -30,11 +30,29 @@ public class PostPackage implements Serializable {
 	@Column (name = "packageName", nullable = false, length = 255)
 	private String packageName;
 
-	@Column(name = "categoryName", nullable = false, length = 255)
-	private String categoryName;
+//	@Column(name = "categoryName", nullable = false, length = 255)
+//	private String categoryName;
 	
 	@Column(name="price", nullable = false, precision = 10, scale = 2)
 	private BigDecimal price;
+	
+	@Column(name = "duration", length = 50)
+	private String duration;
+
+	@Column(name = "category", length = 255)
+	private String category;
+
+	@Column(name = "description", length = 1000)
+	private String description;
+
+	@Column(name = "features", columnDefinition = "TEXT")
+	private String features;
+
+	@Column(name = "tax_rate", precision = 4, scale = 2)
+	private BigDecimal taxRate;
+
+	@Column(name = "is_recommended")
+	private Boolean isRecommended = false;
 	
 	@ManyToMany(mappedBy="postPackage")
 	@JsonManagedReference

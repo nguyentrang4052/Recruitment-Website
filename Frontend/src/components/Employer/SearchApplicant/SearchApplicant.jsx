@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './SearchApplicant.css';
 import provincesData from '../../../../data/provinces.json';
 import avatarPlaceholder from '../../../assets/avatar.png';
-import ViewCV from '../ViewApplicant/ViewApplicant.jsx'; // Import ViewCV
+import ViewCV from '../ViewApplicant/ViewApplicant.jsx';
 
 const API_BASE_URL = 'http://localhost:8080/api/employer';
 const SKILLS_API_URL = 'http://localhost:8080/api/skills/list';
@@ -26,7 +26,6 @@ const SearchApplicant = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [skillSearchTerm, setSkillSearchTerm] = useState('');
 
-    // State mới để hiển thị ViewCV
     const [selectedApplicantId, setSelectedApplicantId] = useState(null);
     const [showViewCV, setShowViewCV] = useState(false);
 
@@ -41,9 +40,7 @@ const SearchApplicant = () => {
                 const res = await fetch(SKILLS_API_URL);
                 if (!res.ok) throw new Error('Không thể tải danh sách kỹ năng');
                 const data = await res.json();
-                const skillNames = data
-                    .map(skill => skill.skillName)
-                    .filter(name => typeof name === 'string' && name.trim() !== '');
+                const skillNames = data.map(skill => skill.skillName).filter(name => name && name.trim());
                 setAvailableSkills(skillNames);
             } catch (err) {
                 console.error("Lỗi khi tải kỹ năng:", err);
@@ -133,25 +130,23 @@ const SearchApplicant = () => {
         skill.toLowerCase().includes(skillSearchTerm.toLowerCase())
     );
 
-    // Handler mới để xem CV
     const handleViewCV = (applicantId) => {
         setSelectedApplicantId(applicantId);
         setShowViewCV(true);
     };
 
-    // Handler quay lại danh sách
     const handleBackFromCV = () => {
         setShowViewCV(false);
         setSelectedApplicantId(null);
     };
 
-    // Render ViewCV nếu đang ở chế độ xem chi tiết
     if (showViewCV) {
         return (
             <ViewCV
                 applicantId={selectedApplicantId}
+                recruitmentNewsId={null}
                 onBack={handleBackFromCV}
-                showActions={false} // Ẩn nút Duyệt/Từ chối
+                showActions={false}
                 hideApplicationInfo={true}
             />
         );
@@ -283,31 +278,19 @@ const SearchApplicant = () => {
                                     onError={(e) => { e.target.onerror = null; e.target.src = avatarPlaceholder; }}
                                 />
                                 <div className="candidate-info">
-
                                     <h5 className="candidate-name">{candidate.applicantName}</h5>
                                     <p className="candidate-title">{candidate.jobTitle || "Chưa cập nhật chức danh"}</p>
-
-                                    <div className="candidate-meta">
+                                    {/* <div className="candidate-meta">
                                         <span><i className="fas fa-map-marker-alt"></i> {candidate.location || "Toàn quốc"}</span>
                                         <span><i className="fas fa-briefcase"></i> {candidate.experience || "Chưa rõ"}</span>
-                                    </div>
-
-
+                                    </div> */}
                                     <div className="candidate-skills">
                                         {(candidate.skillNames || []).map((skill, index) => (
                                             <span key={index} className="skill-tag">{skill}</span>
                                         ))}
-
                                     </div>
-
-
                                     <p className="salary-expectation">Mức lương mong muốn: <strong>{candidate.desireSalary || "Thỏa thuận"}</strong></p>
-
-                                    {/* THAY THẾ Link BẰNG button */}
-                                    <button
-                                        onClick={() => handleViewCV(candidate.applicantID)}
-                                        className="view-profile-button"
-                                    >
+                                    <button onClick={() => handleViewCV(candidate.applicantID)} className="view-profile-button">
                                         Xem hồ sơ
                                     </button>
                                 </div>
@@ -321,19 +304,11 @@ const SearchApplicant = () => {
 
             {totalPages > 1 && (
                 <div className="pagination">
-                    <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 0 || loading}
-                    >
+                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0 || loading}>
                         Trang trước
                     </button>
-                    <span className="page-indicator">
-                        Trang {currentPage + 1} / {totalPages}
-                    </span>
-                    <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1 || loading}
-                    >
+                    <span className="page-indicator">Trang {currentPage + 1} / {totalPages}</span>
+                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1 || loading}>
                         Trang sau
                     </button>
                 </div>

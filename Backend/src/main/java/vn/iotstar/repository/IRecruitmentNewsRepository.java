@@ -12,10 +12,10 @@ import vn.iotstar.enums.EStatus;
 import java.util.Optional;
 
 @Repository
-@Transactional(readOnly = true) 
+@Transactional(readOnly = true)
 public interface IRecruitmentNewsRepository extends JpaRepository<RecruitmentNews, Integer> {
 
-    
+
     @Query("SELECT COUNT(rn) FROM RecruitmentNews rn " +
            "WHERE rn.employer.account.accountID = :employerAccountId " +
            "AND rn.status = :status")
@@ -23,7 +23,7 @@ public interface IRecruitmentNewsRepository extends JpaRepository<RecruitmentNew
         @Param("employerAccountId") Integer employerAccountId,
         @Param("status") EStatus status);
 
-  
+   
     @Query("SELECT rn FROM RecruitmentNews rn " +
            "WHERE rn.employer.account.accountID = :accountId " +
            "AND rn.status = :status")
@@ -32,14 +32,13 @@ public interface IRecruitmentNewsRepository extends JpaRepository<RecruitmentNew
         @Param("status") EStatus status,
         Pageable pageable);
 
-  
-    @Query("SELECT COUNT(a) FROM Application a " +
-           "WHERE a.recruitmentNews.RNID = :jobId")
+   
+    @Query("SELECT COUNT(a) FROM Application a WHERE a.recruitmentNews.RNID = :jobId AND a.status != 'REJECTED'")
     Long countApplicantsByJobId(@Param("jobId") Integer jobId);
     
-    
+   
     @Query("SELECT rn FROM RecruitmentNews rn " +
-           "LEFT JOIN FETCH rn.skill s " + 
+           "LEFT JOIN FETCH rn.skill s " +
            "WHERE rn.RNID = :jobId")
     Optional<RecruitmentNews> findByIdWithSkills(@Param("jobId") Integer jobId);
 

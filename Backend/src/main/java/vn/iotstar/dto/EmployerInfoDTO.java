@@ -19,7 +19,6 @@ public class EmployerInfoDTO {
     private String detailedAddress;
     private String registeredProvince;
     private String registeredWard;
-
-
-
+    private String companyImage;
+    private Integer companySize;
 }

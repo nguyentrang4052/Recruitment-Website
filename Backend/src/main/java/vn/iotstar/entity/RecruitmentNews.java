@@ -56,7 +56,7 @@ public class RecruitmentNews implements Serializable {
 	@Column(name = "maxSalary", nullable = true, precision = 10, scale = 2)
 	private BigDecimal maxSalary;
 
-	@Column(name = "benefit", nullable = true, length = 2000)
+	@Column(name = "benefit", nullable = true, length = 3000)
 	private String benefit;
 
 	@Column(name = "location", nullable = true, length = 255)

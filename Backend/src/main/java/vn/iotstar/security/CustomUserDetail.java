@@ -34,6 +34,7 @@ public class CustomUserDetail implements UserDetails {
 
 		String roleName = account.getRole().getRoleName();
 		return List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
+
 	}
 
 	@Override

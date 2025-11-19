@@ -235,3 +235,75 @@
     margin-top: 5px;
     display: block;
 }
+
+.company-image-display {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.company-image-preview {
+  width: 300px;
+  max-width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.company-profile-display {
+  white-space: pre-wrap; 
+  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 8px;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+
+.image-upload-section.rectangle {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.image-box {
+  width: 100%;
+  max-width: 500px;          
+  height: 250px;
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  background: #fafafa;
+  transition: border-color 0.3s;
+  margin: 0 auto;
+}
+
+.image-box:hover {
+  border-color: #0056b3;
+  background: #f1f9ff;
+}
+
+
+.company-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.import-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #555;
+  font-size: 16px;
+}
+.import-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+

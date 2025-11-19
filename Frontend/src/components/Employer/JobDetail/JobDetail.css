@@ -62,7 +62,7 @@
     align-items: start;
 }
 
-/* Main Info */
+
 .jd-main {
     background: white;
     border-radius: 12px;
@@ -143,7 +143,7 @@
     box-shadow: 0 2px 6px rgba(226, 228, 239, 0.3);
 }
 
-/* Sidebar */
+
 .jd-sidebar {
     display: flex;
     flex-direction: column;
@@ -247,7 +247,7 @@
     font-weight: 700;
 }
 
-/* Edit Mode */
+
 .jd-form {
     display: flex;
     flex-direction: column;
@@ -258,12 +258,14 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    
 }
 
 .jd-form-group label {
     font-weight: 600;
     color: #2c3e50;
     font-size: 13px;
+    text-align: left;
 }
 
 .jd-form-group input,
@@ -289,6 +291,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+    
 }
 
 .jd-form-actions {
@@ -383,4 +386,110 @@
         align-items: flex-start;
         gap: 8px;
     }
+}
+
+
+.formatted-content p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.formatted-content ul {
+    margin: 10px 0;
+    padding-left: 25px;
+    list-style-type: disc;
+}
+
+.formatted-content li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+    position: relative;
+}
+
+.formatted-content li::before {
+    content: '•';
+    color: #3498db;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+.formatted-content p:last-child,
+.formatted-content li:last-child {
+    margin-bottom: 0;
+}
+
+
+.jd-section-content {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+
+.jd-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.jd-form textarea::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+
+.formatted-content {
+    text-align: left ;
+    padding-left: 0 ;
+}
+
+.formatted-content p,
+.formatted-content li {
+    text-align: left;
+    margin-left: 0;
+}
+
+.formatted-content ul {
+    padding-left: 20px;
+    margin-left: 0;
+}
+
+
+.jd-section-content {
+    text-align: left !important;
+    padding-left: 0 !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+
+.jd-section-content p,
+.jd-section-content li,
+.jd-section-content div {
+    text-align: left !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+
+.formatted-content ul {
+    padding-left: 25px !important;
+    margin-left: 0 !important;
+}
+
+.formatted-content li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+
+.jd-section-content {
+    white-space: normal !important;
 }

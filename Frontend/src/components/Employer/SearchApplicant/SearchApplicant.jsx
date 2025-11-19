@@ -152,10 +152,7 @@ const SearchApplicant = () => {
                 applicantId={selectedApplicantId}
                 onBack={handleBackFromCV}
                 showActions={false} // Ẩn nút Duyệt/Từ chối
-<<<<<<< HEAD
-=======
                 hideApplicationInfo={true}
->>>>>>> Trang
             />
         );
     }

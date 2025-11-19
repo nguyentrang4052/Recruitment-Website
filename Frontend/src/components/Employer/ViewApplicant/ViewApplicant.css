@@ -2,11 +2,7 @@
     /* padding: 15px 20px; */
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     /* min-height: 100vh; */
-<<<<<<< HEAD
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-=======
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
->>>>>>> Trang
     width: 1000px;
     margin-left: 350px;
 }
@@ -66,23 +62,11 @@
     position: sticky;
     top: 20px;
     height: fit-content;
-<<<<<<< HEAD
-=======
     /* width: 300px; */
->>>>>>> Trang
 }
 
 .avatar-section {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-<<<<<<< HEAD
-    padding: 30px 20px;
-    text-align: center;
-    position: relative;
-}
-
-.avatar-section::before {
-    content: '';
-=======
     padding: 20px 10px;
     text-align: center;
     position: relative;
@@ -96,7 +80,6 @@
 
 .avatar-section::before {
     content: "";
->>>>>>> Trang
     position: absolute;
     top: 0;
     left: 0;
@@ -125,11 +108,8 @@
     margin: 10px 0 6px;
     position: relative;
     z-index: 1;
-<<<<<<< HEAD
-=======
     white-space: normal;
     word-wrap: break-word;
->>>>>>> Trang
 }
 
 .applicant-subtitle {
@@ -138,11 +118,8 @@
     font-weight: 500;
     position: relative;
     z-index: 1;
-<<<<<<< HEAD
-=======
     white-space: normal;
     word-wrap: break-word;
->>>>>>> Trang
 }
 
 .contact-info {
@@ -340,29 +317,17 @@
 }
 
 .cv-file-section::before {
-<<<<<<< HEAD
-    content: '';
-=======
     content: "";
->>>>>>> Trang
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-<<<<<<< HEAD
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-=======
     background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
->>>>>>> Trang
     animation: pulse 4s ease-in-out infinite;
 }
 
 @keyframes pulse {
-<<<<<<< HEAD
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-=======
     0%,
     100% {
         transform: scale(1);
@@ -372,7 +337,6 @@
         transform: scale(1.1);
         opacity: 0.8;
     }
->>>>>>> Trang
 }
 
 .cv-file-section h3 {
@@ -471,11 +435,7 @@
     .cv-content {
         grid-template-columns: 1fr;
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> Trang
     .cv-sidebar {
         position: relative;
         top: 0;
@@ -486,17 +446,6 @@
     .view-cv-container {
         padding: 15px;
     }
-<<<<<<< HEAD
-    
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-    }
-}
-=======
 
     .info-grid {
         grid-template-columns: 1fr;
@@ -506,4 +455,3 @@
         flex-direction: column;
     }
 }
->>>>>>> Trang

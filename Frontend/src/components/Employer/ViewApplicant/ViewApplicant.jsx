@@ -21,11 +21,7 @@ import avatarPlaceholder from '../../../assets/avatar.png';
 
 const API_BASE_URL = 'http://localhost:8080/api/employer';
 
-<<<<<<< HEAD
-const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onReject, showActions = true }) => {
-=======
 const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onReject, showActions = true, hideApplicationInfo = false }) => {
->>>>>>> Trang
     const [applicant, setApplicant] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -173,11 +169,7 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
                         <p className="content-text">{applicant.experience || 'Chưa cập nhật'}</p>
                     </div>
 
-<<<<<<< HEAD
-                    {currentApplication && (
-=======
                     {!hideApplicationInfo && currentApplication && (
->>>>>>> Trang
                         <div className="content-section">
                             <h3><FontAwesomeIcon icon={faFileAlt} /> Thông tin ứng tuyển</h3>
                             <div className="info-grid">
@@ -218,7 +210,4 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
 };
 
 export default ViewApplicant;
-<<<<<<< HEAD
-=======
 
->>>>>>> Trang

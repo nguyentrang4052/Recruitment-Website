@@ -23,18 +23,11 @@ import { LayoutWithHeader, LayoutWithHomePage } from './components/Applicant/Lay
 import './App.css';
 import CompanyReviewDetail from './components/Applicant/Content/Company/CompanyReviewDetail/ReviewDetail.jsx';
 import ApplicantDetail from './components/Employer/ApplicantDetail/ApplicantDetail.jsx';
-<<<<<<< HEAD
-import AdminDashboard from './components/Admin/Dashboard/Dashboard.jsx'
-import ChatBot from './components/ChatBot/ChatBot.jsx'
-import NewApplicant from './components/Employer/NewApplicant/NewApplicant.jsx'
-
-=======
 import AdminDashboard from './components/Admin/Dashboard/Dashboard.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx'
 import RoleBasedRedirect from './components/RoleBasedRedirect.jsx';
 import AlreadyAuth from './components/AlreadyAuth.jsx';
 import AboutPage from './components/Applicant/Footer/AboutPage.jsx';
->>>>>>> Trang
 
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -50,11 +43,6 @@ function App() {
           {/* Các route dành cho khách (chưa đăng nhập) */}
           <Route element={<AlreadyAuth />}>
           <Route element={<LayoutWithHomePage />}>
-<<<<<<< HEAD
-            <Route index element={<RecruimentNews />} />
-
-=======
->>>>>>> Trang
             <Route path="/login" element={<Login />} />
             <Route path="/applicant-login" element={<ApplicantLogin />} />
             <Route path="/signup" element={<SignUp />} />
@@ -75,18 +63,10 @@ function App() {
             <Route path="/companies/reviews/:employerId" element={<CompanyReviewDetail />} />
             <Route path="/companies/reviews" element={<CompanyReview />} />
             <Route path="/cv-templates" element={<CV />} />
+            <Route path="/about" element={<AboutPage />} />
              {/* <Route path="/admin" element={<AdminDashboard />} /> */}
           </Route>
 
-<<<<<<< HEAD
-          <Route path="/employer-signup" element={<EmployerRegistration />} />
-          <Route path="/employer/applicant/:id" element={<ApplicantDetail />} />
-          <Route path = "/admin" element=   {<AdminDashboard/>}/>
-          {/* <Route path = "/admin/recruitment" element={<AdminRecruitmentDetail/>}/> */}
-              <Route path="/chatbot" element={<ChatBot/>}/>
-          {/* <Route path="/employer/applicants/:recruitmentNewsId" element={<NewApplicant />} /> */}
-
-=======
           {/* Applicant area */}
           <Route element={<PrivateRoute allowedRoles={['applicant']} />}>
             <Route element={<LayoutWithHeader />}>
@@ -99,7 +79,6 @@ function App() {
               
             </Route>
           </Route>
->>>>>>> Trang
 
           {/* Employer area */}
           <Route element={<PrivateRoute allowedRoles={['employer']} />}>

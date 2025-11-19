@@ -116,17 +116,10 @@
     margin-top: 10px;
 }
 
-<<<<<<< HEAD
-.company-management-container { 
-    width: 100%; 
-    max-width: 900px; 
-    margin-top: 20px; 
-=======
 .company-management-container {
     width: 100%;
     max-width: 900px;
     margin-top: 20px;
->>>>>>> Trang
 }
 
 .loading {
@@ -144,8 +137,4 @@
 .stat-card.disabled:hover {
     transform: none;
     box-shadow: none;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> Trang

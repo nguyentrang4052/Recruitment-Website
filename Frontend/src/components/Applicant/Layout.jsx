@@ -30,7 +30,7 @@ const LayoutWithHomePage = () => {
       {token ? (
         <>
           <Header />
-          {(location.pathname.startsWith('/recruitment/') || location.pathname.startsWith('/companies') )&& <Breadcrumb />}
+          {(location.pathname.startsWith('/recruitment/') || location.pathname.startsWith('/companies') || location.pathname == ('/about') || location.pathname == ('/cv-templates'))&& <Breadcrumb />}
 
        
           <Outlet />

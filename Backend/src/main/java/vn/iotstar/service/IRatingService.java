@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import jakarta.transaction.Transactional;
 import vn.iotstar.dto.applicant.RatingDTO;
 import vn.iotstar.entity.Rating;
+import vn.iotstar.key.RatingID;
 
 public interface IRatingService {
 
@@ -13,5 +14,7 @@ public interface IRatingService {
 	BigDecimal avgScore(Integer employerID);
 
 	RatingDTO create(RatingDTO dto, Integer applicantId);
+
+	void deleteByEmployer_EmployerIDAndApplicant_ApplicantID(Integer employerID, Integer applicantID);
 
 }

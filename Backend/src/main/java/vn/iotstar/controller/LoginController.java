@@ -107,6 +107,11 @@ public class LoginController {
 	        CustomUserDetail userDetails = (CustomUserDetail) uService.loadUserByUsername(loginRequest.getUsername());
 	        Account account = userDetails.getAccount();
 	        
+	        if (account.getActive() == 0)
+	        {
+	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	 	                .body("Tài khoản đã bị khoá");
+	        }
 	        
 	        String token = jwtUtil.generateToken(account.getUsername(), account.getProvider());
 

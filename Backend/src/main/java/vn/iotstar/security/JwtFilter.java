@@ -24,119 +24,125 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final EmailService emailService;
+	private final EmailService emailService;
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+	@Autowired
+	private CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+	@Autowired
+	private JwtUtil jwtUtil;
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
 
-    public JwtFilter(EmailService emailService) {
-        this.emailService = emailService;
-    }
+	public JwtFilter(EmailService emailService) {
+		this.emailService = emailService;
+	}
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        String path = request.getServletPath();
+		String path = request.getServletPath();
 
-       
-        if (path.equals("/api/logout") || path.equals("/api/") || path.equals("/api/detail")
-                || path.equals("/api/applicant/relate-jobs") || path.equals("/api/applicant/companies")
-                || path.equals("/api/applicant/companies/detail") || path.equals("/api/applicant/companies/job")
-                || path.equals("/api/job/search")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+//        if (path.equals("/api/logout") || path.equals("/api/") || path.equals("/api/detail")
+//                || path.equals("/api/applicant/relate-jobs") || path.equals("/api/applicant/companies")
+//                || path.equals("/api/applicant/companies/detail") || path.equals("/api/applicant/companies/job")
+//                || path.equals("/api/job/search") ||  path.equals("/api/applicant/notice/create")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+		
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		
+		String token = authHeader.substring(7);
+		
+		String username;
+		String provider;
+		String jti;
 
-        String token = authHeader.substring(7);
-        String username;
-        String provider;
-        String jti;
+		try {
+			jti = jwtUtil.extractJti(token).getId();
+			username = jwtUtil.extractUsername(token);
+			provider = jwtUtil.extractProvider(token);
+		} catch (ExpiredJwtException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("Token expired");
+			return;
+		} catch (JwtException | IllegalArgumentException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("Invalid token");
+			return;
+		}
 
-        try {
-            jti = jwtUtil.extractJti(token).getId();
-            username = jwtUtil.extractUsername(token);
-            provider = jwtUtil.extractProvider(token);
-        } catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token expired");
-            return;
-        } catch (JwtException | IllegalArgumentException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid token");
-            return;
-        }
+		if (Boolean.TRUE.equals(redisTemplate.hasKey("blacklist:" + jti))) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("Token revoked");
+			return;
+		}
 
-        if (Boolean.TRUE.equals(redisTemplate.hasKey("blacklist:" + jti))) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token revoked");
-            return;
-        }
+		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			UsernamePasswordAuthenticationToken authToken;
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UsernamePasswordAuthenticationToken authToken;
+			try {
 
-            try {
-         
-                CustomUserDetail userDetails = (CustomUserDetail) userDetailsService.loadUserByUsername(username);
+				CustomUserDetail userDetails = (CustomUserDetail) userDetailsService.loadUserByUsername(username);
 
-                if (!jwtUtil.validateToken(token, userDetails)) {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token hết hạn hoặc không hợp lệ");
-                    return;
-                }
+				if (!jwtUtil.validateToken(token, userDetails)) {
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token hết hạn hoặc không hợp lệ");
+					return;
+				}
 
-                String expectedProvider = userDetails.getAccount().getProvider();
-                if (!provider.equalsIgnoreCase(expectedProvider)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Invalid token");
-                    return;
-                }
+				String expectedProvider = userDetails.getAccount().getProvider();
+				if (!provider.equalsIgnoreCase(expectedProvider)) {
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+					response.getWriter().write("Invalid token");
+					return;
+				}
 
-               
-                authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
+				authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            } catch (RuntimeException e) {
+			} catch (RuntimeException e) {
 
-                if ("google".equalsIgnoreCase(provider)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("User chưa đăng ký. Vui lòng đăng ký trước khi login bằng Google.");
-                    return;
-                } else {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("User không tồn tại hoặc token không hợp lệ");
-                    return;
-                }
-            }
+				if ("google".equalsIgnoreCase(provider)) {
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+					response.getWriter().write("User chưa đăng ký. Vui lòng đăng ký trước khi login bằng Google.");
+					return;
+				} else {
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+					response.getWriter().write("User không tồn tại hoặc token không hợp lệ");
+					return;
+				}
+			}
 
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-        }
+			authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			SecurityContextHolder.getContext().setAuthentication(authToken);
+		}
+		filterChain.doFilter(request, response);
+	}
 
-        filterChain.doFilter(request, response);
-    }
+//    @Override
+//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+//        String path = request.getRequestURI();
+//        return path.startsWith("/api/auth/") 
+//                || path.startsWith("/api/employer/register") 
+//                || path.startsWith("/api/skills/list");
+//    }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getRequestURI();
-        return path.startsWith("/api/auth/") 
-                || path.startsWith("/api/employer/register") 
-                || path.startsWith("/api/skills/list");
-    }
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		String path = request.getServletPath(); 
+		return path.equals("/api/logout") || path.equals("/api/") || path.equals("/api/detail")
+				|| path.equals("/api/applicant/relate-jobs") || path.equals("/api/applicant/companies")
+				|| path.equals("/api/applicant/companies/detail") || path.equals("/api/applicant/companies/job")
+				|| path.equals("/api/job/search") || path.startsWith("/api/auth/")
+				|| path.startsWith("/api/employer/register") || path.startsWith("/api/skills/list");
+//				|| path.equals("/api/applicant/notice/create");
+	}
+
 }
-
-
-

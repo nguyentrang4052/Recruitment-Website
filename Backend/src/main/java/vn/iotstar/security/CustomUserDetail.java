@@ -16,10 +16,8 @@ public class CustomUserDetail implements UserDetails {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private Account account;
 
-	
+	private Account account;
 
 	public Account getAccount() {
 		return account;
@@ -31,10 +29,11 @@ public class CustomUserDetail implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		if (account.getRole() == null) return Collections.emptyList();
+		if (account.getRole() == null)
+			return Collections.emptyList();
 
-	    String roleName = account.getRole().getRoleName();
-	    return List.of(new SimpleGrantedAuthority("ROLE_" + roleName.toUpperCase()));
+		String roleName = account.getRole().getRoleName();
+		return List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
 	}
 
 	@Override
@@ -44,28 +43,30 @@ public class CustomUserDetail implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return account.getUsername();
+		if (account.getUsername() == null)
+			return account.getEmail();
+		else
+			return account.getUsername();
 	}
-	
+
 	@Override
 	public boolean isAccountNonExpired() {
-	    return true;
+		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-	    return true;
+		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-	    return true;
+		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-	    return true;
+		return true;
 	}
-
 
 }

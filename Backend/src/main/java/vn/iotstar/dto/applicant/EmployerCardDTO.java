@@ -29,11 +29,12 @@ public class EmployerCardDTO {
 	private String address;
 	private String companyWebsite;
 
-	public EmployerCardDTO(String name, String logo, Integer jobs, String address) {
+	public EmployerCardDTO(String name, String logo, Integer jobs, String address, String fullName) {
 		this.name = name;
 		this.logo = logo;
 		this.jobs = jobs;
 		this.address = address;
+		this.fullName = fullName;
 	}
 
 }

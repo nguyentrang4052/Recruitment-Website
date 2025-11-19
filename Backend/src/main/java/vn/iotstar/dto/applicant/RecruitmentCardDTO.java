@@ -1,6 +1,7 @@
 package vn.iotstar.dto.applicant;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,5 +60,7 @@ public class RecruitmentCardDTO {
 	
 	
 	private Application application;
+	
+	
 
 }

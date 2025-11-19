@@ -1,5 +1,8 @@
 package vn.iotstar.service.imp;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +40,11 @@ public class RecruitmentService implements IRecruitmentService {
 	}
 
 	@Override
+	public List<RecruitmentNews> findAllNews() {
+		return recruitmentRepository.findAllNews();
+	}
+
+	@Override
 	public Optional<RecruitmentNews> findById(Integer id) {
 		return recruitmentRepository.findById(id);
 	}
@@ -53,9 +61,10 @@ public class RecruitmentService implements IRecruitmentService {
 				: "Thỏa thuận";
 
 		EmployerCardDTO emp = new EmployerCardDTO(rn.getEmployer().getEmployerName(), rn.getEmployer().getCompanyLogo(),
-				countApprovedJobs(rn.getEmployer().getEmployerID()), rn.getEmployer().getAddress());
+				countApprovedJobs(rn.getEmployer().getEmployerID()), rn.getEmployer().getAddress(), rn.getEmployer().getFullName());
 
 		List<String> skillNames = rn.getSkill().stream().map(Skill::getSkillName).toList();
+		
 
 		return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(),
 				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
@@ -71,11 +80,12 @@ public class RecruitmentService implements IRecruitmentService {
 				: "Thỏa thuận";
 
 		EmployerCardDTO emp = new EmployerCardDTO(rn.getEmployer().getEmployerName(), rn.getEmployer().getCompanyLogo(),
-				countApprovedJobs(rn.getEmployer().getEmployerID()), rn.getEmployer().getAddress());
+				countApprovedJobs(rn.getEmployer().getEmployerID()), rn.getEmployer().getAddress(), rn.getEmployer().getFullName());
 
 		List<String> skillNames = rn.getSkill().stream().map(Skill::getSkillName).toList();
 		
 		Application application = appService.findByApplicant_ApplicantIDAndRecruitmentNews_RNID(applicant.getApplicantID(), rn.getRNID());
+		
 		
 		return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(),
 				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
@@ -119,6 +129,18 @@ public class RecruitmentService implements IRecruitmentService {
 	public List<RecruitmentNews> findByApplication_Applicant_ApplicantID(Integer id) {
 		return recruitmentRepository.findByApplication_Applicant_ApplicantID(id);
 	}
-	
+
+	@Override
+	public List<RecruitmentNews> findBySalary(BigDecimal minSalary, BigDecimal maxSalary) {
+		return recruitmentRepository.findBySalary(minSalary, maxSalary);
+	}
+
+	@Override
+	public List<RecruitmentNews> findMatchingJobs(String jobTitle, String location, String salaryRange, String level,
+			LocalDate lastSentDate) {
+		return recruitmentRepository.findMatchingJobs(jobTitle, location, salaryRange, level, lastSentDate);
+	}
+
+
 	
 }

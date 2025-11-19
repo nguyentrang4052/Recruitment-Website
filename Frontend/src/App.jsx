@@ -41,21 +41,26 @@ function App() {
 
           {/* Các route dành cho khách (chưa đăng nhập) */}
           <Route element={<AlreadyAuth />}>
+          <Route element={<LayoutWithHomePage />}>
             <Route path="/login" element={<Login />} />
             <Route path="/applicant-login" element={<ApplicantLogin />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/verify-otp" element={<Verify />} />
             <Route path="/forgot-password" element={<ForgotPass />} />
             <Route path="/employer-link" element={<EmployerLink />} />
+            
+            </Route>
           </Route>
 
           {/* Các route public không cần đăng nhập */}
           <Route element={<LayoutWithHomePage />}>
+          <Route path="/dashboard" element={<RecruimentNews />} />
             <Route path="/recruitment/:rnid" element={<RecruitmentDetail />} />
             <Route path="/companies" element={<CompanyIntro />} />
             <Route path="/companies/:employerId" element={<CompanyDetail />} />
             <Route path="/companies/reviews/:employerId" element={<CompanyReviewDetail />} />
             <Route path="/companies/reviews" element={<CompanyReview />} />
+             {/* <Route path="/admin" element={<AdminDashboard />} /> */}
           </Route>
 
           {/* Applicant area */}

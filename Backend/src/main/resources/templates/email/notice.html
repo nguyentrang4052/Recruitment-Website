@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Thông báo việc làm mới</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f5f5f5;
+			padding: 20px 0;
+		}
+
+		.email-wrapper {
+			max-width: 650px;
+			margin: 0 auto;
+			background-color: #ffffff;
+		}
+
+		/* Header */
+		.header {
+			background: linear-gradient(135deg, #3fa8a0 0%, #4db5ad 100%);
+			padding: 60px 40px;
+			position: relative;
+			overflow: hidden;
+			text-align: center;
+		}
+
+		.header::before {
+			content: 'Gz';
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 280px;
+			font-weight: 900;
+			color: rgba(0, 0, 0, 0.15);
+			font-family: 'Arial Black', sans-serif;
+			z-index: 0;
+			letter-spacing: -20px;
+		}
+
+		.logo-section {
+			position: relative;
+			z-index: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 20px;
+		}
+
+		.logo {
+			background-color: rgba(255, 255, 255, 0.95);
+			color: #5b21b6;
+			font-size: 32px;
+			font-weight: 600;
+			padding: 12px 40px;
+			border-radius: 50px;
+			letter-spacing: 12px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		}
+
+		.tagline {
+			color: #1f2937;
+			font-size: 18px;
+			font-weight: 500;
+			letter-spacing: 2px;
+		}
+
+		/* Content */
+		.content {
+			padding: 40px 40px 20px;
+		}
+
+		.greeting {
+			font-size: 16px;
+			color: #333;
+			margin-bottom: 20px;
+		}
+
+		.greeting-name {
+			color: #3fa8a0;
+			font-weight: 600;
+		}
+
+		.intro-text {
+			font-size: 15px;
+			color: #555;
+			line-height: 1.6;
+			margin-bottom: 30px;
+		}
+
+		.keyword-highlight {
+			color: #3fa8a0;
+			font-weight: 600;
+			background-color: #e0f5f3;
+			padding: 2px 6px;
+			border-radius: 4px;
+		}
+
+		/* Job List */
+		.job-list {
+			margin: 30px 0;
+		}
+
+		.job-card {
+			border: 1px solid #e5e7eb;
+			border-radius: 8px;
+			padding: 20px;
+			margin-bottom: 16px;
+			transition: all 0.3s;
+			background-color: #ffffff;
+		}
+
+		.job-card:hover {
+			border-color: #3fa8a0;
+			box-shadow: 0 4px 12px rgba(63, 168, 160, 0.1);
+		}
+
+		.job-header {
+			display: flex;
+			gap: 15px;
+			margin-bottom: 15px;
+		}
+
+		.company-logo {
+			width: 60px;
+			height: 60px;
+			border: 1px solid #e5e7eb;
+			border-radius: 8px;
+			object-fit: contain;
+			padding: 5px;
+			background-color: #fff;
+			flex-shrink: 0;
+		}
+
+		.job-info {
+			flex: 1;
+		}
+
+		.job-title {
+			font-size: 17px;
+			font-weight: 600;
+			color: #1f2937;
+			margin-bottom: 8px;
+			line-height: 1.4;
+		}
+
+		.job-title a {
+			color: #1f2937;
+			text-decoration: none;
+		}
+
+		.job-title a:hover {
+			color: #3fa8a0;
+		}
+
+		.company-name {
+			font-size: 14px;
+			color: #6b7280;
+			margin-bottom: 4px;
+		}
+
+		.job-deadline {
+			font-size: 13px;
+			color: #9ca3af;
+			font-style: italic;
+		}
+
+		.job-details {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 15px;
+			align-items: center;
+		}
+
+		.job-detail-item {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 13px;
+			color: #4b5563;
+		}
+
+		.job-detail-item svg {
+			width: 16px;
+			height: 16px;
+			opacity: 0.7;
+		}
+
+		.salary-badge {
+			background-color: #e0f5f3;
+			color: #0f766e;
+			padding: 4px 12px;
+			border-radius: 20px;
+			font-weight: 600;
+			font-size: 13px;
+		}
+
+		.apply-button {
+			display: inline-block;
+			background-color: #3fa8a0;
+			color: #ffffff;
+			padding: 10px 24px;
+			border-radius: 6px;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: 600;
+			margin-top: 15px;
+			transition: background-color 0.3s;
+		}
+
+		.apply-button:hover {
+			background-color: #2d8a82;
+		}
+
+		/* View More Button */
+		.view-more {
+			text-align: center;
+			margin: 30px 0;
+		}
+
+		.view-more-button {
+			display: inline-block;
+			background-color: #ffffff;
+			color: #3fa8a0;
+			border: 2px solid #3fa8a0;
+			padding: 12px 32px;
+			border-radius: 6px;
+			text-decoration: none;
+			font-size: 15px;
+			font-weight: 600;
+			transition: all 0.3s;
+		}
+
+		.view-more-button:hover {
+			background-color: #3fa8a0;
+			color: #ffffff;
+		}
+
+		/* Footer */
+		.footer {
+			background-color: #f9fafb;
+			padding: 30px 40px;
+			border-top: 1px solid #e5e7eb;
+		}
+
+		.footer-text {
+			font-size: 13px;
+			color: #6b7280;
+			line-height: 1.6;
+			margin-bottom: 15px;
+		}
+
+		.unsubscribe {
+			font-size: 12px;
+			color: #9ca3af;
+			margin-top: 20px;
+		}
+
+		.unsubscribe a {
+			color: #3fa8a0;
+			text-decoration: none;
+		}
+
+		.unsubscribe a:hover {
+			text-decoration: underline;
+		}
+
+		.social-links {
+			margin-top: 20px;
+			display: flex;
+			gap: 15px;
+		}
+
+		.social-link {
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+			background-color: #e5e7eb;
+			border-radius: 50%;
+			text-align: center;
+			line-height: 32px;
+			color: #6b7280;
+			text-decoration: none;
+			transition: all 0.3s;
+		}
+
+		.social-link:hover {
+			background-color: #3fa8a0;
+			color: #ffffff;
+		}
+
+		/* Responsive */
+		@media only screen and (max-width: 600px) {
+
+			.header {
+				padding: 40px 20px;
+			}
+			
+			.header::before {
+				font-size: 120px;
+			}
+			
+			.logo {
+				font-size: 24px;
+				padding: 10px 30px;
+				letter-spacing: 8px;
+			}
+			
+			.tagline {
+				font-size: 14px;
+				letter-spacing: 1px;
+				text-align: center;
+			}
+
+			.content,
+			.footer {
+				padding: 20px;
+			}
+			
+			.job-header {
+				gap: 15px;
+			}
+			
+			.company-logo {
+				width: 50px;
+				height: 50px;
+			}
+			
+			.job-title {
+				font-size: 15px;
+			}
+
+			.job-details {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 12px;
+			}
+
+			.logo-section {
+				gap: 15px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="email-wrapper">
+		<!-- Header -->
+		<div class="header">
+			<div class="logo-section">
+				<div class="logo">
+					GZCONNECT
+				</div>
+				<div class="tagline">
+					Kết nối tài năng công nghệ - Dẫn lối tương lai
+				</div>
+			</div>
+		</div>
+
+		<!-- Content -->
+		<div class="content">
+			<p class="greeting">
+				Xin chào <span class="greeting-name" th:text="${candidateName}"></span>,
+			</p>
+
+			<p class="intro-text">
+				Chúng tôi vừa tìm thấy <strong th:text="${jobCount}"></strong> việc làm mới nhất cho từ khóa
+				<span class="keyword-highlight" th:text="${keyword}"></span> phù hợp với bạn:
+			</p>
+
+			<!-- Job List -->
+			<div class="job-list">
+				<div class="job-card" th:each="job : ${jobs}">
+					<div class="job-header">
+						<img th:if="${job.employer != null}" th:src="${job.employer.logo}" 
+							th:alt="${job.employer.name}"
+							class="company-logo"
+							onerror="this.src='https://via.placeholder.com/60x60?text=Logo'">
+
+						<div class="job-info">
+							<h3 class="job-title">
+								<a th:href="${baseUrl + '/recruitment/' + job.rnid}" 
+								   th:text="${job.position}">
+									Tên công việc
+								</a>
+							</h3>
+							<p class="company-name" th:text="${job.employer != null ? job.employer.name : 'N/A'}">
+								Tên công ty
+							</p>
+							<p class="job-deadline" th:if="${job.deadline}">
+								Hạn nộp: <span th:text="${job.deadline}"></span>
+							</p>
+						</div>
+					</div>
+
+					<div class="job-details">
+						<div class="job-detail-item" th:if="${job.location}">
+							<svg fill="currentColor" viewBox="0 0 20 20">
+								<path fill-rule="evenodd"
+									d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+									clip-rule="evenodd" />
+							</svg>
+							<span th:text="${job.location}">Địa điểm</span>
+						</div>
+
+						<div class="job-detail-item" th:if="${job.salary}">
+							<span class="salary-badge" th:text="${job.salary}">Mức lương</span>
+						</div>
+					</div>
+
+					<a th:href="${baseUrl + '/recruitment/' + job.rnid}" class="apply-button">
+						Ứng tuyển
+					</a>
+				</div>
+			</div>
+
+			<!-- View More Button -->
+			<div class="view-more">
+				<a th:href="${baseUrl + '/jobs?keyword=' + keyword}" class="view-more-button">
+					Xem tất cả <span th:text="${jobCount}">20</span> việc làm
+				</a>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<div class="footer">
+			<p class="footer-text">
+				<strong>GZCONNECT</strong> - Nền tảng tuyển dụng và tìm việc làm công nghệ
+			</p>
+
+			<p class="footer-text">
+				Email này được gửi tự động dựa trên thiết lập thông báo việc làm của bạn.
+				Nếu bạn không muốn nhận email này nữa, vui lòng tiến hành xoá thông báo đã tạo ở website.
+			</p>
+
+			<div class="social-links">
+				<a href="#" class="social-link" title="Facebook">f</a>
+				<a href="#" class="social-link" title="LinkedIn">in</a>
+				<a href="#" class="social-link" title="YouTube">▶</a>
+			</div>
+
+			<p class="unsubscribe">
+				© 2024 GZCONNECT. All rights reserved.
+			</p>
+		</div>
+	</div>
+</body>
+
+</html>

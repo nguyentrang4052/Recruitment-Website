@@ -20,6 +20,8 @@ function ImageWithSearch({
     setLevel,
     location,
     setLocation,
+    salary,
+    setSalary,
     onSearch
 }) {
     const images = [
@@ -37,6 +39,8 @@ function ImageWithSearch({
 
     const levels = ['INTERN', 'FRESHER', 'JUNIOR', 'MID_LEVEL', 'SENIOR']
 
+    const listSalary = ['Dưới 1 triệu', '2 triệu - 4 triệu', '4 triệu - 10 triệu', '10 triệu - 20 triệu', 'Trên 20 triệu']
+
     const isDashboard = location.pathname === '/dashboard'
 
     return (
@@ -53,6 +57,13 @@ function ImageWithSearch({
                 </select>
 
                 <input placeholder="-- Kỹ năng -- " value={skillName} onChange={e => setSkillName(e.target.value)} />
+
+                 <select value={salary} onChange={e => setSalary(e.target.value)}>
+                    <option value="">-- Chọn mức lương --</option>
+                    {listSalary.map((loc, idx) => (
+                        <option key={idx} value={loc}>{loc}</option>
+                    ))}
+                </select>
 
 
                 <select value={location} onChange={e => setLocation(e.target.value)}>
@@ -74,11 +85,11 @@ function RecruimentNews() {
     const [searchText, setSearchText] = useState('');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    // const [favoriteJobs, setFavoriteJobs] = useState([]);
     const [skillName, setSkillName] = useState('');
     const [position, setPosition] = useState('');
     const [level, setLevel] = useState('');
     const [location, setLocation] = useState('');
+    const [salary, setSalary] = useState('');
 
     const recruimentPerPage = 10;
 
@@ -119,23 +130,48 @@ function RecruimentNews() {
         setSearchText(e.target.value);
         setCurrentPage(1);
     };
+       const getSalaryRange = (salary) => {
+    switch (salary) {
+        case 'Dưới 1 triệu':
+            return { min: 0, max: 1000000 };
+        case '2 triệu - 4 triệu':
+            return { min: 2000000, max: 4000000 };
+        case '4 triệu - 10 triệu':
+            return { min: 4000000.00, max: 10000000.00 };
+        case '10 triệu - 20 triệu':
+            return { min: 10000000, max: 20000000 }; 
+        case 'Trên 20 triệu':
+            return { min: 20000000, max: 1000000000000}; 
+        default:
+            return null;
+    }
+};
 
     const handleSearch = async () => {
         const params = new URLSearchParams();
+
         if (skillName.trim()) params.append('skillName', skillName.trim());
         if (position.trim()) params.append('position', position.trim());
         if (level.trim()) params.append('level', level.trim());
         if (location.trim()) params.append('location', location.trim());
+          if (salary.trim()) {
+        const salaryRange = getSalaryRange(salary);
+        if (salaryRange) {
+            params.append('minSalary', salaryRange.min);
+            params.append('maxSalary', salaryRange.max);
+        }
+    }
 
         try {
             const res = await axios.get('http://localhost:8080/api/job/search', { params });
-            console.log(res.data)
             setRecruitments(res.data);
             setCurrentPage(1);
         } catch {
             setRecruitments([]);
         }
     };
+
+ 
 
 
     const onApply = (rnid) => {
@@ -174,7 +210,7 @@ function RecruimentNews() {
         }
     };
 
-   const [favoriteJobs, setFavoriteJobs] = useState([]);
+    const [favoriteJobs, setFavoriteJobs] = useState([]);
 
     const applicantID = localStorage.getItem('applicantID')
     const token = localStorage.getItem('token')
@@ -190,8 +226,8 @@ function RecruimentNews() {
                         }
                     }
                 );
-                  const savedIds = res.data.map(job => job.rnid);
-            setFavoriteJobs(savedIds);
+                const savedIds = res.data.map(job => job.rnid);
+                setFavoriteJobs(savedIds);
             } catch {
                 console.log('Loi khi tai tin yeu thich')
             }
@@ -226,6 +262,8 @@ function RecruimentNews() {
                 setLevel={setLevel}
                 location={location}
                 setLocation={setLocation}
+                salart={salary}
+                setSalary={setSalary}
                 onSearch={handleSearch}
             />
             <div className="recruimentnews-page">

@@ -39,7 +39,7 @@ const LayoutWithHomePage = () => {
       ) : (
         <>
           <HomePage />
-          {location.pathname !== '/' &&  location.pathname !== '/applicant-login' && <Breadcrumb />}
+          {location.pathname !== '/' &&  location.pathname !== '/applicant-login' && location.pathname !== '/dashboard' && <Breadcrumb />}
           <Outlet />
           <Footer />
         </>

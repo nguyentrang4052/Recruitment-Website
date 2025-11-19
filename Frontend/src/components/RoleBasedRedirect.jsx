@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 export default function RoleBasedRedirect() {
   const token = localStorage.getItem('accessToken');
-  if (!token) return <Navigate to="/login" replace />;
+  if (!token) return <Navigate to="/dashboard" replace />;
 
   const role = localStorage.getItem('roleName');
   if (role === 'applicant') return <Navigate to="/dashboard" replace />;

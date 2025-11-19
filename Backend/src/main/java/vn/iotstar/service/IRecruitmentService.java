@@ -1,5 +1,8 @@
 package vn.iotstar.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,5 +35,12 @@ public interface IRecruitmentService {
 	List<RecruitmentNews> findByApplication_Applicant_ApplicantID(Integer id);
 
 	RecruitmentCardDTO mapToApplication(Applicant applicant, RecruitmentNews rn);
+
+
+	List<RecruitmentNews> findAllNews();
+
+	List<RecruitmentNews> findBySalary(BigDecimal minSalary, BigDecimal maxSalary);
+
+	List<RecruitmentNews> findMatchingJobs(String jobTitle, String location, String salaryRange, String level, LocalDate lastSentDate);
 
 }

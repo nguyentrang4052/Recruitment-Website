@@ -30,6 +30,7 @@ function Profile() {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setApplicant(res.data);
+                console.log('Applicant data:', res.data);
             } catch (err) {
                 console.error('Lỗi lấy profile:', err);
             }
@@ -127,8 +128,8 @@ function Profile() {
 
     const handleSave = async () => {
         try {
-            const applicantID = applicant.applicantID;
-            if (!applicantID) return alert('Không tìm thấy applicantID');
+            const applicantID = localStorage.getItem('applicantID');
+            // if (!applicantID) return alert('Không tìm thấy applicantID');
             let payload = {};
             if (editingSection === 'personal') {
                 payload = {

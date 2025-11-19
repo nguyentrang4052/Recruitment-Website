@@ -28,22 +28,6 @@ const menuItems = [
   }
 ];
 
-// const menuItems = [
-//   {
-//     label: 'Tất cả việc làm',
-//     submenu: [
-//       {
-//         label: 'Theo kỹ năng',
-//         submenu: 
-//         'Theo kỹ năng', 'Theo cấp bậc', 'Theo địa điểm', 'Theo vị trí'
-//       }
-//       ]
-//   },
-//   {
-//     label: 'Công ty',
-//     submenu: ['Giới thiệu công ty', 'Đánh giá công ty']
-//   }
-// ];
 
 
 function Header() {

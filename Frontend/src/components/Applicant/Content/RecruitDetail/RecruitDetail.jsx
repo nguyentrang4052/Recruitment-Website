@@ -75,14 +75,51 @@ function RecruitDetail() {
     const [msg, setMsg] = useState("");
     const [msgType, setMsgType] = useState("");
 
+    // const handleApplyJob = async (e) => {
+    //     e.preventDefault();
+    //     if (!cvFile) {
+    //         setMsg("Vui lòng chọn CV!");
+    //         setMsgType("error");
+    //         return;
+    //     }
+
+
+    //     const applicantId = localStorage.getItem("applicantID");
+
+    //     const formData = new FormData();
+    //     formData.append("CV", cvFile);
+    //     formData.append("coverLetter", coverLetter);
+    //     formData.append("RNID", rnid);
+    //     formData.append("applicantID", applicantId);
+
+    //     const token = localStorage.getItem("token");
+
+    //     try {
+    //         await axios.post(
+    //             "http://localhost:8080/api/applicant/apply",
+    //             formData,
+    //             {
+    //                 headers: token ? { Authorization: `Bearer ${token}` } : {},
+    //             }
+    //         );
+    //         alert("Ứng tuyển thành công!");
+
+    //         setCoverLetter(null);
+    //         closeForm();
+    //     } catch {
+    //         setCoverLetter(null);
+    //         setMsg("Ứng tuyển thất bại. Vui lòng thử lại. (Chỉ được ứng tuyển 1 lần cho mỗi tin tuyển dụng)");
+    //         setMsgType("error");
+    //     }
+    // };
     const handleApplyJob = async (e) => {
         e.preventDefault();
+
         if (!cvFile) {
             setMsg("Vui lòng chọn CV!");
             setMsgType("error");
             return;
         }
-
 
         const applicantId = localStorage.getItem("applicantID");
 
@@ -99,19 +136,41 @@ function RecruitDetail() {
                 "http://localhost:8080/api/applicant/apply",
                 formData,
                 {
-                    headers: token ? { Authorization: `Bearer ${token}` } : {},
+                    headers: {
+                        ...(token && { Authorization: `Bearer ${token}` }),
+                        "Content-Type": "multipart/form-data",
+                    }
                 }
             );
-            alert("Ứng tuyển thành công!");
 
-            setCoverLetter(null);
+            alert("Ứng tuyển thành công!");
+            setCoverLetter("");
             closeForm();
-        } catch {
-            setCoverLetter(null);
-            setMsg("Ứng tuyển thất bại. Vui lòng thử lại. (Chỉ được ứng tuyển 1 lần cho mỗi tin tuyển dụng)");
+
+        } catch (error) {
+            setCoverLetter("");
+
+            console.log("❌ BACKEND ERROR:", error);
+
+            let errorMessage = "Ứng tuyển thất bại. Vui lòng thử lại.";
+
+            // if (error.response?.data) {
+            //     errorMessage = error.response.data.message;
+            // }
+            // // Backend trả về message trong lỗi validation
+            // else if (typeof error.response?.data === "string") {
+            //     errorMessage = error.response.data;
+            // }
+            // // Không kết nối được backend
+            // else if (error.request) {
+            //     errorMessage = "Không thể kết nối tới server!";
+            // }
+
+            setMsg(errorMessage);
             setMsgType("error");
         }
     };
+
     const closeForm = () => {
         setShowForm(false);
     };
@@ -166,13 +225,14 @@ function RecruitDetail() {
             } catch {
                 console.log('Loi khi tai tin yeu thich')
             }
+        };
+        if (token && applicantID) {
+            fetchSaveJob();
 
-
-        }
-        fetchSaveJob([applicantID, token])
+        };[applicantID, token]
     })
 
-     const isFavorite = (rnid) => { return favoriteJobs.includes(rnid); }
+    const isFavorite = (rnid) => { return favoriteJobs.includes(rnid); }
 
     const [note, setNote] = useState("");
 

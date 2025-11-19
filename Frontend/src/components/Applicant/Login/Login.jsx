@@ -41,6 +41,8 @@ function Login() {
             }
             else if (roleName == "employer") {
                 navigate('/employer-dashboard')
+            }else {
+                navigate('/admin')
             }
         }
         catch (error) {

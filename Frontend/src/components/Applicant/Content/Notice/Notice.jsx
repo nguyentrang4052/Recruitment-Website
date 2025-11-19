@@ -1,112 +1,140 @@
-import React, { useState } from 'react';
-import './Notice.css';
-import province from '../../../../../data/provinces.json'
+import React, { useState, useEffect } from "react";
+import "./Notice.css";
+import province from "../../../../../data/provinces.json";
+import axios from "axios";
 
 const NoticeTable = () => {
-  const [notice, setNotice] = useState([]);
+  const [noticeData, setNoticeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingNotice, setEditingNotice] = useState(null);
+
+  const token = localStorage.getItem("token");
+  const applicantID = localStorage.getItem("applicantID");
+
   const [formData, setFormData] = useState({
-    jobTitle: '',
-    industry: '',
-    location: '',
-    salary: '',
-    level: '',
-    frequency: 'daily'
+    jobTitle: "",
+    location: "",
+    salary: "",
+    level: "",
+    frequency: "daily",
   });
 
+  useEffect(() => {
+    if (!token || !applicantID) return;
+
+    const fetchNotice = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8080/api/applicant/notice",
+          {
+            params: { id: applicantID },
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json"
+            },
+          }
+        );
+        setNoticeData(res.data);
+      } catch (err) {
+        console.error("Lỗi tải danh sách notice:", err);
+      }
+    };
+
+    fetchNotice();
+  }, [token, applicantID]);
+
   const handleCreateNew = () => {
-    setEditingIndex(null);
+    setEditingNotice(null);
     setFormData({
-      jobTitle: '',
-      industry: '',
-      location: '',
-      salary: '',
-      level: '',
-      frequency: 'daily'
+      jobTitle: "",
+      location: "",
+      salary: "",
+      level: "",
+      frequency: "daily",
     });
     setShowPopup(true);
   };
 
-  const handleEdit = (index) => {
-    setEditingIndex(index);
-    const notification = notice[index];
+  const handleEdit = (item) => {
+    setEditingNotice(item);
+
     setFormData({
-      jobTitle: notification.jobTitle || '',
-      industry: notification.industry || '',
-      location: notification.location || '',
-      salary: notification.salary || '',
-      level: notification.level || '',
-      frequency: notification.frequency || 'daily'
+      jobTitle: item.title,
+      location: item.location,
+      salary: item.salary,
+      level: item.level,
+      frequency: item.frequency,
     });
+
     setShowPopup(true);
   };
 
-  const handleDelete = (index) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa thông báo này?')) {
-      const updatedNotice = notice.filter((_, i) => i !== index);
-      setNotice(updatedNotice);
-    }
+  const handleDelete = (id) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa thông báo này?")) return;
+
+    axios
+      .delete(`http://localhost:8080/api/applicant/notice/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => {
+        setNoticeData(noticeData.filter((n) => n.id !== id));
+      })
+      .catch((err) => console.error("Lỗi khi xóa:", err));
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    setEditingIndex(null);
-    setFormData({
-      jobTitle: '',
-      industry: '',
-      location: '',
-      salary: '',
-      level: '',
-      frequency: 'daily'
-    });
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
 
   const handleSaveNotice = () => {
-    const noticeData = {
-      name: `${formData.jobTitle} - ${formData.industry}`,
-      createdDate: editingIndex !== null ? notice[editingIndex].createdDate : new Date().toLocaleDateString('vi-VN'),
-      matchingJobs: editingIndex !== null ? notice[editingIndex].matchingJobs : 0,
-      emailNotice: editingIndex !== null ? notice[editingIndex].emailNotice : true,
+    const request = {
       jobTitle: formData.jobTitle,
-      industry: formData.industry,
       location: formData.location,
       salary: formData.salary,
       level: formData.level,
-      frequency: formData.frequency
+      frequency: formData.frequency,
     };
 
-    if (editingIndex !== null) {
-      const updatedNotice = [...notice];
-      updatedNotice[editingIndex] = noticeData;
-      setNotice(updatedNotice);
-    } else {
-      setNotice([...notice, noticeData]);
+    if (editingNotice) {
+      axios
+        .put(
+          `http://localhost:8080/api/applicant/notice/update/${editingNotice.id}`,
+          request,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then((res) => {
+          // const updatedNotice = {
+          //   ...res.data.jobNoticeDTO,
+          //   title: res.data.jobNoticeDTO.jobTitle,
+          // };
+          const updatedList = noticeData.map((n) =>
+            n.id === editingNotice.id ? res.data.jobNoticeDTO : n
+          );
+          setNoticeData(updatedList);
+          setShowPopup(false);
+        })
+        .catch((err) => console.error("Lỗi update:", err));
     }
-
-    setShowPopup(false);
-    setEditingIndex(null);
-    setFormData({
-      jobTitle: '',
-      industry: '',
-      location: '',
-      salary: '',
-      level: '',
-      frequency: 'daily'
-    });
+    else {
+      axios
+        .post(
+          `http://localhost:8080/api/applicant/notice/create?applicantID=${applicantID}`,
+          request,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then((res) => {
+          // const newNotice = {
+          //   ...res.data.jobNoticeDTO,
+          //   title: res.data.jobNoticeDTO.jobTitle, 
+          // };
+          setNoticeData([...noticeData, res.data.jobNoticeDTO]);
+          setShowPopup(false);
+        })
+        .catch((err) => console.error("Lỗi create:", err));
+    }
   };
 
   return (
     <div className="notice-container">
       <h2 className="notice-title">QUẢN LÝ THÔNG BÁO VIỆC LÀM</h2>
+
       <table className="notice-table">
         <thead>
           <tr>
@@ -117,29 +145,32 @@ const NoticeTable = () => {
             <th>Thao Tác</th>
           </tr>
         </thead>
+
         <tbody>
-          {notice.map((notification, index) => (
-            <tr key={index}>
-              <td>{notification.name}</td>
-              <td>{notification.createdDate}</td>
-              <td>{notification.matchingJobs}</td>
+          {noticeData.map((item) => (
+            <tr key={item.id}>
+              <td>{item.title}</td>
+              <td>{item.createdDate}</td>
+              <td>{item.matchingJobs}</td>
               <td>
-                <input
-                  type="checkbox"
-                  checked={notification.emailNotice}
-                  onChange={() => {
-                    const updatedNotice = [...notice];
-                    updatedNotice[index].emailNotice = !updatedNotice[index].emailNotice;
-                    setNotice(updatedNotice);
-                  }}
-                />
+                {item.frequency === 'daily' ? 'Mỗi ngày' :
+                  item.frequency === 'weekly' ? 'Mỗi tuần' :
+                    item.frequency === 'monthly' ? 'Mỗi tháng' :
+                      item.frequency}
               </td>
+
+              {/* <td>
+                <input type="checkbox" checked={item.emailNotice} readOnly />
+              </td> */}
               <td>
                 <div className="action-buttons">
-                  <button className="btn-edit" onClick={() => handleEdit(index)}>
+                  <button className="btn-edit" onClick={() => handleEdit(item)}>
                     Sửa
                   </button>
-                  <button className="btn-delete" onClick={() => handleDelete(index)}>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleDelete(item.id)}
+                  >
                     Xóa
                   </button>
                 </div>
@@ -148,45 +179,34 @@ const NoticeTable = () => {
           ))}
         </tbody>
       </table>
-      <button className="btn-create" onClick={handleCreateNew}>Tạo Mới</button>
+
+      <button className="btn-create" onClick={handleCreateNew}>
+        Tạo Mới
+      </button>
 
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-container">
-            <button className="popup-close" onClick={handleClosePopup}>×</button>
+            <button className="popup-close" onClick={() => setShowPopup(false)}>
+              ×
+            </button>
 
             <h2 className="popup-title">
-              {editingIndex !== null ? 'Chỉnh sửa thông báo việc làm' : 'Tạo / chỉnh sửa thông báo việc làm'}
+              {editingNotice ? "Chỉnh sửa thông báo" : "Tạo thông báo mới"}
             </h2>
-            <p className="popup-subtitle">
-              Mỗi tuần bạn sẽ nhận được email những việc làm mới nhất từ nhà tuyển dụng theo tiêu chí bên dưới
-            </p>
 
             <div className="popup-form">
               <div className="form-group">
-                <label>Chức danh, vị trí công việc</label>
+                <label>Chức danh</label>
                 <input
                   type="text"
                   name="jobTitle"
                   value={formData.jobTitle}
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobTitle: e.target.value })
+                  }
                   className="form-input"
                 />
-              </div>
-
-              <div className="form-group">
-                <label>Ngành nghề</label>
-                <select
-                  name="industry"
-                  value={formData.industry}
-                  onChange={handleChange}
-                  className="form-select"
-                >
-                  <option value="">Tất cả ngành nghề</option>
-                  <option value="cntt">Công nghệ thông tin</option>
-                  <option value="marketing">Marketing</option>
-                  <option value="kinhdoanh">Kinh doanh</option>
-                </select>
               </div>
 
               <div className="form-group">
@@ -194,15 +214,17 @@ const NoticeTable = () => {
                 <select
                   name="location"
                   value={formData.location}
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, location: e.target.value })
+                  }
                   className="form-select"
                 >
                   <option value="">Tất cả địa điểm</option>
-                   {province.map((province) => (
-      <option key={province.id} value={province.name}>
-        {province.name}
-      </option>
-    ))}
+                  {province.map((p) => (
+                    <option key={p.id} value={p.name}>
+                      {p.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -211,12 +233,16 @@ const NoticeTable = () => {
                 <select
                   name="salary"
                   value={formData.salary}
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, salary: e.target.value })
+                  }
                   className="form-select"
                 >
                   <option value="">Chọn mức lương</option>
-                  <option value="duoi10">Dưới 10 triệu</option>
-                  <option value="10-20">10-20 triệu</option>
+                  <option value="duoi1">Dưới 1 triệu</option>
+                  <option value="2-4">2 - 4 triệu</option>
+                  <option value="4-10">4 - 10 triệu</option>
+                  <option value="10-20">10 - 20 triệu</option>
                   <option value="tren20">Trên 20 triệu</option>
                 </select>
               </div>
@@ -226,13 +252,17 @@ const NoticeTable = () => {
                 <select
                   name="level"
                   value={formData.level}
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, level: e.target.value })
+                  }
                   className="form-select"
                 >
                   <option value="">Tất cả cấp bậc</option>
-                  <option value="nhanvien">Nhân viên</option>
-                  <option value="truongphong">Trưởng phòng</option>
-                  <option value="giamdoc">Giám đốc</option>
+                  <option value="INTERN">INTERN</option>
+                  <option value="FRESHER">FRESHER</option>
+                  <option value="JUNIOR">JUNIOR</option>
+                  <option value="MID_LEVEL">MID_LEVEL</option>
+                  <option value="SENIOR">SENIOR</option>
                 </select>
               </div>
 
@@ -241,7 +271,9 @@ const NoticeTable = () => {
                 <select
                   name="frequency"
                   value={formData.frequency}
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, frequency: e.target.value })
+                  }
                   className="form-select"
                 >
                   <option value="daily">Mỗi ngày</option>
@@ -249,11 +281,11 @@ const NoticeTable = () => {
                   <option value="monthly">Mỗi tháng</option>
                 </select>
               </div>
-            </div>
 
-            <button className="btn-save" onClick={handleSaveNotice}>
-              LƯU
-            </button>
+              <button className="btn-save" onClick={handleSaveNotice}>
+                LƯU
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -17,6 +17,8 @@ public interface IAccountRepository extends JpaRepository<Account, Integer> {
 	Account findByEmail(String email);
 	
 	Account findByApplicant_ApplicantID(Integer applicantID);
+	
+	Account findByEmployer_EmployerID(Integer employerID);
 
 
 }

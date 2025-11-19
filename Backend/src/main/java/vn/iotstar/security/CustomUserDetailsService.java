@@ -15,11 +15,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Autowired
 	private IAccountService accountService;
 
+//	@Override
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//		Account account = accountService.findByUsername(username);
+//		if (account == null) {
+//			throw new UsernameNotFoundException("User không tồn tại");
+//		}
+//		return new CustomUserDetail(account);
+//
+//
+//	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Account account = accountService.findByUsername(username);
 		if (account == null) {
-			throw new UsernameNotFoundException("User không tồn tại");
+			account = accountService.findByEmail(username);
 		}
 		return new CustomUserDetail(account);
 

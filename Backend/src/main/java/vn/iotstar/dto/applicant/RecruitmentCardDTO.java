@@ -1,6 +1,7 @@
 package vn.iotstar.dto.applicant;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class RecruitmentCardDTO {
 	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
 			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,
 			String experience, String literacy, String level, String other, String benefit, EFormOfWork formOfWork,
-			String workingTime, String applyBy) {
+			String workingTime, String applyBy, Integer view) {
 		this.rnid = rnid;
 		this.position = position;
 		this.employer = employer;
@@ -54,10 +55,42 @@ public class RecruitmentCardDTO {
 		this.formOfWork = formOfWork;
 		this.workingTime = workingTime;
 		this.applyBy = applyBy;
+		this.view=view;
 	}
 	
 	
 	
 	private Application application;
+	
+	
+	
+	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
+			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,
+			String experience, String literacy, String level, String other, String benefit, EFormOfWork formOfWork,
+			String workingTime, String applyBy, Application application) {
+		this.rnid = rnid;
+		this.position = position;
+		this.employer = employer;
+		this.salary = salary;
+		this.location = location;
+		this.deadline = deadline;
+		this.postedAt = postedAt;
+		this.skill = skill;
+		this.status = status;
+		this.description = description;
+		this.experience = experience;
+		this.literacy = literacy;
+		this.level = level;
+		this.other = other;
+		this.benefit = benefit;
+		this.formOfWork = formOfWork;
+		this.workingTime = workingTime;
+		this.applyBy = applyBy;
+		this.application = application;
+	}
+
+
+
+	private Integer view = 0;
 
 }

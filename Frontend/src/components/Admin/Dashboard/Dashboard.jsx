@@ -24,7 +24,8 @@ import RecruitmentDetail from '../Content/Recruitment/RecruitmentDetail.jsx';
 import ApplicantDetail from '../Content/Applicant/ApplicantDetail.jsx'
 import EmployerDetail from '../Content/Employer/EmployerDetail.jsx'
 
-
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function AdminDashboard() {
@@ -68,6 +69,23 @@ export default function AdminDashboard() {
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [selectedEmployer, setSelectedEmployer] = useState(null);
 
+  const navigate = useNavigate();
+  const handleLogoutClick = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      if (token) {
+        await axios.post("http://localhost:8080/api/logout", {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      localStorage.clear();
+      navigate("/");
+    }
+  };
+
   return (
     <div className="dashboard-container">
       {/* ---------- Sidebar ---------- */}
@@ -101,7 +119,7 @@ export default function AdminDashboard() {
           <button onClick={() => setActive('jobs')} className={`nav-button ${active === 'jobs' ? 'active' : ''}`}><IoBriefcaseOutline /> Quản lý tin tuyển dụng</button>
           <button onClick={() => setActive('packages')} className={`nav-button ${active === 'packages' ? 'active' : ''}`}><VscPackage /> Quản lý gói dịch vụ</button>
           <button onClick={() => setActive('reports')} className={`nav-button ${active === 'reports' ? 'active' : ''}`}><LuTriangleAlert /> Quản lý báo cáo vi phạm</button>
-          <button className="logout-button"><MdLogout /> Đăng xuất</button>
+          <button className="logout-button" onClick={handleLogoutClick}><MdLogout /> Đăng xuất</button>
         </nav>
       </aside>
 

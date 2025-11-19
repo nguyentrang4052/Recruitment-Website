@@ -64,7 +64,11 @@ function MainContent({ activeTab, username, setActiveTab }) {
                                 <p>Đây là nơi bạn có thể theo dõi tổng quan các hoạt động của mình.</p>
                             </div>
                             <div className="grid-container">
+<<<<<<< HEAD
                                 <div
+=======
+                                {/* <div
+>>>>>>> Trang
                                     className={`stat-card ${stats.newApplicantsCount === 0 ? 'disabled' : ''}`}
                                     onClick={() => {
                                         if (stats.newApplicantsCount === 0) {
@@ -81,7 +85,11 @@ function MainContent({ activeTab, username, setActiveTab }) {
                                     ) : (
                                         <p className="number">{stats.newApplicantsCount}</p>
                                     )}
+<<<<<<< HEAD
                                 </div>
+=======
+                                </div> */}
+>>>>>>> Trang
 
                                 <div
                                     className={`stat-card ${stats.activeJobsCount === 0 ? 'disabled' : ''}`}

@@ -474,15 +474,14 @@
   font-size: 1.125rem;
 }
 
-.salary-link {
+.salary {
   color: #6b7280;
   font-size: 0.875rem;
-  text-decoration: underline;
 }
 
-.salary-link:hover {
+/* .salary-link:hover {
   color: #111827;
-}
+} */
 
 .job-meta {
   display: flex;

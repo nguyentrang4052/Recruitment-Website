@@ -19,4 +19,6 @@ public interface IRatingRepository extends JpaRepository<Rating, RatingID> {
 	BigDecimal avgScore(@Param("employerID") Integer employerID);
 	
 	boolean existsByEmployer_EmployerIDAndApplicant_ApplicantID(Integer employerID, Integer applicantID);
+	
+	void deleteByEmployer_EmployerIDAndApplicant_ApplicantID(Integer employerID, Integer applicantID);
 }

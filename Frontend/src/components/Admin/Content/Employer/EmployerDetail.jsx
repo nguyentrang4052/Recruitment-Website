@@ -16,15 +16,15 @@ export default function Employers({ onBack, employer }) {
 
                 <div className="avatar-section">
                     <div className="avatar-circle">
-                        {employer.companyLogo ? (
-                            <img src={employer.companyLogo} alt="Company Logo" className="avatar-img" />
+                        {employer.logo? (
+                            <img src={employer.logo} alt="Company Logo" className="avatar-img" />
                         ) : (
-                            <span className="avatar-fallback">{employer.employerName?.charAt(0)}</span>
+                            <span className="avatar-fallback">{employer.name?.charAt(0)}</span>
                         )}
                     </div>
                     <div className="avatar-info">
-                        <h3>{employer.employerName}</h3>
-                        <p>{employer.phone}</p>
+                        <h3>{employer.name}</h3>
+                        {/* <p>{employer.phone}</p> */}
                     </div>
                 </div>
 
@@ -51,12 +51,40 @@ export default function Employers({ onBack, employer }) {
 
                     <div className="section border-b">
                         <h2 className="section-title">Giới thiệu công ty</h2>
-                        <p className="info-content">{employer.companyProfile || 'Chưa cập nhật'}</p>
+                        <div className="info-grid">
+                            <div>
+                                <p className="info-label">Tên đầy đủ</p>
+                                <p className="info-value">{employer.fullName || '—'}</p>
+                            </div>
+                            <div>
+                                <p className="info-label">Quy mô công ty</p>
+                                <p className="info-value">{employer.companySize || '—'}</p>
+                            </div>
+                            <div>
+                                <p className="info-label">Người đại diện</p>
+                                <p className="info-value">{employer.representative || '—'}</p>
+                            </div>
+                        </div>
+                        <div className="info-grid">
+                            <div>
+                                <p className="info-label">Số việc đã đăng</p>
+                                <p className="info-value">{employer.jobs || '—'}</p>
+                            </div>
+                            <div>
+                                <p className="info-label">Đánh giá</p>
+                                <p className="info-value">{employer.ranking|| '—'}</p>
+                            </div>
+                            <div>
+                                <p className="info-label"></p>
+                                <p className="info-value"></p>
+                            </div>
+                        </div>
+                        {/* <p className="info-content">{employer.fullName|| 'Chưa có thông tin'}</p> */}
                     </div>
 
                     <div className="section">
                         <h2 className="section-title">Mô tả công ty</h2>
-                        <p className="info-content">{employer.companyDescription || 'Chưa có mô tả'}</p>
+                        <p className="info-content">{employer.profile || 'Chưa có mô tả'}</p>
                     </div>
                 </div>
             </div>

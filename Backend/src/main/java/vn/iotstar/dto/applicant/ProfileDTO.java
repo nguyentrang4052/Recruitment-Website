@@ -31,5 +31,28 @@ public class ProfileDTO {
 	private BigDecimal desireSalary;
 	private EFormOfWork formOfWork;
 	private String location;
+//	public ProfileDTO(Integer applicantID, String photo, String email, String applicantName, String phone,
+//			String address, LocalDate birthday, String goal, String experience, String literacy, List<Skill> skills,
+//			String title, String desireLevel, BigDecimal desireSalary, EFormOfWork formOfWork, String location) {
+//		this.applicantID = applicantID;
+//		this.photo = photo;
+//		this.email = email;
+//		this.applicantName = applicantName;
+//		this.phone = phone;
+//		this.address = address;
+//		this.birthday = birthday;
+//		this.goal = goal;
+//		this.experience = experience;
+//		this.literacy = literacy;
+//		this.skills = skills;
+//		this.title = title;
+//		this.desireLevel = desireLevel;
+//		this.desireSalary = desireSalary;
+//		this.formOfWork = formOfWork;
+//		this.location = location;
+//	}
+//	
+	private String gender;
+	private String active;
 
 }

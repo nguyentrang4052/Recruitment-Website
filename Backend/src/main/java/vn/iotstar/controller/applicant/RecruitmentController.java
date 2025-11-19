@@ -26,6 +26,8 @@ import vn.iotstar.entity.Applicant;
 import vn.iotstar.entity.Application;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.enums.EStatus;
+import vn.iotstar.service.EmailService;
+import vn.iotstar.service.IAccountService;
 import vn.iotstar.service.IApplicantService;
 import vn.iotstar.service.IApplicationService;
 import vn.iotstar.service.IFavouriteJobService;
@@ -46,7 +48,26 @@ public class RecruitmentController {
 	
 	@Autowired
 	private IApplicantService applicantService;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private IAccountService accountService;
 
+//	@PostMapping("/apply")
+//	public ResponseEntity<?> apply(@RequestPart("CV") MultipartFile cvFile, @ModelAttribute ApplyRequestDTO dto,
+//			Authentication authentication) {
+//		if (authentication == null || !authentication.isAuthenticated()) {
+//			return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Unauthorized");
+//		}
+//
+//		String username = authentication.getName();
+//		Application application = aService.apply(cvFile, dto, username);
+//
+//		return ResponseEntity.ok(Map.of("message", "Nộp hồ sơ thành công"));
+//	}
+	
 	@PostMapping("/apply")
 	public ResponseEntity<?> apply(@RequestPart("CV") MultipartFile cvFile, @ModelAttribute ApplyRequestDTO dto,
 			Authentication authentication) {
@@ -56,7 +77,9 @@ public class RecruitmentController {
 
 		String username = authentication.getName();
 		Application application = aService.apply(cvFile, dto, username);
-
+		
+		RecruitmentNews rn = application.getRecruitmentNews();
+		emailService.sendVerificationApply(username, rn);
 		return ResponseEntity.ok(Map.of("message", "Nộp hồ sơ thành công"));
 	}
 

@@ -33,7 +33,8 @@ public class EmployerDashboardService implements IEmployerDashboardService {
         Long activeJobs = recruitmentNewsRepo.countActiveJobsByEmployer(employerAccountId, EStatus.APPROVED);
         
     
-        Long weeklyViews = viewLogRepo.countViewsByEmployerSince(employerAccountId, sevenDaysAgo);
+
+//        Long weeklyViews = viewLogRepo.countViewsByEmployerSince(employerAccountId, sevenDaysAgo);
         
         return new EmployerDashboardStatsDTO(
             newApplicants != null ? newApplicants : 0L,

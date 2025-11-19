@@ -20,7 +20,6 @@ import vn.iotstar.service.IApplicantService;
 @RequestMapping("/api/applicant")
 public class ManageInfoController {
 
-	private final IApplicantService applicantService_1;
 
 	@Autowired
 	private IApplicantService applicantService;
@@ -28,13 +27,11 @@ public class ManageInfoController {
 	@Autowired
 	private IAccountService accountService;
 
-	ManageInfoController(IApplicantService applicantService_1) {
-		this.applicantService_1 = applicantService_1;
-	}
 
 	@GetMapping("/profile/info")
 	public ProfileDTO getInfo(@RequestParam String email) {
 		Applicant applicant = applicantService.findByAccount_email(email);
+		
 		return applicantService.mapToDetail(applicant);
 	}
 

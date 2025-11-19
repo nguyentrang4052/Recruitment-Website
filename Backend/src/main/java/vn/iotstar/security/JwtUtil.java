@@ -41,16 +41,16 @@ public class JwtUtil {
 	}
 
 	public String extractProvider(String token) {
-		return (String) extractClaims(token).get("provider"); 
+		return (String) extractClaims(token).get("provider");
 	}
 
 	public boolean validateToken(String token, UserDetails userDetails) {
-		 try {
-	            final String username = extractUsername(token); 
-	            return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
-	        } catch (JwtException e) {
-	            return false;
-	        }
+		try {
+			final String username = extractUsername(token);
+			return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+		} catch (JwtException e) {
+			return false;
+		}
 	}
 
 	public Date getExpiration(String token) {
@@ -69,5 +69,4 @@ public class JwtUtil {
 		return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
 	}
 }
-
 

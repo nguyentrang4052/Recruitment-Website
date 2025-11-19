@@ -3,6 +3,7 @@ package vn.iotstar.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,8 +99,9 @@ public class RecruitmentNews implements Serializable {
 	@JsonManagedReference
 	private List<ViewLog> viewLog;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "Require", joinColumns = @JoinColumn(name = "RNID"), inverseJoinColumns = @JoinColumn(name = "skillID"))
+	
 	private List <Skill> skill;
 
 }

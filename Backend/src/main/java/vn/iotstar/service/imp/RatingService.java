@@ -15,6 +15,7 @@ import vn.iotstar.dto.applicant.RatingDTO;
 import vn.iotstar.entity.Applicant;
 import vn.iotstar.entity.Employer;
 import vn.iotstar.entity.Rating;
+import vn.iotstar.key.RatingID;
 import vn.iotstar.repository.IEmployerRepository;
 import vn.iotstar.repository.IRatingRepository;
 import vn.iotstar.service.IApplicantService;
@@ -72,6 +73,11 @@ public class RatingService implements IRatingService {
 	    
 	    return this.maptoDetail(rating);
 	}
-	
+
+	@Override
+	public void deleteByEmployer_EmployerIDAndApplicant_ApplicantID(Integer employerID, Integer applicantID) {
+		ratingRepository.deleteByEmployer_EmployerIDAndApplicant_ApplicantID(employerID, applicantID);
+	}
+
 
 }

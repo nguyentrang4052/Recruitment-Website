@@ -12,8 +12,11 @@ import vn.iotstar.entity.ViewLog;
 public interface IViewLogRepository extends JpaRepository<ViewLog, Integer> {
     
     // Đếm số lượt xem hồ sơ của employer trong khoảng thời gian
-    @Query("SELECT COUNT(v) FROM ViewLog v WHERE v.employer.account.accountID = :employerAccountId AND v.viewDate >= :sinceDate")
-    Long countViewsByEmployerSince(
-        @Param("employerAccountId") Integer employerAccountId, 
-        @Param("sinceDate") LocalDate sinceDate);
+//    @Query("SELECT COUNT(v) FROM ViewLog v WHERE v.employer.account.accountID = :employerAccountId AND v.viewDate >= :sinceDate")
+//    Long countViewsByEmployerSince(
+//        @Param("employerAccountId") Integer employerAccountId, 
+//        @Param("sinceDate") LocalDate sinceDate);
+    
+    @Query("SELECT COUNT(v) FROM ViewLog v WHERE v.reNews.RNID = :rnid")
+    Integer countView(@Param("rnid") Integer rnid);
 }

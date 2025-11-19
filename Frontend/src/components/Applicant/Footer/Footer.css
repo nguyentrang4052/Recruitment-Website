@@ -36,6 +36,7 @@
 .footer-section ul li {
   margin-bottom: 8px;
   text-align: left;
+  cursor: pointer;
 }
 
 .footer-section .social-media a {

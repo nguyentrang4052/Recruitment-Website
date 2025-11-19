@@ -1,14 +1,19 @@
-// src/components/JobDetail/RecruitmentDetail.jsx
 import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import './RecruitmentDetail.css';
+import axios from 'axios';
 
-export default function RecruitmentDetail({ job, onBack }) {
+export default function RecruitmentDetail({ job, onBack, onUpdate }) {
+
+    const API = "http://localhost:8080/api/admin/recruitment";
+    const token = localStorage.getItem("token");
+
     const [localJob, setLocalJob] = useState(job);
 
     const [showApprovalModal, setShowApprovalModal] = useState(false);
     const [actionType, setActionType] = useState(null);
     const [reason, setReason] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleApprove = () => {
         setActionType('approve');
@@ -20,12 +25,44 @@ export default function RecruitmentDetail({ job, onBack }) {
         setShowApprovalModal(true);
     };
 
-    const handleConfirm = () => {
-        const newStatus = actionType === 'approve' ? 'APPROVED' : 'REJECTED';
-        setLocalJob({ ...localJob, status: newStatus });
-        setShowApprovalModal(false);
-        setReason('');
-        alert(`Tin tuyển dụng đã được ${actionType === 'approve' ? 'phê duyệt' : 'từ chối'}`);
+    // const handleConfirm = () => {
+    //     const newStatus = actionType === 'approve' ? 'APPROVED' : 'REJECTED';
+    //     setLocalJob({ ...localJob, status: newStatus });
+    //     setShowApprovalModal(false);
+    //     setReason('');
+    //     alert(`Tin tuyển dụng đã được ${actionType === 'approve' ? 'phê duyệt' : 'từ chối'}`);
+    // };
+
+    const handleConfirm = async () => {
+        setLoading(true);
+        try {
+            if (actionType === 'approve') {
+                await axios.post(`${API}/approve/${localJob.rnid}`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setLocalJob({ ...localJob, status: 'APPROVED' });
+            } else {
+                await axios.post(`${API}/reject/${localJob.rnid}`, { reason }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setLocalJob({ ...localJob, status: 'REJECTED', rejectReason: reason });
+            }
+            alert(`Tin tuyển dụng đã được ${actionType === 'approve' ? 'phê duyệt' : 'từ chối'}`);
+
+            if (onUpdate) onUpdate(localJob.id, actionType === 'approve' ? 'APPROVED' : 'REJECTED');
+
+        } catch (err) {
+            console.error(err);
+            alert("Lỗi khi cập nhật trạng thái tin tuyển dụng");
+        } finally {
+            setShowApprovalModal(false);
+            setReason('');
+            setLoading(false);
+        }
     };
 
     const handleCancel = () => {
@@ -157,7 +194,7 @@ export default function RecruitmentDetail({ job, onBack }) {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="action-buttons">
+                    {/* <div className="action-buttons">
                         <button
                             onClick={handleApprove}
                             disabled={localJob.status === 'APPROVED' || localJob.status === 'REJECTED'}
@@ -172,7 +209,24 @@ export default function RecruitmentDetail({ job, onBack }) {
                         >
                             ✕ Từ chối
                         </button>
+                    </div> */}
+                    <div className="action-buttons">
+                        <button
+                            onClick={handleApprove}
+                            disabled={localJob.status !== 'PENDING' || loading}
+                            className="btn-approve"
+                        >
+                            ✓ Phê duyệt
+                        </button>
+                        <button
+                            onClick={handleReject}
+                            disabled={localJob.status !== 'PENDING' || loading}
+                            className="btn-reject"
+                        >
+                            ✕ Từ chối
+                        </button>
                     </div>
+
                 </div>
             </div>
 
@@ -209,8 +263,10 @@ export default function RecruitmentDetail({ job, onBack }) {
 
                         <div className="modal-actions">
                             <button onClick={handleCancel} className="btn-cancel">Hủy</button>
-                            <button onClick={handleConfirm} className={`btn-confirm ${actionType}`}>
-                                Xác nhận
+                            <button onClick={handleConfirm} className={`btn-confirm ${actionType}`} disabled={loading}
+                            >
+                                {loading ? "Đang xử lý..." : "Xác nhận"}
+                                {/* Xác nhận */}
                             </button>
                         </div>
                     </div>

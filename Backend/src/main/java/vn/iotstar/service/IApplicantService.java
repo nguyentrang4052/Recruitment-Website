@@ -1,5 +1,6 @@
 package vn.iotstar.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -41,6 +42,10 @@ public interface IApplicantService {
 	// ApplicantDetailDTO convertToDetailDTO(Applicant applicant);
 
 	ProfileDTO mapToDetail(Applicant applicant);
+
+	List<Applicant> findAll();
+
+	void deleteApplicant(Integer id);
 
     
 }

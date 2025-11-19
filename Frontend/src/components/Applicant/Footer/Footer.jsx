@@ -1,27 +1,36 @@
 import React from 'react';
-import './Footer.css'; // Make sure to create a CSS file for styling
+import './Footer.css';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <footer className="footer">
       <div className="footer-item">
         <div className="footer-section">
           <h3>Về GZCONNECT</h3>
           <ul>
-            <li>Về chúng tôi</li>
-            <li>Quy chế hoạt động</li>
-            <li>Quy định bảo mật</li>
-            <li>Thoả thuận sử dụng</li>
-            <li>Liên hệ</li>
+            <li onClick={() => scrollToSection('about')}>Về chúng tôi</li>
+            <li onClick={() => scrollToSection('regulations')}>Quy chế hoạt động</li>
+            <li onClick={() => scrollToSection('privacy')}>Quy định bảo mật</li>
+            <li onClick={() => scrollToSection('terms')}>Thoả thuận sử dụng</li>
+            <li onClick={() => scrollToSection('contact')}>Liên hệ</li>
           </ul>
         </div>
         <div className="footer-section">
           <h3>Dành cho ứng viên</h3>
           <ul>
-            <li>Việc làm</li>
-            <li>Tìm việc làm nhanh</li>
-            <li>Công ty</li>
-            <li>Mẫu CV xin việc</li>
+            <li onClick={() => navigate("/dashboard")}>Việc làm</li>
+            <li onClick={() => navigate("/companies")}>Công ty</li>
+            <li onClick={() => navigate("/cv-templates")}>Mẫu CV xin việc</li>
           </ul>
         </div>
         <div className="footer-section">
@@ -29,23 +38,6 @@ const Footer = () => {
           <ul>
             <li>Dịch vụ nhân sự cao cấp</li>
             <li>Cẩm nang tuyển dụng</li>
-          </ul>
-        </div>
-        <div className="footer-section">
-          <h3>Việc làm theo khu vực</h3>
-          <ul>
-            <li>Hồ Chí Minh</li>
-            <li>Hà Nội</li>
-            <li>Đà Nẵng</li>
-            <li>Hải Phòng</li>
-            <li>Cần Thơ</li>
-          </ul>
-        </div>
-        <div className="footer-section">
-          <h3>Việc làm theo vị trí tuyển dụng</h3>
-          <ul>
-            <li>IT - Phần mềm</li>
-            <li>IT - Phần cứng / Mạng</li>
           </ul>
         </div>
         <div className="footer-section">

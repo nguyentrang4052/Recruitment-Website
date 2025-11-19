@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import axios from "axios"
 import companyImage from '../../../../../assets/company-image.jpg'
 
+
 function CompanyPage() {
   const [companiesPerRow, setCompaniesPerRow] = useState(3);
   const reviews = [
@@ -73,6 +74,7 @@ function CompanyPage() {
     );
   };
 
+
   if (loading) return <div>Loading...</div>;
   return (
     <div className="page-container">
@@ -87,7 +89,7 @@ function CompanyPage() {
               <div className="controls-wrapper">
                 <div className="control-group">
                   <label className="control-label">
-                    Companies per row:
+                    Số công ty mỗi hàng:
                   </label>
                   <select
                     value={companiesPerRow}
@@ -146,14 +148,14 @@ function CompanyPage() {
                         </div>
                         <div className="meta-item">
                           <Briefcase size={14} />
-                          <span>{company.jobs} jobs</span>
+                          <span>{company.jobs} tin tuyển dụng</span>
                         </div>
                       </div>
 
                       <div className="company-divider"></div>
 
                       <a href={`/companies/reviews/${company.employerId}`} className="company-reviews-link">
-                        {company.reviews} reviews →
+                        {company.reviews} đánh giá →
                       </a>
 
                       {/* <div className="company-badge">
@@ -166,15 +168,7 @@ function CompanyPage() {
               </div>
 
               {/* Share Section */}
-              <div className="share-section">
-                <h2 className="share-title">Share your experiences?</h2>
-                <p className="share-description">
-                  Only take a minute! Your anonymous review is valuable to millions of job seekers
-                </p>
-                <button className="share-button">
-                  Write a Review
-                </button>
-              </div>
+             
             </div>
           </div>
 

@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,5 +69,11 @@ public class EmployerController {
 	public ResponseEntity<RatingDTO> createReview(@RequestBody RatingDTO dto, @RequestParam Integer applicantId) {
         RatingDTO saved = ratingService.create(dto, applicantId);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+	
+	@DeleteMapping("/companies/review/delete")
+	public ResponseEntity<?> deleteReview(@RequestParam Integer applicantID, @RequestParam Integer employerID) {
+       ratingService.deleteByEmployer_EmployerIDAndApplicant_ApplicantID(employerID, applicantID);
+        return ResponseEntity.ok("Xoá đánh giá thành công");
     }
 }

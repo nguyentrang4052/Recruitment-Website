@@ -68,6 +68,7 @@ public class Applicant implements Serializable {
 	@JoinTable(name = "ApplicantSkill", joinColumns = @JoinColumn(name = "applicantID"), inverseJoinColumns = @JoinColumn(name = "skillID"))
 	private List<Skill> skill;
 
-
-
+	@OneToMany(mappedBy = "applicant")
+	private List<ViewLog> viewLog = new ArrayList<>();
+	
 }

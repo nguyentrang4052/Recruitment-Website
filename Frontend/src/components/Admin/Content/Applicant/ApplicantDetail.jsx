@@ -3,11 +3,11 @@ import { ChevronLeft } from 'lucide-react';
 import './ApplicantDetail.css';
 
 export default function ApplicantDetail({ applicant, onBack }) {
-  const genderText = (g) => {
-    if (g === 1) return 'Nam';
-    if (g === 0) return 'Nữ';
-    return 'Khác';
-  };
+  // const genderText = (g) => {
+  //   if (g === 1) return 'Nam';
+  //   if (g === 0) return 'Nữ';
+  //   return 'Khác';
+  // };
 
   const formatDate = (d) => (d ? new Date(d).toLocaleDateString('vi-VN') : '—');
 
@@ -44,7 +44,7 @@ export default function ApplicantDetail({ applicant, onBack }) {
               </div>
               <div>
                 <p className="info-label">Giới tính</p>
-                <p className="info-value">{genderText(applicant.gender)}</p>
+                <p className="info-value">{applicant.gender}</p>
               </div>
               <div>
                 <p className="info-label">Địa chỉ</p>

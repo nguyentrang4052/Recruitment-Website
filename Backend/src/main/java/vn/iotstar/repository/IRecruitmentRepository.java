@@ -51,7 +51,7 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 		List<RecruitmentNews> findBySalary(@Param("minSalary") BigDecimal minSalary, 
 		                                           @Param("maxSalary") BigDecimal maxSalary);
 	
-	@Query("SELECT r FROM RecruitmentNews r WHERE r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE")
+	@Query("SELECT r FROM RecruitmentNews r WHERE r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 order by r.deadline ASC")
 	List<RecruitmentNews> findAllNews();
 	
 	
@@ -80,5 +80,5 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 		        @Param("lastSentDate") LocalDate lastSentDate
 		);
 
-
+	 List<RecruitmentNews> findBySkill_skillID(Integer skillID);
 }

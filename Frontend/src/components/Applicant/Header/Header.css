@@ -91,17 +91,24 @@
   background-color: white;
 }
 
+.all-buttons{
+  color: rgb(9, 11, 155);
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: 100px;
+}
+
 .cv-button {
   color: rgb(9, 11, 155);
   font-size: 16px;
   font-weight: 500;
   text-decoration: none;
   white-space: nowrap;
+  
 }
 
-.cv-button:hover {
-  color: #03775c;
-}
 
 .header-right {
   display: flex;          

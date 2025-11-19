@@ -137,6 +137,7 @@ function Profile() {
                     phone: formData.phone,
                     address: formData.address,
                     birthday: formData.birthday,
+                    gender: formData.gender,
                     photo: applicant.photo,
                 };
             } else if (editingSection === 'goal') {
@@ -148,7 +149,7 @@ function Profile() {
                 const eduString = `${eduForm.school || ''} - ${eduForm.major || ''}`.trim();
                 payload = { literacy: eduString };
             } else if (editingSection === 'skills') {
-                payload = { skills: skillsForm }; 
+                payload = { skills: skillsForm };
             } else if (editingSection === 'level') {
                 payload = { desireLevel: levelForm };
             }
@@ -161,6 +162,7 @@ function Profile() {
             setApplicant(prev => ({ ...prev, ...res.data }));
             setEditingSection(null);
             alert('Cập nhật thành công!');
+            window.location.reload();
         } catch (err) {
             console.error('Lỗi khi lưu:', err);
             alert('Cập nhật thất bại!');
@@ -250,6 +252,17 @@ function Profile() {
                                         onChange={e => setFormData({ ...formData, birthday: e.target.value })}
                                     />
                                 </div>
+                                <div className="form-group-pr">
+                                    <label>Giới tính</label>
+                                    <select
+                                        value={formData.gender || ''}
+                                        onChange={e => setFormData({ ...formData, gender: e.target.value })}
+                                    >
+                                        <option value="">Chọn giới tính</option>
+                                        <option value="male">Nam</option>
+                                        <option value="female">Nữ</option>
+                                    </select>
+                                </div>
                                 <div style={{ marginTop: '1rem' }}>
                                     <button onClick={handleSave}>Lưu</button>
                                     <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>
@@ -273,6 +286,9 @@ function Profile() {
                                 </div>
                                 <div className="form-group-pr">
                                     <p><strong>Ngày sinh:</strong> {formatDate(applicant.birthday)}</p>
+                                </div>
+                                <div className="form-group-pr">
+                                    <p><strong>Giới tính:</strong> {applicant.gender}</p>
                                 </div>
                                 <button className="edit-profile" onClick={handleEditPersonal}>
                                     <MdModeEdit /> Chỉnh sửa
@@ -357,18 +373,18 @@ function Profile() {
                     <h3>Kỹ năng</h3>
                     {editingSection === 'skills' ? (
                         <>
-                        <div className="skills-grid-profile">
-                            {skillList.map(skill => (
-                                <label key={skill.skillID} className="skill-item-profile" style={{ display: 'block', marginBottom: 4 }}>
-                                    <input
-                                        type="checkbox"
-                                        checked={skillsForm.some(s => s.skillID === skill.skillID)}
-                                        onChange={() => handleSkillChange(skill)}
-                                    />
-                                    {skill.skillName}
-                                </label>
-                            ))}
-                        </div>
+                            <div className="skills-grid-profile">
+                                {skillList.map(skill => (
+                                    <label key={skill.skillID} className="skill-item-profile" style={{ display: 'block', marginBottom: 4 }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={skillsForm.some(s => s.skillID === skill.skillID)}
+                                            onChange={() => handleSkillChange(skill)}
+                                        />
+                                        {skill.skillName}
+                                    </label>
+                                ))}
+                            </div>
                             <button onClick={handleSave}>Lưu</button>
                             <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>Hủy</button>
                         </>

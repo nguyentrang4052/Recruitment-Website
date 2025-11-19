@@ -20,6 +20,8 @@ public class EmployerCardDTO {
 	private Integer companySize;
 	private String fullName;
 	private String image;
+	private String phone;
+	private String representative;
 
 	private Integer jobs;
 	private Integer reviews;
@@ -36,5 +38,7 @@ public class EmployerCardDTO {
 		this.address = address;
 		this.fullName = fullName;
 	}
+	
+	private String active;
 
 }

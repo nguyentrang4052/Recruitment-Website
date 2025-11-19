@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios'
 import './CompanyIntro.css';
 import { StarRating } from '../StartRating';
+import { useNavigate } from 'react-router-dom';
 
 const CompanyIntro = () => {
     const [companies, setCompanies] = useState([]);
@@ -39,6 +40,10 @@ const CompanyIntro = () => {
         }
     };
 
+    const navigate = useNavigate();
+    const handleReviewClick = () => {
+        navigate('/companies/reviews');
+    }
     if (loading) return <div>Loading...</div>;
     return (
         <div>
@@ -46,7 +51,7 @@ const CompanyIntro = () => {
                 {displayCompanies.map((company, index) => (
                     <div key={company.employerId} className="company-card-intro">
                         <div className="company-header">
-                            <span className="company-rank">#{index+1}</span>
+                            <span className="company-rank">#{index + 1}</span>
                             <h2 className="company-name-intro"><Link to={`/companies/${company.employerId}`}>{company.name}</Link></h2>
                         </div>
 
@@ -58,7 +63,7 @@ const CompanyIntro = () => {
                             <div className="company-info">
                                 <div className="rating-section">
                                     <div className="stars">
-                                        <StarRating rating = {company.ranking}/>
+                                        <StarRating rating={company.ranking} />
                                     </div>
                                     <span className="rating-number-intro">{company.ranking}</span>
                                 </div>
@@ -73,12 +78,21 @@ const CompanyIntro = () => {
                         </div>
 
                         <div className="company-links">
-                            <a href="/companies/reviews" className="company-link">See reviews</a>
+                            <a href="/companies/reviews" className="company-link">Xem đánh giá</a>
                             <span className="link-separator">|</span>
-                            <a href={`/companies/${company.employerId}`} className="company-link">See jobs</a>
+                            <a href={`/companies/${company.employerId}`} className="company-link">Xem tin tuyển dụng</a>
                         </div>
                     </div>
                 ))}
+            </div>
+            <div className="share-section">
+                <h2 className="share-title">Chia sẻ kinh nghiệm?</h2>
+                <p className="share-description">
+                    Chỉ mất một phút! Đánh giá ẩn danh của bạn có giá trị đối với hàng triệu người tìm việc
+                </p>
+                <button className="share-button" onClick={handleReviewClick}>
+                    Viết đánh giá
+                </button>
             </div>
             <div className="pagination">
                 <button

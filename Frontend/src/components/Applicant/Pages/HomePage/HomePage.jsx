@@ -4,10 +4,7 @@ import Menu from '../../Header/Menu.jsx';
 import homepageLogo from "../../../../assets/logoWeb.png"
 import { NAVIGATE_MAP } from './../../../../utils/NavigateConfig.js'
 
-const menuItems = [{
-  label: 'Tất cả việc làm',
-  submenu: ['Theo kỹ năng', 'Theo cấp bậc', 'Theo địa điểm', 'Theo vị trí']
-},
+const menuItems = [
 {
   label: 'Công ty',
   submenu: ['Giới thiệu công ty', 'Đánh giá công ty']
@@ -38,12 +35,21 @@ function HomePage() {
           <div className="homepage-header">
             <div className="home-header-left">
               <img src={homepageLogo} alt="Logo" className="homepage-logo" />
+              <Link to="/" className="all-buttons">
+                 Tất cả việc làm
+                </Link>
               <nav className="nav-menu">
                 {menuItems.map((menu, index) => (<Menu key={index} label={menu.label} submenu={menu.submenu} navigateMap={NAVIGATE_MAP}/>))}
                 <Link to="/cv-templates" className="cv-button">
                   Tạo CV xin việc
                 </Link>
               </nav>
+               <a href="/about" className="all-buttons">
+            Về chúng tôi
+         </a>
+          {/* <a href="/contact" className="all-buttons">
+            Liên hệ
+         </a> */}
             </div>
             <div className="home-header-right">
               <button className="home-signup-btn" onClick={handleSignUpClick}>Đăng ký</button>

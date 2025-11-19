@@ -442,6 +442,15 @@ public class ApplicantService implements IApplicantService {
 	public ProfileDTO updateApplicant(Integer applicantID, ProfileDTO profileDTO) {
 		Applicant existingApplicant = applicantRepository.findById(applicantID)
 				.orElseThrow(() -> new RuntimeException("Ứng viên không tồn tại"));
+		if (profileDTO.getGender() != null) {
+	        Integer genderValue = null;
+	        if (profileDTO.getGender().equalsIgnoreCase("male")) {
+	            genderValue = 1;  
+	        } else if (profileDTO.getGender().equalsIgnoreCase("female")) {
+	            genderValue = 0;  
+	        }
+	        existingApplicant.setGender(genderValue);
+	    }
 		copyNonNull(profileDTO, existingApplicant.getAccount(), "photo");
 		copyNonNull(profileDTO, existingApplicant.getCareerInformation(), "title", "desireLevel", "formOfWork",
 				"location");
@@ -495,7 +504,7 @@ public class ApplicantService implements IApplicantService {
 		String gender;
 		if (applicant.getGender() != null)
 		{
-			gender = applicant.getGender() == 0 ? "Nam":"Nữ";
+			gender = applicant.getGender() == 0 ? "Nữ":"Nam";
 		}else {
 			gender = "Chưa có thông tin";
 		}

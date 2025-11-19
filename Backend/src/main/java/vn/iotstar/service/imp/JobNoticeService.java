@@ -32,7 +32,7 @@ import vn.iotstar.service.IRecruitmentService;
 @Service
 public class JobNoticeService implements IJobNoticeService {
 
-	private final RecruitmentService recruitmentService;
+	private final IRecruitmentService recruitmentService;
 	@Autowired
 	private IApplicantService applicantService;
 
@@ -52,7 +52,7 @@ public class JobNoticeService implements IJobNoticeService {
 	@Autowired
 	private INoticeHistoryService historyService;
 
-	JobNoticeService(RecruitmentService recruitmentService) {
+	JobNoticeService(IRecruitmentService recruitmentService) {
 		this.recruitmentService = recruitmentService;
 	}
 

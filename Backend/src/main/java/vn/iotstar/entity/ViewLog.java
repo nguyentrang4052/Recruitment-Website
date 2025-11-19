@@ -27,14 +27,12 @@ public class ViewLog implements Serializable {
 	private LocalDate viewDate = LocalDate.now();
 	
 	@ManyToOne
-	@JoinColumn(name="employerID", referencedColumnName = "employerID")
-	private Employer employer;
+	@JoinColumn(name = "applicantID", referencedColumnName = "applicantID")
+	private Applicant applicant;
 	
 	@ManyToOne
 	@JoinColumn(name="RNID", referencedColumnName = "RNID")
 	private RecruitmentNews reNews;
-	
-	
 	
 	
 }

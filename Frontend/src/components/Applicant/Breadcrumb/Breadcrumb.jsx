@@ -84,6 +84,8 @@ const [loadingR, setLoadingR] = useState(Boolean(rnid));
     // các route cố định khác
     if (location.pathname === '/cv-templates') {
       return [...base.slice(0, 1), { label: 'Mẫu CV', link: '/cv-templates' }];
+    }else if (location.pathname === '/about') {
+      return [...base.slice(0, 1), { label: 'Về chúng tôi', link: '/about' }];
     }
     // if (location.pathname === '/recruitment') {
     //   return [...base.slice(0, 1), { label: 'Việc làm', link: '/recruitment' }];

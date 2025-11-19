@@ -16,12 +16,9 @@ import { useNavigate, Link } from 'react-router-dom'
 import { isTokenExpired } from './../../../utils/Auth'
 import { NAVIGATE_MAP } from './../../../utils/NavigateConfig'
 import axios from "axios";
+import { goOrReload } from '../../../utils/NavigateConfig';
 
 const menuItems = [
-  {
-    label: 'Tất cả việc làm',
-    submenu: ['Theo kỹ năng', 'Theo cấp bậc', 'Theo địa điểm', 'Theo vị trí']
-  },
   {
     label: 'Công ty',
     submenu: ['Giới thiệu công ty', 'Đánh giá công ty']
@@ -57,7 +54,6 @@ function Header() {
     }
   };
 
-  // const handlePageSelect = (page) => {
   //   switch (page) {
   //     case 'home':
   //       navigate('/dashboard');
@@ -147,8 +143,7 @@ function Header() {
           localStorage.getItem('roleName') === 'applicant'
             ? '/dashboard'
             : '/employer-dashboard';
-        if (currentPath === fallback) reloadCurrentPage();
-        else navigate(fallback);
+        goOrReload(fallback, navigate); 
       }
     }
   };
@@ -157,13 +152,19 @@ function Header() {
       <div className="header">
         <div className="header-left">
           <img src={homePageLogo} alt="Logo" className="homepage-logo" onClick={() => handlePageSelect("home")} />
+           <a href="/dashboard" className="all-buttons">
+            Tất cả việc làm
+         </a>
           <nav className="nav-menu">
             {menuItems.map((menu, index) => (
               <Menu key={index} label={menu.label} submenu={menu.submenu} navigateMap={NAVIGATE_MAP} />
             ))}
-            <Link to="/cv-templates" className="cv-button">
+            <a href="/cv-templates" className="cv-button">
               Tạo CV xin việc
-            </Link>
+            </a>
+              <a href="/about" className="all-buttons">
+            Về chúng tôi
+         </a>
           </nav>
 
         </div>

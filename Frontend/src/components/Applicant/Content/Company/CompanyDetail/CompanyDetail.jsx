@@ -13,7 +13,7 @@ function CompanyDetail() {
     const [companyDetail, setCompanyDetail] = useState(null);
     const [jobListings, setJobListings] = useState(null);
     const [loading, setLoading] = useState(true);
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
     const navigate = useNavigate()
     // const {rnid} = useParams
 
@@ -72,13 +72,9 @@ function CompanyDetail() {
                                 <div className="company-quick-info">
                                     <MapPin size={16} />
                                     <span>{companyDetail.address}</span>
-                                    {/* <span className="separator">•</span> */}
-                                    {/* <Briefcase size={16} />
-                                        <span>{companyDetail.jobs} job openings</span> */}
                                 </div>
                                 <div className="company-actions">
-                                    <button className="btn-write-review" onClick={() => reviewDetail(companyDetail.employerId)}>Write review</button>
-                                    {/* <button className="btn-follow">Follow</button> */}
+                                    <button className="btn-write-review" onClick={() => reviewDetail(companyDetail.employerId)}>Viết đánh giá</button>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +83,7 @@ function CompanyDetail() {
                                 <p>{companyDetail.ranking}</p>
                                 <div className="rating-number"><StarRating rating={companyDetail.ranking} /></div>
 
-                                <div className="rating-count-detail">{companyDetail.reviews} reviews</div>
+                                <div className="rating-count-detail">{companyDetail.reviews} đánh giá</div>
                             </div>
                         </div>
                     </div>
@@ -142,7 +138,7 @@ function CompanyDetail() {
                     <div className="right-column">
                         <div className="jobs-card">
 
-                            <h2 className="jobs-title">{companyDetail.jobs} job openings</h2>
+                            <h2 className="jobs-title">{companyDetail.jobs} tin đang tuyển </h2>
                             <div className="jobs-list">
                                 {jobListings.map((job) => (
                                     <div key={job.employerId} className="job-card">
@@ -155,11 +151,11 @@ function CompanyDetail() {
                                             </div>
                                             <span className="job-company-name">{job.employer.name}</span>
                                         </div>
-                                        {!token && (<div className="job-salary">
+                                        <div className="job-salary">
                                             <span className="salary-icon">💰</span>
-                                            <a href="/applicant-login" className="salary-link">Đăng nhập để xem mức lương</a>
+                                            <p  className="salary">{job.salary}</p>
                                         </div>
-                                        )}
+                                        
 
                                         <div className="job-meta">
                                             <div className="job-benefit-text">

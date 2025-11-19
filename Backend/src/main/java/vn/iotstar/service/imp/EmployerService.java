@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import vn.iotstar.dto.applicant.EmployerCardDTO;
 import vn.iotstar.dto.applicant.RatingDTO;
+import vn.iotstar.entity.Account;
 import vn.iotstar.entity.Employer;
+import vn.iotstar.repository.IAccountRepository;
 import vn.iotstar.repository.IEmployerRepository;
 import vn.iotstar.repository.IRecruitmentRepository;
 import vn.iotstar.service.IEmployerService;
@@ -30,6 +32,9 @@ public class EmployerService implements IEmployerService {
 	
 	@Autowired
 	private IRatingService ratingService;
+	
+	@Autowired
+	private IAccountRepository accountRepository;
 
 	@Override
 	public List<Employer> findAll() {
@@ -75,7 +80,7 @@ public class EmployerService implements IEmployerService {
 		List<RatingDTO> rating = emp.getRatings().stream()
 				
 				.map(r -> new RatingDTO(r.getContent(), r.getDate(), r.getScore())).toList();
-
+		String active = emp.getAccount().getActive() == 1 ? "Hoạt động" : "Bị khoá";
 		return new EmployerCardDTO(
 						emp.getEmployerName(),
 						emp.getCompanyLogo(),
@@ -83,13 +88,23 @@ public class EmployerService implements IEmployerService {
 						emp.getCompanyProfile(),
 						emp.getCompanySize(),
 						emp.getFullName(),
-						emp.getCompanyImage(),	
+						emp.getCompanyImage(),
+						emp.getPhone(),
+						emp.getRepresentative(),
 						countJobs(emp.getEmployerID()),
 						countReviews(emp.getEmployerID()),
 						rating,
 						avgScore(emp.getEmployerID()),
 						emp.getAddress(),
-						emp.getCompanyWebsite());
+						emp.getCompanyWebsite(),
+						active);
+	}
+	
+	@Override
+	public void deleteEmployer(Integer id) {
+		Account account = accountRepository.findByEmployer_EmployerID(id);
+		account.setActive(0);
+		accountRepository.save(account);
 	}
 
 }

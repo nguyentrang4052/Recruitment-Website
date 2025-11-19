@@ -24,4 +24,6 @@ public interface IEmployerService {
 
 	BigDecimal avgScore(Integer id);
 
+	void deleteEmployer(Integer id);
+
 }

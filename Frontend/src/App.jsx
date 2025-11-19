@@ -27,6 +27,7 @@ import AdminDashboard from './components/Admin/Dashboard/Dashboard.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx'
 import RoleBasedRedirect from './components/RoleBasedRedirect.jsx';
 import AlreadyAuth from './components/AlreadyAuth.jsx';
+import AboutPage from './components/Applicant/Footer/AboutPage.jsx';
 
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -48,6 +49,7 @@ function App() {
             <Route path="/verify-otp" element={<Verify />} />
             <Route path="/forgot-password" element={<ForgotPass />} />
             <Route path="/employer-link" element={<EmployerLink />} />
+            <Route path="/about" element={<AboutPage />} />
             
             </Route>
           </Route>
@@ -60,6 +62,7 @@ function App() {
             <Route path="/companies/:employerId" element={<CompanyDetail />} />
             <Route path="/companies/reviews/:employerId" element={<CompanyReviewDetail />} />
             <Route path="/companies/reviews" element={<CompanyReview />} />
+            <Route path="/cv-templates" element={<CV />} />
              {/* <Route path="/admin" element={<AdminDashboard />} /> */}
           </Route>
 
@@ -72,7 +75,7 @@ function App() {
               <Route path="/apply-jobs" element={<ApplyJob />} />
               <Route path="/notifications" element={<Notice />} />
               <Route path="/settings" element={<Setting />} />
-              <Route path="/cv-templates" element={<CV />} />
+              
             </Route>
           </Route>
 

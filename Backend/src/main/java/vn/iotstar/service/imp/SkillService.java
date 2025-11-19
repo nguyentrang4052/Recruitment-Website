@@ -7,7 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vn.iotstar.dto.SkillDTO;
+import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.entity.Skill;
+import vn.iotstar.repository.IRecruitmentRepository;
 import vn.iotstar.repository.ISkillRepository;
 import vn.iotstar.service.ISkillService;
 
@@ -16,6 +19,9 @@ public class SkillService implements ISkillService {
 
     @Autowired
     private ISkillRepository skillRepository;
+    
+    @Autowired
+    private IRecruitmentRepository repository;
 
     @Override
     public List<Skill> findAllSkills() {
@@ -47,5 +53,41 @@ public class SkillService implements ISkillService {
 
         existingSkills.addAll(skillsToCreate);
         return existingSkills;
+    }
+    
+    @Override
+	public SkillDTO mapToDetail(Skill skill) {
+    	return new SkillDTO(skill.getSkillID(), skill.getSkillName(), skill.getDescription());
+    }
+
+	@Override
+	public List<Skill> findBySkillNameContaining(String skillName) {
+		return skillRepository.findBySkillNameContaining(skillName);
+	}
+
+	@Override
+	public Skill findBySkillName(String skillName) {
+		return skillRepository.findBySkillName(skillName);
+	}
+
+	@Override
+	public <S extends Skill> S save(S entity) {
+		return skillRepository.save(entity);
+	}
+
+	@Override
+	public boolean existsById(Integer id) {
+		return skillRepository.existsById(id);
+	}
+
+	@Override
+	public void deleteById(Integer id) {
+		skillRepository.deleteById(id);
+	}
+    
+	@Override
+	public boolean isSkillInUse(Integer skillId) {
+        List<RecruitmentNews> newsList = repository.findBySkill_skillID(skillId);
+        return !newsList.isEmpty();
     }
 }

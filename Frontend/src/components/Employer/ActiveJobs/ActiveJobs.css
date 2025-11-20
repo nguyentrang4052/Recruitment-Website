@@ -5,7 +5,7 @@
   box-shadow: none;
   margin-left: 300px;
   max-width: 1200px;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: "Inter", "Segoe UI", sans-serif;
 }
 
 .joblist-header {
@@ -77,7 +77,7 @@
 }
 
 .joblist-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;

@@ -32,6 +32,7 @@ const SearchApplicant = () => {
     const experienceLevels = ["Tất cả", "Fresher", "Junior", "Mid-level", "Senior", "Manager"];
     const token = localStorage.getItem('token');
 
+
     useEffect(() => {
         setCities(provincesData);
 
@@ -67,6 +68,7 @@ const SearchApplicant = () => {
             skills: selectedSkills.length > 0 ? selectedSkills : null,
             page: page,
             size: DEFAULT_PAGE_SIZE,
+
         };
 
         try {

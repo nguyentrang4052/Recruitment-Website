@@ -23,7 +23,6 @@ import vn.iotstar.entity.NoticeHistory;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.enums.EFrequency;
 import vn.iotstar.repository.IJobNoticeRepository;
-import vn.iotstar.service.EmailService;
 import vn.iotstar.service.IApplicantService;
 import vn.iotstar.service.IJobNoticeService;
 import vn.iotstar.service.INoticeHistoryService;

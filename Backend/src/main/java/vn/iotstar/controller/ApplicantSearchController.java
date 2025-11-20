@@ -74,10 +74,12 @@ import org.springframework.web.bind.annotation.*;
 import vn.iotstar.dto.ApplicantDTO;
 import vn.iotstar.dto.ApplicantDetailDTO;
 import vn.iotstar.dto.ApplicantSearchDTO;
+import vn.iotstar.entity.Applicant;
 import vn.iotstar.service.IApplicantService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -88,6 +90,7 @@ import java.util.Map;
 public class ApplicantSearchController {
 
     private final IApplicantService applicantService;
+    
 
     @PostMapping("/search_applicant")
     public ResponseEntity<Map<String, Object>> searchApplicants(

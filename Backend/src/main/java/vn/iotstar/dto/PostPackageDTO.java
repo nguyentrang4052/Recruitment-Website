@@ -8,11 +8,12 @@ import java.util.List;
 public class PostPackageDTO {
     private Integer packageID;
     private String packageName;
-    private String category;          
+    private String category;
     private BigDecimal price;
-    private String duration;          
+    private String duration;
     private String description;
-    private List<String> features;    
+    private List<String> features;
     private BigDecimal taxRate;
     private Boolean isRecommended;
+    private Boolean isHidden;
 }

@@ -99,49 +99,69 @@ public class ApplicantService implements IApplicantService {
 		}
 		return stored;
 	}
-
+	
+	@Override
+    @Transactional(readOnly = true)
+    public Optional<ApplicantDetailDTO> getApplicantDetailById(Integer applicantID) {
+        return applicantRepository.findByApplicantID(applicantID)
+                .map(this::convertToDetailDTO);
+    }
 
 	private ApplicantDTO convertToDTO(Applicant applicant) {
-		ApplicantDTO dto = new ApplicantDTO();
+        ApplicantDTO dto = new ApplicantDTO();
+        
+        dto.setApplicantID(applicant.getApplicantID());
+        dto.setApplicantName(applicant.getApplicantName());
+        dto.setBirthday(applicant.getBirthday());
+        dto.setGender(applicant.getGender());
+        dto.setAddress(applicant.getAddress());
+        dto.setPhone(applicant.getPhone());
+    
+        
+        if (applicant.getAccount() != null) {
+            dto.setEmail(applicant.getAccount().getEmail());
+            dto.setPhoto(applicant.getAccount().getPhoto());
+        }
+        
+        dto.setGoal(applicant.getGoal());
+        dto.setExperience(applicant.getExperience());
+        dto.setLiteracy(applicant.getLiteracy());
 
-		dto.setApplicantID(applicant.getApplicantID());
-		dto.setApplicantName(applicant.getApplicantName());
-		dto.setBirthday(applicant.getBirthday());
-		dto.setGender(applicant.getGender());
-		dto.setAddress(applicant.getAddress());
-		dto.setPhone(applicant.getPhone());
+        CareerInformation ci = applicant.getCareerInformation();
+        if (ci != null) {
+            dto.setJobTitle(ci.getTitle());
+            dto.setLocation(ci.getLocation());
+            dto.setDesireLevel(ci.getDesireLevel());
+            dto.setFormOfWork(ci.getFormOfWork() != null ? ci.getFormOfWork().toString() : null);
+            dto.setDesireSalary(ci.getDesireSalary() != null ? ci.getDesireSalary() + " VND" : "Thỏa thuận");
+        }
 
-		dto.setGoal(applicant.getGoal());
-		dto.setExperience(applicant.getExperience());
-		dto.setLiteracy(applicant.getLiteracy());
+        if (applicant.getSkill() != null) {
+            List<String> skillNames = applicant.getSkill().stream()
+                .map(Skill::getSkillName)
+                .collect(Collectors.toList());
+            dto.setSkillNames(skillNames);
+        }
 
-		CareerInformation ci = applicant.getCareerInformation();
-		if (ci != null) {
-			dto.setJobTitle(ci.getTitle());
-			dto.setLocation(ci.getLocation());
-			dto.setDesireLevel(ci.getDesireLevel());
-			dto.setFormOfWork(ci.getFormOfWork() != null ? ci.getFormOfWork().toString() : null);
-			dto.setDesireSalary(ci.getDesireSalary() != null ? ci.getDesireSalary() + " VND" : "Thỏa thuận");
-		}
+        if (applicant.getApplication() != null && !applicant.getApplication().isEmpty()) {
+            List<ApplicationDTO> appDtos = applicant.getApplication().stream()
+                .map(app -> {
+                    ApplicationDTO aDto = new ApplicationDTO();
+                    aDto.setDate(app.getDate());
+                    aDto.setStatus(app.getStatus().name());
+                    aDto.setNote(app.getNote());
+                    aDto.setCV(app.getCV());
+                    aDto.setRecruitmentNewsTitle(app.getRecruitmentNews().getPosition());
+                    return aDto;
+                })
+                .collect(Collectors.toList());
+            dto.setApplications(appDtos);
+        } else {
+            dto.setApplications(Collections.emptyList());
+        }
 
-
-		if (applicant.getApplication() != null && !applicant.getApplication().isEmpty()) {
-			List<ApplicationDTO> appDtos = applicant.getApplication().stream().map(app -> {
-				ApplicationDTO aDto = new ApplicationDTO();
-				aDto.setDate(app.getDate());
-				aDto.setStatus(app.getStatus().name());
-				aDto.setNote(app.getNote());
-				aDto.setCV(app.getCV());
-				aDto.setRecruitmentNewsTitle(app.getRecruitmentNews().getPosition());
-				return aDto;
-			}).collect(Collectors.toList());
-			dto.setApplications(appDtos);
-		} else {
-			dto.setApplications(Collections.emptyList());
-		}
-
-		return dto;
-	}
+        return dto;
+    }
 
       
 
@@ -158,7 +178,12 @@ public class ApplicantService implements IApplicantService {
 		dto.setBirthday(applicant.getBirthday());
 		dto.setGender(applicant.getGender());
 		dto.setAddress(applicant.getAddress());
-
+		
+		if (applicant.getAccount() != null) {
+            dto.setEmail(applicant.getAccount().getEmail());
+            dto.setPhoto(applicant.getAccount().getPhoto());
+        }
+		
         CareerInformation ci = applicant.getCareerInformation();
         if (ci != null) {
             dto.setJobTitle(ci.getTitle());
@@ -359,4 +384,6 @@ public class ApplicantService implements IApplicantService {
 		account.setActive(0);
 		accountRepository.save(account);
 	}
+	
+	
 }

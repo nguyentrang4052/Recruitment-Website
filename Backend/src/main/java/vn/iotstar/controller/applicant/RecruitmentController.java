@@ -26,12 +26,12 @@ import vn.iotstar.entity.Applicant;
 import vn.iotstar.entity.Application;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.enums.EStatus;
-import vn.iotstar.service.EmailService;
 import vn.iotstar.service.IAccountService;
 import vn.iotstar.service.IApplicantService;
 import vn.iotstar.service.IApplicationService;
 import vn.iotstar.service.IFavouriteJobService;
 import vn.iotstar.service.IRecruitmentService;
+import vn.iotstar.service.imp.EmailService;
 
 @RestController
 @RequestMapping("/api/applicant")

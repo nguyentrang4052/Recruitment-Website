@@ -23,4 +23,6 @@ public class JobDetailDTO extends ActiveJobDTO {
     private Integer numbersOfViews;
     private Integer numbersOfRecords;
     private List<SkillDTO> skills; 
+    private Integer quantity;
+
 }

@@ -24,18 +24,18 @@ public class PostPackage implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column (name = "packageID")
+	@Column(name = "packageID")
 	private Integer packageID;
 
-	@Column (name = "packageName", nullable = false, length = 255)
+	@Column(name = "packageName", nullable = false, length = 255)
 	private String packageName;
 
 //	@Column(name = "categoryName", nullable = false, length = 255)
 //	private String categoryName;
-	
-	@Column(name="price", nullable = false, precision = 10, scale = 2)
+
+	@Column(name = "price", nullable = false, precision = 10, scale = 2)
 	private BigDecimal price;
-	
+
 	@Column(name = "duration", length = 50)
 	private String duration;
 
@@ -50,14 +50,16 @@ public class PostPackage implements Serializable {
 
 	@Column(name = "tax_rate", precision = 4, scale = 2)
 	private BigDecimal taxRate;
+	@Column(name = "is_hidden")
+	private Boolean isHidden = false;
 
 	@Column(name = "is_recommended")
 	private Boolean isRecommended = false;
-	
-	@ManyToMany(mappedBy="postPackage")
+
+	@ManyToMany(mappedBy = "postPackage")
 	@JsonManagedReference
 	private List<TransactionDetail> transDetail = new ArrayList<>();
-	
+
 	@ManyToMany(mappedBy = "postPackage")
 	@JsonManagedReference
 	private List<TransactionDetail> tranDetails;

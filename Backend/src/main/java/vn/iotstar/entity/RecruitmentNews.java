@@ -82,6 +82,12 @@ public class RecruitmentNews implements Serializable {
 
 	@Column(name = "numbersOfViews", nullable = true)
 	private Integer numbersOfViews;
+	
+	@Column(name = "isActive", nullable = true)
+    private Boolean isActive = true;
+	
+	@Column(name = "quantity", nullable = true)
+	private Integer quantity;
 
 	@Column(name = "numbersOfRecords", nullable = true)
 	private Integer numbersOfRecords;

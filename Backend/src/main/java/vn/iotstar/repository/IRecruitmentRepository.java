@@ -21,25 +21,25 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 
 	@Query("SELECT r FROM RecruitmentNews r " + "WHERE r.RNID <> :id "
 			+ "AND (r.position ILIKE CONCAT('%', :position, '%') OR r.location = :location OR r.formOfWork = :formOfWork) "
-			+ "AND r.deadline >= CURRENT_DATE " + "ORDER BY r.deadline ASC")
+			+ "AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true " + "ORDER BY r.deadline ASC")
 	List<RecruitmentNews> findRelatedJobs(@Param("position") String positon, @Param("location") String location,
 			@Param("formOfWork") EFormOfWork formOfWork, @Param("id") Integer id);
 
-	@Query("SELECT COUNT(r) FROM RecruitmentNews r WHERE r.employer.employerID = :id AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE")
+	@Query("SELECT COUNT(r) FROM RecruitmentNews r WHERE r.employer.employerID = :id AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true")
 	Integer countApprovedJobs(@Param("id") Integer id);
 
 	List<RecruitmentNews> findByEmployer_EmployerID(Integer id);
 
-	@Query("SELECT r FROM RecruitmentNews r JOIN r.skill s WHERE LOWER(s.skillName) = LOWER(:skillName) AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE")
+	@Query("SELECT r FROM RecruitmentNews r JOIN r.skill s WHERE LOWER(s.skillName) = LOWER(:skillName) AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true")
 	List<RecruitmentNews> findBySkill_SkillName(@Param("skillName") String skillName);
 
-	@Query("SELECT r FROM RecruitmentNews r WHERE LOWER(r.position) LIKE LOWER(CONCAT('%', :position, '%')) AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE")
+	@Query("SELECT r FROM RecruitmentNews r WHERE LOWER(r.position) LIKE LOWER(CONCAT('%', :position, '%')) AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true")
 	List<RecruitmentNews> findByPosition(@Param("position") String position);
 
-	@Query("SELECT r FROM RecruitmentNews r WHERE LOWER(r.level)= LOWER(:level) AND r.status = 'APPROVED'")
+	@Query("SELECT r FROM RecruitmentNews r WHERE LOWER(r.level)= LOWER(:level) AND r.status = 'APPROVED' AND r.employer.account.active=1 AND r.isActive = true")
 	List<RecruitmentNews> findByLevel(String level);
 
-	@Query("SELECT r FROM RecruitmentNews r WHERE LOWER(r.location) LIKE LOWER(CONCAT('%', :location, '%')) AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE")
+	@Query("SELECT r FROM RecruitmentNews r WHERE LOWER(r.location) LIKE LOWER(CONCAT('%', :location, '%')) AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true")
 	List<RecruitmentNews> findByLocation(String location);
 	
 	List<RecruitmentNews> findByApplication_Applicant_ApplicantID(Integer id);
@@ -47,17 +47,17 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 	
 	@Query("SELECT r FROM RecruitmentNews r WHERE r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE" +
 		       " AND r.minSalary >= :minSalary" +
-		       " AND (:maxSalary IS NULL OR r.maxSalary <= :maxSalary)")
+		       " AND (:maxSalary IS NULL OR r.maxSalary <= :maxSalary) AND r.employer.account.active=1 AND r.isActive = true")
 		List<RecruitmentNews> findBySalary(@Param("minSalary") BigDecimal minSalary, 
 		                                           @Param("maxSalary") BigDecimal maxSalary);
 	
-	@Query("SELECT r FROM RecruitmentNews r WHERE r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 order by r.deadline ASC")
+	@Query("SELECT r FROM RecruitmentNews r WHERE r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true order by r.deadline ASC")
 	List<RecruitmentNews> findAllNews();
 	
 	
 	@Query("""
 		    SELECT r FROM RecruitmentNews r
-		    WHERE r.deadline >= CURRENT_DATE
+		    WHERE r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true
 		      AND (:lastSentDate IS NULL OR r.postedAt > :lastSentDate)
 		      AND (COALESCE(:jobTitle, '') = '' OR LOWER(r.position) LIKE LOWER(CONCAT('%', :jobTitle, '%')))
 		      AND (COALESCE(:location, '') = '' OR r.location LIKE CONCAT('%', :location, '%'))

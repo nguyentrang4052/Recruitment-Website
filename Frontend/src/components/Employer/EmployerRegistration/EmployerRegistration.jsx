@@ -47,7 +47,7 @@ const EmployerRegistration = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-       
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
             handleLinkClick('Lỗi', 'Email không hợp lệ.');
@@ -85,7 +85,7 @@ const EmployerRegistration = () => {
             return;
         }
 
- 
+
         try {
             const response = await fetch('http://localhost:8080/api/employer/register', {
                 method: 'POST',
@@ -103,7 +103,7 @@ const EmployerRegistration = () => {
                 })
             });
 
-            const data = await response.json();
+            // const data = await response.json();
 
             if (response.ok) {
                 handleLinkClick('Đăng ký thành công!', `Vui lòng kiểm tra email: ${formData.email}`);
@@ -118,7 +118,9 @@ const EmployerRegistration = () => {
                 });
                 setAgreedToTerms(false);
             } else {
-                handleLinkClick('Lỗi', data.message || 'Đăng ký thất bại');
+                // handleLinkClick('Lỗi', data.message || 'Đăng ký thất bại');
+                const errorText = await response.text();
+                handleLinkClick('Lỗi', errorText || 'Đăng ký thất bại');
             }
         } catch (error) {
             handleLinkClick('Lỗi', 'Không thể kết nối server. Vui lòng thử lại sau.');

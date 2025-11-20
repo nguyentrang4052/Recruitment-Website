@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faEdit, faTrash, faMapMarkerAlt, faClock,
     faBriefcase, faMoneyBill, faUsers, faEye, faFileAlt,
-    faGraduationCap, faCalendar, faStar
+    faGraduationCap, faCalendar, faStar, faPauseCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 const api = axios.create({
@@ -33,7 +33,6 @@ const formatHtmlContent = (text) => {
     let html = '';
     let inList = false;
 
-    // SỬ DỤNG new RegExp để tránh lỗi ESLint
     const bulletRegex = new RegExp('^[•*-]\\s+');
     const numberRegex = /^\d+\.\s+/;
 
@@ -107,6 +106,24 @@ const JobDetail = ({ jobId, onBack }) => {
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         return new Date(dateString).toLocaleDateString('vi-VN');
+    };
+
+    const handleDeactivate = async () => {
+        if (!window.confirm('Bạn có chắc muốn ngừng tuyển dụng tin này?')) return;
+
+        try {
+            const response = await api.patch(`/api/employer/jobs/${jobId}/deactivate`);
+
+            if (response.data.success) {
+                alert('✅ Đã ngừng tuyển dụng');
+                // ✅ Cập nhật trạng thái job ngay lập tức
+                setJob(prev => ({ ...prev, status: 'INACTIVE' }));
+                setEditData(prev => ({ ...prev, status: 'INACTIVE' }));
+            }
+        } catch (err) {
+            console.error('❌ Lỗi ngừng tuyển:', err);
+            alert(`❌ ${err.response?.data?.message || 'Thất bại'}`);
+        }
     };
 
     const formatSalary = (min, max) => {
@@ -248,6 +265,12 @@ const JobDetail = ({ jobId, onBack }) => {
                             <button className="jd-btn jd-btn-delete" onClick={handleDelete}>
                                 <FontAwesomeIcon icon={faTrash} /> Xóa
                             </button>
+                            {/* ✅ Chỉ hiện nút khi status là APPROVED VÀ chưa hết hạn */}
+                            {job.status === 'APPROVED' && !isExpired() && (
+                                <button className="jd-btn jd-btn-deactivate" onClick={handleDeactivate}>
+                                    <FontAwesomeIcon icon={faPauseCircle} /> Ngừng tuyển
+                                </button>
+                            )}
                         </>
                     )}
                 </div>
@@ -298,7 +321,7 @@ const JobDetail = ({ jobId, onBack }) => {
                                     </h3>
                                     <div className="jd-skills">
                                         {job.skills.map(skill => (
-                                            <span key={skill.skillId} className="jd-skill">
+                                            <span key={skill.skillID} className="jd-skill">
                                                 {skill.skillName}
                                             </span>
                                         ))}
@@ -312,6 +335,7 @@ const JobDetail = ({ jobId, onBack }) => {
                                     Yêu cầu khác
                                 </h3>
                                 <div className="jd-section-content formatted-content">
+                                    <p><strong>Số lượng tuyển:</strong> {job.quantity || 'Không xác định'}</p>
                                     <p><strong>Kinh nghiệm:</strong> {job.experience || 'Không yêu cầu'}</p>
                                     <p><strong>Học vấn:</strong> {job.literacy || 'Không yêu cầu'}</p>
                                     <p><strong>Cấp bậc:</strong> {job.level || 'Không yêu cầu'}</p>
@@ -343,7 +367,6 @@ const JobDetail = ({ jobId, onBack }) => {
                             </div>
                         </>
                     ) : (
-                        // Form chỉnh sửa
                         <form className="jd-form">
                             <div className="jd-form-group">
                                 <label>Vị trí tuyển dụng</label>
@@ -445,6 +468,17 @@ const JobDetail = ({ jobId, onBack }) => {
                             </div>
 
                             <div className="jd-form-group">
+                                <label>Số lượng tuyển</label>
+                                <input
+                                    type="number"
+                                    name="quantity"
+                                    value={editData.quantity || ''}
+                                    onChange={handleInputChange}
+                                    min="1"
+                                    placeholder="Nhập số lượng cần tuyển"
+                                />
+                            </div>
+                            <div className="jd-form-group">
                                 <label>Thời gian làm việc</label>
                                 <input
                                     type="text"
@@ -499,7 +533,6 @@ const JobDetail = ({ jobId, onBack }) => {
                     )}
                 </div>
 
-                {/* Sidebar */}
                 <div className="jd-sidebar">
                     <div className="jd-card">
                         <h3>Thông tin chung</h3>
@@ -510,13 +543,22 @@ const JobDetail = ({ jobId, onBack }) => {
                             </span>
                         </div>
                         <div className="jd-info-row">
+                            <span className="jd-label">Số lượng tuyển:</span>
+                            <span className="jd-value">{job.quantity || 'N/A'}</span>
+                        </div>
+                        <div className="jd-info-row">
                             <span className="jd-label">Hạn nộp:</span>
                             <span className="jd-value">{formatDate(job.deadline)}</span>
                         </div>
                         <div className="jd-info-row">
                             <span className="jd-label">Trạng thái:</span>
-                            <span className={`jd-status ${isExpired() ? 'jd-status-expired' : 'jd-status-active'}`}>
-                                {isExpired() ? 'Hết hạn' : 'Đang tuyển'}
+                            <span className={`jd-status ${job.status === 'INACTIVE' ? 'jd-status-inactive' :
+                                isExpired() ? 'jd-status-expired' :
+                                    'jd-status-active'
+                                }`}>
+                                {job.status === 'INACTIVE' ? 'Đã ngừng tuyển' :
+                                    isExpired() ? 'Hết hạn' :
+                                        'Đang tuyển'}
                             </span>
                         </div>
                     </div>

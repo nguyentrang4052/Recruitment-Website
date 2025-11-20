@@ -20,8 +20,8 @@ import vn.iotstar.dto.applicant.notice.EmailData;
 import vn.iotstar.dto.applicant.notice.JobNoticeDTO;
 import vn.iotstar.dto.applicant.notice.NoticeResponseDTO;
 import vn.iotstar.entity.JobNotice;
-import vn.iotstar.service.EmailService;
 import vn.iotstar.service.IJobNoticeService;
+import vn.iotstar.service.imp.EmailService;
 
 @RestController
 @RequestMapping("/api/applicant")

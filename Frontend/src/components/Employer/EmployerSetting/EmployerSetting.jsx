@@ -1,11 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import '../../Employer/EmployerSetting/EmployerSetting.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8080',
+  withCredentials: true,
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default function EmployerSetting() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [currentEmail, setCurrentEmail] = useState("");
 
   const [errors, setErrors] = useState({
     password: "",
@@ -13,48 +30,70 @@ export default function EmployerSetting() {
     email: ""
   });
 
-  const validatePassword = (password) => {
-    const regex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
-    return regex.test(password);
+  const [showPassword, setShowPassword] = useState({
+    old: false,
+    new: false,
+    confirm: false
+  });
+
+  const toggleShow = (field) =>
+    setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get("/api/employer/settings/info");
+        console.log(data);
+        setCurrentEmail(data.email);
+      } catch {
+        alert("Không thể lấy thông tin email");
+      }
+    })();
+  }, []);
+
+
+  const validatePassword = (p) =>
+    /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/.test(p);
+  const validateEmail = (e) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+
+  const handlePasswordUpdate = async () => {
+    const err = { password: "", confirmPassword: "", email: "" };
+    if (!validatePassword(newPassword))
+      err.password = "Mật khẩu ≥ 8 ký tự, có ít nhất 1 chữ hoa và 1 ký tự đặc biệt.";
+    if (newPassword !== confirmPassword)
+      err.confirmPassword = "Mật khẩu xác nhận không khớp.";
+    setErrors(err);
+
+    if (!err.password && !err.confirmPassword) {
+      try {
+        await api.patch("/api/employer/settings/password", { newPassword });
+        alert("✅ Cập nhật mật khẩu thành công!");
+        setOldPassword(""); setNewPassword(""); setConfirmPassword("");
+      } catch (e) {
+        alert("❌ " + (e.response?.data?.message || "Cập nhật mật khẩu thất bại"));
+      }
+    }
   };
 
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
+  const handleEmailUpdate = async () => {
+    const err = { ...errors, email: "" };
+    if (!validateEmail(newEmail))
+      err.email = "Email không hợp lệ. Vui lòng nhập đúng định dạng!";
+    setErrors(err);
 
-  const handlePasswordUpdate = () => {
-    let newErrors = { password: "", confirmPassword: "", email: "" };
-
-    if (!validatePassword(newPassword)) {
-      newErrors.password =
-        "Mật khẩu phải ≥ 8 ký tự, có ít nhất 1 chữ hoa và 1 ký tự đặc biệt.";
-    }
-
-    if (newPassword !== confirmPassword) {
-      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp.";
-    }
-
-    setErrors(newErrors);
-
-    if (!newErrors.password && !newErrors.confirmPassword) {
-      alert("Cập nhật mật khẩu thành công!");
+    if (!err.email) {
+      try {
+        await api.patch("/api/employer/settings/email", { newEmail });
+        alert("✅ Cập nhật email thành công!");
+        setCurrentEmail(newEmail); setNewEmail("");
+      } catch (e) {
+        alert("❌ " + (e.response?.data?.message || "Cập nhật email thất bại"));
+      }
     }
   };
 
-  const handleEmailUpdate = () => {
-    let newErrors = { ...errors, email: "" };
-
-    if (!validateEmail(newEmail)) {
-      newErrors.email = "Email không hợp lệ. Vui lòng nhập đúng định dạng!";
-    }
-
-    setErrors(newErrors);
-
-    if (!newErrors.email) {
-      alert("Cập nhật email thành công!");
-    }
-  };
 
   return (
     <div className="setting-container">
@@ -63,34 +102,45 @@ export default function EmployerSetting() {
 
         <div className="setting-col">
           <h3>Thay đổi mật khẩu</h3>
-          <div className="form-emp">
+
+          <div className="form-emp" style={{ position: "relative" }}>
             <input
-              type="password"
+              type={showPassword.old ? "text" : "password"}
               placeholder="Nhập mật khẩu cũ"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
             />
+
           </div>
+
+
           <div className="form-emp">
             <input
-              type="password"
+              type={showPassword.new ? "text" : "password"}
               placeholder="Nhập mật khẩu mới"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
+            <span onClick={() => toggleShow("new")}>
+              <i className={`fa ${showPassword.new ? "fa-eye-slash" : "fa-eye"}`} />
+            </span>
             {errors.password && <p className="error-message">{errors.password}</p>}
           </div>
+
+
           <div className="form-emp">
             <input
-              type="password"
+              type={showPassword.confirm ? "text" : "password"}
               placeholder="Xác nhận mật khẩu mới"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            {errors.confirmPassword && (
-              <p className="error-message">{errors.confirmPassword}</p>
-            )}
+            <span onClick={() => toggleShow("confirm")}>
+              <i className={`fa ${showPassword.confirm ? "fa-eye-slash" : "fa-eye"}`} />
+            </span>
+            {errors.password && <p className="error-message">{errors.password}</p>}
           </div>
+
           <div className="button-group">
             <button onClick={handlePasswordUpdate} className="btn-update">
               CẬP NHẬT
@@ -99,8 +149,12 @@ export default function EmployerSetting() {
           </div>
         </div>
 
+
         <div className="setting-col">
           <h3>Thay đổi địa chỉ Email</h3>
+          <p style={{ marginBottom: 8, fontSize: 14, color: "#555" }}>
+            Email hiện tại: <strong>{currentEmail}</strong>
+          </p>
           <div className="form-emp">
             <input
               type="email"

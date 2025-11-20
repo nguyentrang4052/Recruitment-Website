@@ -1,63 +1,128 @@
-// src/components/Packages.jsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import CreatePackage from './CreatePackage';
 import EditPackage from './EditPackage';
 import './Package.css';
 
+const api = axios.create({
+  baseURL: 'http://localhost:8080',
+  withCredentials: true,
+});
+
+api.interceptors.request.use((cfg) => {
+  const t = localStorage.getItem('token');
+  if (t) cfg.headers.Authorization = `Bearer ${t}`;
+  return cfg;
+});
+
 export default function Packages() {
-  const [list, setList] = useState([
-    { name: 'Gói Cơ bản', price: '500,000', posts: '5', duration: '30' },
-    { name: 'Gói Tiêu chuẩn', price: '1,500,000', posts: '20', duration: '60' },
-    { name: 'Gói Premium', price: '3,000,000', posts: '50', duration: '90' },
-  ]);
-
-  const [isEditing, setIsEditing] = useState(false);
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selected, setSelected] = useState(null);
 
-  const handleCreate = (newPackage) => {
-    setList([...list, newPackage]);
-    setIsAdding(false);
+  const fetchPackages = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get('/api/admin/packages');
+      setList(data);
+    } catch {
+      alert('❌ Không thể tải danh sách gói');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEdit = (updatedPackage) => {
-    setList(list.map(p => p.name === updatedPackage.name ? updatedPackage : p));
-    setIsEditing(false);
+  useEffect(() => {
+    fetchPackages();
+  }, []);
+
+  const handleCreate = async (dto) => {
+    try {
+      const { data } = await api.post('/api/admin/packages', dto);
+      setList([...list, data.data]);
+      setIsAdding(false);
+      alert('✅ Tạo gói thành công!');
+    } catch (e) {
+      alert('❌ ' + (e.response?.data?.message || 'Tạo thất bại'));
+    }
   };
 
-  const handleDelete = (packageName) => {
-    setList(list.filter(p => p.name !== packageName));
+  const handleEdit = async (dto) => {
+    try {
+      const { data } = await api.put(`/api/admin/packages/${dto.packageID}`, dto);
+      setList(list.map((p) => (p.packageID === dto.packageID ? data.data : p)));
+      setIsEditing(false);
+      alert('✅ Cập nhật thành công!');
+    } catch (e) {
+      alert('❌ ' + (e.response?.data?.message || 'Sửa thất bại'));
+    }
   };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Xác nhận xóa gói này?')) return;
+    try {
+      await api.delete(`/api/admin/packages/${id}`);
+      setList(list.filter((p) => p.packageID !== id));
+      alert('✅ Xóa thành công!');
+    } catch (e) {
+      alert('❌ ' + (e.response?.data?.message || 'Xóa thất bại'));
+    }
+  };
+
+  if (loading) return <div className="loading-spinner">⏳ Đang tải...</div>;
 
   return (
     <div>
       <h1 className="content-title">Quản lý Gói dịch vụ</h1>
       <div className="card">
         <div className="table-toolbar">
-          <button className="btn-primary-package" onClick={() => setIsAdding(true)}>Tạo gói mới</button>
+          <button className="btn-primary-package" onClick={() => setIsAdding(true)}>
+            <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Tạo gói mới
+          </button>
         </div>
 
-        {isAdding && <CreatePackage onCreate={handleCreate} />}
-        {isEditing && <EditPackage packageToEdit={selectedPackage} onEdit={handleEdit} />}
+        {isAdding && <CreatePackage onCreate={handleCreate} onCancel={() => setIsAdding(false)} />}
+        {isEditing && (
+          <EditPackage
+            data={selected}
+            onEdit={handleEdit}
+            onCancel={() => setIsEditing(false)}
+          />
+        )}
 
         {!isAdding && !isEditing && (
           <div className="package-grid">
-            {list.map((p, i) => (
-              <div key={i} className="package-card">
-                <h3 className="package-name">{p.name}</h3>
-                <div className="package-price">{p.price}đ</div>
+            {list.map((p) => (
+              <div key={p.packageID} className="package-card">
+                <h3 className="package-name">{p.packageName}</h3>
+                <div className="package-price">{p.price.toLocaleString('vi-VN')}đ</div>
                 <ul className="package-features">
-                  <li>{p.posts} tin tuyển dụng</li>
-                  <li>Hiển thị {p.duration} ngày</li>
-                  <li>Hỗ trợ 24/7</li>
+                  {(p.features || []).map((f, i) => (
+                    <li key={i}>{f}</li>
+                  ))}
                 </ul>
+
                 <div className="package-actions">
-                  <button 
-                    className="btn-outline blue full" 
-                    onClick={() => { setIsEditing(true); setSelectedPackage(p); }}>Chỉnh sửa</button>
-                  <button 
-                    className="btn-outline red full" 
-                    onClick={() => handleDelete(p.name)}>Xóa</button>
+                  <button
+                    className="btn-outline blue full"
+                    onClick={() => {
+                      setSelected(p);
+                      setIsEditing(true);
+                    }}
+                  >
+                    Chỉnh sửa
+                  </button>
+                  <button
+                    className="btn-outline red full"
+                    onClick={() => handleDelete(p.packageID)}
+                  >
+                    Xóa
+                  </button>
                 </div>
               </div>
             ))}

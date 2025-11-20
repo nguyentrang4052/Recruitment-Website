@@ -15,31 +15,26 @@ import vn.iotstar.service.IEmployerDashboardService;
 @Service
 @Transactional
 public class EmployerDashboardService implements IEmployerDashboardService {
-    
-    @Autowired
-    private IApplicationRepository applicationRepo;
-    
-    @Autowired
-    private IRecruitmentNewsRepository recruitmentNewsRepo;
-    
-    @Autowired
-    private IViewLogRepository viewLogRepo; 
-    
-    @Override
-    public EmployerDashboardStatsDTO getEmployerStats(Integer employerAccountId) {
-        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
-        
-        Long newApplicants = applicationRepo.countNewApplicantsSince(employerAccountId, sevenDaysAgo);
-        Long activeJobs = recruitmentNewsRepo.countActiveJobsByEmployer(employerAccountId, EStatus.APPROVED);
-        
-    
 
-//        Long weeklyViews = viewLogRepo.countViewsByEmployerSince(employerAccountId, sevenDaysAgo);
-        
-        return new EmployerDashboardStatsDTO(
-            newApplicants != null ? newApplicants : 0L,
-            activeJobs != null ? activeJobs : 0L,
-            weeklyViews != null ? weeklyViews : 0L 
-        );
-    }
+	@Autowired
+	private IApplicationRepository applicationRepo;
+
+	@Autowired
+	private IRecruitmentNewsRepository recruitmentNewsRepo;
+
+	@Autowired
+	private IViewLogRepository viewLogRepo;
+
+	@Override
+	public EmployerDashboardStatsDTO getEmployerStats(Integer employerAccountId) {
+		LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+
+		Long newApplicants = applicationRepo.countNewApplicantsSince(employerAccountId, sevenDaysAgo);
+		Long activeJobs = recruitmentNewsRepo.countActiveJobsByEmployer(employerAccountId, EStatus.APPROVED);
+
+		Long weeklyViews = viewLogRepo.countViewsByEmployerSince(employerAccountId, sevenDaysAgo);
+
+		return new EmployerDashboardStatsDTO(newApplicants != null ? newApplicants : 0L,
+				activeJobs != null ? activeJobs : 0L, weeklyViews != null ? weeklyViews : 0L);
+	}
 }

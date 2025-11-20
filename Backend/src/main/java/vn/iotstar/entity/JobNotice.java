@@ -47,14 +47,6 @@ public class JobNotice {
 	@Column(name = "level")
 	private String level;
 
-//    @ManyToMany
-//    @JoinTable(
-//        name = "JobNoticeRecruitment",         
-//        joinColumns = @JoinColumn(name = "noticeID"),
-//        inverseJoinColumns = @JoinColumn(name = "RNID")
-//    )
-//    private List<RecruitmentNews> rn;
-//    
 	@Enumerated(EnumType.STRING)
 	@Column(name = "frequency")
 	private EFrequency frequency;

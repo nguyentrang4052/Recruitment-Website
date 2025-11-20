@@ -29,13 +29,13 @@ public interface IApplicantRepository extends JpaRepository<Applicant, Integer> 
             "   OR LOWER(ci.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "AND (:location IS NULL OR ci.location = :location) " +
             "AND (:desireLevel IS NULL OR ci.desire_level = :desireLevel) " +
-            "GROUP BY a.applicantid",
+            "GROUP BY a.applicantid ORDER BY a.applicantid ASC",
             countQuery = "SELECT COUNT(DISTINCT a.applicantid) FROM applicant a " +
                     "LEFT JOIN career_information ci ON a.applicantid = ci.applicantid " +
                     "WHERE (:keyword IS NULL OR LOWER(a.applicant_name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
                     "   OR LOWER(ci.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
                     "AND (:location IS NULL OR ci.location = :location) " +
-                    "AND (:desireLevel IS NULL OR ci.desire_level = :desireLevel)",
+                    "AND (:desireLevel IS NULL OR ci.desire_level = :desireLevel) " ,
             nativeQuery = true)
     Page<Applicant> searchWithoutSkills(
             @Param("keyword") String keyword,
@@ -50,25 +50,25 @@ public interface IApplicantRepository extends JpaRepository<Applicant, Integer> 
             "LEFT JOIN applicant_skill a_s ON a.applicantid = a_s.applicantid " +
             "LEFT JOIN skill s ON a_s.skillid = s.skillid " +
             "WHERE (:keyword IS NULL OR LOWER(a.applicant_name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "  	 OR LOWER(ci.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND (:location IS NULL OR ci.location = :location) " +
+            "AND (:desireLevel IS NULL OR ci.desire_level = :desireLevel) " +
+            "AND (COALESCE(:skillNameList, NULL) IS NULL OR s.skill_name IN (:skillNameList)) " +
+            "GROUP BY a.applicantid " +
+            "HAVING (COALESCE(:skillNameList, NULL) IS NULL OR COUNT(DISTINCT s.skill_name) >= :skillCount) " +
+            "ORDER BY a.applicantid ASC",                       
+    countQuery = "SELECT COUNT(DISTINCT a.applicantid) FROM applicant a " +
+            "LEFT JOIN career_information ci ON a.applicantid = ci.applicantid " +
+            "LEFT JOIN applicant_skill a_s ON a.applicantid = a_s.applicantid " +
+            "LEFT JOIN skill s ON a_s.skillid = s.skillid " +
+            "WHERE (:keyword IS NULL OR LOWER(a.applicant_name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "   OR LOWER(ci.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "AND (:location IS NULL OR ci.location = :location) " +
             "AND (:desireLevel IS NULL OR ci.desire_level = :desireLevel) " +
-            "AND (COALESCE(:skillNameList, NULL) IS NULL OR s.skill_name IN (:skillNameList)) " + 
+            "AND (COALESCE(:skillNameList, NULL) IS NULL OR s.skill_name IN (:skillNameList)) " +
             "GROUP BY a.applicantid " +
-            "HAVING (COALESCE(:skillNameList, NULL) IS NULL OR COUNT(DISTINCT s.skill_name) >= :skillCount) " +
-            "ORDER BY a.applicantid DESC",
-            countQuery = "SELECT COUNT(DISTINCT a.applicantid) FROM applicant a " +
-                    "LEFT JOIN career_information ci ON a.applicantid = ci.applicantid " +
-                    "LEFT JOIN applicant_skill a_s ON a.applicantid = a_s.applicantid " +
-                    "LEFT JOIN skill s ON a_s.skillid = s.skillid " +
-                    "WHERE (:keyword IS NULL OR LOWER(a.applicant_name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-                    "   OR LOWER(ci.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-                    "AND (:location IS NULL OR ci.location = :location) " +
-                    "AND (:desireLevel IS NULL OR ci.desire_level = :desireLevel) " +
-                    "AND (COALESCE(:skillNameList, NULL) IS NULL OR s.skill_name IN (:skillNameList)) " +
-                    "GROUP BY a.applicantid " +
-                    "HAVING (COALESCE(:skillNameList, NULL) IS NULL OR COUNT(DISTINCT s.skill_name) >= :skillCount)",
-            nativeQuery = true)
+            "HAVING (COALESCE(:skillNameList, NULL) IS NULL OR COUNT(DISTINCT s.skill_name) >= :skillCount)",
+    nativeQuery = true)
     Page<Applicant> searchWithSkills(
             @Param("keyword") String keyword,
             @Param("location") String location,
@@ -77,6 +77,7 @@ public interface IApplicantRepository extends JpaRepository<Applicant, Integer> 
             @Param("skillCount") Long skillCount,
             Pageable pageable
     );
-
+    
+   
 
 }

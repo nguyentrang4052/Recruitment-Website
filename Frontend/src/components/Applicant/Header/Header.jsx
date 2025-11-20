@@ -143,7 +143,7 @@ function Header() {
           localStorage.getItem('roleName') === 'applicant'
             ? '/dashboard'
             : '/employer-dashboard';
-        goOrReload(fallback, navigate); 
+        goOrReload(fallback, navigate);
       }
     }
   };
@@ -152,9 +152,9 @@ function Header() {
       <div className="header">
         <div className="header-left">
           <img src={homePageLogo} alt="Logo" className="homepage-logo" onClick={() => handlePageSelect("home")} />
-           <a href="/dashboard" className="all-buttons">
+          <a href="/dashboard" className="all-buttons">
             Tất cả việc làm
-         </a>
+          </a>
           <nav className="nav-menu">
             {menuItems.map((menu, index) => (
               <Menu key={index} label={menu.label} submenu={menu.submenu} navigateMap={NAVIGATE_MAP} />
@@ -162,9 +162,9 @@ function Header() {
             <a href="/cv-templates" className="cv-button">
               Tạo CV xin việc
             </a>
-              <a href="/about" className="all-buttons">
-            Về chúng tôi
-         </a>
+            <a href="/about" className="all-buttons">
+              Về chúng tôi
+            </a>
           </nav>
 
         </div>

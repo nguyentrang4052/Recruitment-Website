@@ -19,59 +19,60 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
     const companyName = localStorage.getItem('employerName') || 'Công ty của bạn';
 
     useEffect(() => {
+        const fetchApplicantDetail = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const token = localStorage.getItem('token');
+
+                if (!token) throw new Error('Bạn chưa đăng nhập');
+
+                const res = await fetch(`${API_BASE_URL}/applicant/detail/${applicantId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error(`Lỗi ${res.status}`);
+                const data = await res.json();
+
+                const mappedApplicant = {
+                    applicantID: data.applicantId || data.ID,
+                    applicantName: data.applicantName || data.name,
+                    birthday: data.birthday,
+                    gender: data.gender,
+                    address: data.address,
+                    phone: data.phone,
+                    goal: data.summary,
+                    experience: data.experience,
+                    literacy: data.literacy || data.education,
+                    account: { email: data.email },
+                    skill: data.skillNames?.map((s, i) => ({ skillID: i, skillName: s })) || [],
+                    careerInformation: {
+                        position: data.jobTitle || data.position,
+                        salary: data.desireSalary,
+                        workingForm: data.workForm
+                    },
+                    application: (data.applications || []).map(app => ({
+                        ...app,
+                        cv: app.cv || app.CV,
+                        CV: app.cv || app.CV,
+                        status: app.status?.toUpperCase(),
+                        recruitmentNewsID: app.recruitmentNewsId || app.recruitmentNews?.RNID || app.recruitmentNews?.id,
+                        recruitmentNewsTitle: app.recruitmentNewsTitle || app.recruitmentNews?.position,
+                    })),
+                    avatar: data.photo || avatarPlaceholder
+                };
+
+                setApplicant(mappedApplicant);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchApplicantDetail();
     }, [applicantId]);
 
-    const fetchApplicantDetail = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) throw new Error('Bạn chưa đăng nhập');
-
-            const res = await fetch(`${API_BASE_URL}/applicant/detail/${applicantId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!res.ok) throw new Error(`Lỗi ${res.status}`);
-            const data = await res.json();
-
-            const mappedApplicant = {
-                applicantID: data.applicantId || data.ID,
-                applicantName: data.applicantName || data.name,
-                birthday: data.birthday,
-                gender: data.gender,
-                address: data.address,
-                phone: data.phone,
-                goal: data.summary,
-                experience: data.experience,
-                literacy: data.literacy || data.education,
-                account: { email: data.email },
-                skill: data.skillNames?.map((s, i) => ({ skillID: i, skillName: s })) || [],
-                careerInformation: {
-                    position: data.jobTitle || data.position,
-                    salary: data.desireSalary,
-                    workingForm: data.workForm
-                },
-                application: (data.applications || []).map(app => ({
-                    ...app,
-                    cv: app.cv || app.CV,
-                    CV: app.cv || app.CV,
-                    status: app.status?.toUpperCase(),
-                    recruitmentNewsID: app.recruitmentNewsId || app.recruitmentNews?.RNID || app.recruitmentNews?.id || app.recruitmentNewsID,
-                    recruitmentNewsTitle: app.recruitmentNewsTitle || app.recruitmentNews?.position || app.recruitmentNews?.title,
-                })),
-                avatar: data.photo || avatarPlaceholder
-            };
-
-            setApplicant(mappedApplicant);
-        } catch (err) {
-            console.error("❌ Error fetching applicant:", err);
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleScheduleInterview = async (e) => {
         e.preventDefault();
@@ -88,6 +89,7 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
             companyName: companyName
         };
 
+
         try {
             const token = localStorage.getItem('token');
             const res = await fetch('http://localhost:8080/api/employer/send-interview-email', {
@@ -98,6 +100,12 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
                 },
                 body: JSON.stringify(data),
             });
+
+            console.group('📥 PHẢN HỒI TỪ SERVER');
+            console.log('🔢 Status:', res.status, res.statusText);
+            console.log('📥 Headers:', Object.fromEntries(res.headers.entries()));
+            console.log('📄 Data:', data);
+            console.groupEnd();
 
             if (!res.ok) throw new Error('Gửi email thất bại');
 
@@ -139,6 +147,11 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
             return cvPath;
         }
         return `http://localhost:8080${cvPath}`;
+    };
+
+    const isJobExpired = () => {
+        if (!currentApplication?.recruitmentNewsDeadline) return false;
+        return new Date(currentApplication.recruitmentNewsDeadline) < new Date();
     };
 
     const handleViewCV = (cvUrl) => {
@@ -371,7 +384,7 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
                         </div>
                     )}
 
-                    {currentApplication?.status === 'PENDING' && showActions && recruitmentNewsId && (
+                    {currentApplication?.status === 'PENDING' && showActions && recruitmentNewsId && !isJobExpired() && (
                         <div className="action-buttons">
                             <button
                                 className="primary-btn approve-btn"
@@ -387,6 +400,13 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
                             </button>
                         </div>
                     )}
+
+                    {currentApplication?.status === 'PENDING' && isJobExpired() && (
+                        <div style={{ marginTop: '10px', color: 'red' }}>
+                            ❌ Không thể duyệt hồ sơ vì tin tuyển dụng đã hết hạn
+                        </div>
+                    )}
+
                 </div>
             </div>
 

@@ -1,196 +1,201 @@
-// src/components/CreatePackage.jsx
 import { useState } from 'react';
+import axios from 'axios';
 
-export default function CreatePackage({ onCreate }) {
-    const [formData, setFormData] = useState({
-        name: '',
-        price: '',
-        posts: '',
-        duration: '',
-        description: ''
-    });
+const api = axios.create({
+  baseURL: 'http://localhost:8080',
+  withCredentials: true,
+});
 
-    const [errors, setErrors] = useState({});
+api.interceptors.request.use((cfg) => {
+  const t = localStorage.getItem('token');
+  if (t) cfg.headers.Authorization = `Bearer ${t}`;
+  return cfg;
+});
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+export default function CreatePackage({ onCreate, onCancel }) {
+  const [form, setForm] = useState({
+    packageName: '',
+    category: '',
+    price: '',
+    duration: '',
+    description: '',
+    features: '',
+    taxRate: '',
+    isRecommended: false,
+  });
+  const [err, setErr] = useState({});
 
-        if (errors[name]) {
-            setErrors(prev => ({
-                ...prev,
-                [name]: ''
-            }));
-        }
+  const handle = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    if (err[name]) setErr((prev) => ({ ...prev, [name]: '' }));
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!form.packageName.trim()) e.packageName = 'Vui lòng nhập tên gói';
+    if (!form.category.trim()) e.category = 'Vui lòng nhập danh mục';
+    if (!/^[0-9,]+$/.test(form.price)) e.price = 'Giá không hợp lệ (VD: 1,500,000)';
+    if (!form.duration || Number(form.duration) < 1) e.duration = 'Thời hạn ≥ 1 ngày';
+    if (!form.taxRate || Number(form.taxRate) < 0) e.taxRate = 'Thuế không hợp lệ';
+    setErr(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    const dto = {
+      ...form,
+      price: Number(form.price.replace(/,/g, '')),
+      taxRate: Number(form.taxRate),
+      features: form.features
+        .split('\n')
+        .map((f) => f.trim())
+        .filter(Boolean),
     };
 
-    const validateForm = () => {
-        const newErrors = {};
+    onCreate(dto);
+  };
 
-        if (!formData.name.trim()) {
-            newErrors.name = 'Vui lòng nhập tên gói dịch vụ';
-        }
-
-        if (!formData.price.trim()) {
-            newErrors.price = 'Vui lòng nhập giá gói';
-        } else if (isNaN(formData.price.replace(/,/g, ''))) {
-            newErrors.price = 'Giá phải là số';
-        }
-
-        if (!formData.posts.trim()) {
-            newErrors.posts = 'Vui lòng nhập số tin tuyển dụng';
-        } else if (isNaN(formData.posts) || parseInt(formData.posts) < 1) {
-            newErrors.posts = 'Số tin phải là số nguyên dương';
-        }
-
-        if (!formData.duration.trim()) {
-            newErrors.duration = 'Vui lòng nhập thời hạn hiển thị';
-        } else if (isNaN(formData.duration) || parseInt(formData.duration) < 1) {
-            newErrors.duration = 'Thời hạn phải là số nguyên dương';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        if (validateForm()) {
-            onCreate({
-                name: formData.name,
-                price: formData.price,
-                posts: formData.posts,
-                duration: formData.duration,
-                description: formData.description
-            });
-
-            // Reset form
-            setFormData({
-                name: '',
-                price: '',
-                posts: '',
-                duration: '',
-                description: ''
-            });
-        }
-    };
-
-    return (
-        <div className="add-edit-container">
-            <div className="add-edit-form">
-                <div className="form-header">
-                    <h2 className="form-title">Tạo Gói Dịch Vụ Mới</h2>
-                    <p className="form-subtitle">Điền thông tin chi tiết cho gói dịch vụ mới</p>
-                </div>
-
-                <form onSubmit={handleSubmit}>
-                    <div className="form-grid">
-                        <div className="form-group">
-                            <label htmlFor="name" className="form-label">
-                                Tên gói dịch vụ <span className="required">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                placeholder="VD: Gói Premium"
-                                className={`form-input ${errors.name ? 'error' : ''}`}
-                            />
-                            {errors.name && <span className="error-message">{errors.name}</span>}
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="price" className="form-label">
-                                Giá gói (VNĐ) <span className="required">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="price"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                placeholder="VD: 1,500,000"
-                                className={`form-input ${errors.price ? 'error' : ''}`}
-                            />
-                            {errors.price && <span className="error-message">{errors.price}</span>}
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="posts" className="form-label">
-                                Số tin tuyển dụng <span className="required">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                id="posts"
-                                name="posts"
-                                value={formData.posts}
-                                onChange={handleChange}
-                                placeholder="VD: 20"
-                                min="1"
-                                className={`form-input ${errors.posts ? 'error' : ''}`}
-                            />
-                            {errors.posts && <span className="error-message">{errors.posts}</span>}
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="duration" className="form-label">
-                                Thời hạn (ngày) <span className="required">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                id="duration"
-                                name="duration"
-                                value={formData.duration}
-                                onChange={handleChange}
-                                placeholder="VD: 60"
-                                min="1"
-                                className={`form-input ${errors.duration ? 'error' : ''}`}
-                            />
-                            {errors.duration && <span className="error-message">{errors.duration}</span>}
-                        </div>
-                    </div>
-
-                    <div className="form-group full-width">
-                        <label htmlFor="description" className="form-label">
-                            Mô tả gói dịch vụ
-                        </label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            placeholder="Nhập mô tả chi tiết về gói dịch vụ..."
-                            rows="4"
-                            className="form-input"
-                        />
-                    </div>
-
-                    <div className="form-actions">
-                        <button type="submit" className="btn-primary-package">
-                            <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            Tạo gói mới
-                        </button>
-                        <button
-                            type="button"
-                            className="btn-secondary-package"
-                            onClick={() => window.location.reload()}
-                        >
-                            <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Hủy bỏ
-                        </button>
-                    </div>
-                </form>
-            </div>
+  return (
+    <div className="add-edit-container">
+      <div className="add-edit-form">
+        <div className="form-header">
+          <h2 className="form-title">Tạo gói dịch vụ mới</h2>
+          <p className="form-subtitle">Điền thông tin chi tiết cho gói dịch vụ mới</p>
         </div>
-    );
+
+        <form onSubmit={submit}>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">
+                Tên gói <span className="required">*</span>
+              </label>
+              <input
+                name="packageName"
+                value={form.packageName}
+                onChange={handle}
+                className={`form-input ${err.packageName ? 'error' : ''}`}
+                placeholder="VD: Gói VIP"
+              />
+              {err.packageName && <span className="error-message">{err.packageName}</span>}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                Danh mục <span className="required">*</span>
+              </label>
+              <input
+                name="category"
+                value={form.category}
+                onChange={handle}
+                className={`form-input ${err.category ? 'error' : ''}`}
+                placeholder="VD: Premium"
+              />
+              {err.category && <span className="error-message">{err.category}</span>}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                Giá (VNĐ) <span className="required">*</span>
+              </label>
+              <input
+                name="price"
+                value={form.price}
+                onChange={handle}
+                className={`form-input ${err.price ? 'error' : ''}`}
+                placeholder="1,500,000"
+              />
+              {err.price && <span className="error-message">{err.price}</span>}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                Thời hạn (ngày) <span className="required">*</span>
+              </label>
+              <input
+                name="duration"
+                type="number"
+                min="1"
+                value={form.duration}
+                onChange={handle}
+                className={`form-input ${err.duration ? 'error' : ''}`}
+                placeholder="30"
+              />
+              {err.duration && <span className="error-message">{err.duration}</span>}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                Thuế (%) <span className="required">*</span>
+              </label>
+              <input
+                name="taxRate"
+                type="number"
+                step="0.01"
+                value={form.taxRate}
+                onChange={handle}
+                className={`form-input ${err.taxRate ? 'error' : ''}`}
+                placeholder="10"
+              />
+              {err.taxRate && <span className="error-message">{err.taxRate}</span>}
+            </div>
+
+            <div className="form-group checkbox-group">
+              <label>
+                <input
+                  type="checkbox"
+                  name="isRecommended"
+                  checked={form.isRecommended}
+                  onChange={handle}
+                />
+                Gói đề xuất
+              </label>
+            </div>
+          </div>
+
+          <div className="form-group full-width">
+            <label className="form-label">Mô tả</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handle}
+              rows={3}
+              className="form-input"
+              placeholder="Mô tả ngắn gọn về gói dịch vụ..."
+            />
+          </div>
+
+          <div className="form-group full-width">
+            <label className="form-label">Tính năng (mỗi dòng 1 tính năng)</label>
+            <textarea
+              name="features"
+              value={form.features}
+              onChange={handle}
+              rows={4}
+              className="form-input"
+              placeholder="20 tin tuyển dụng&#10;Hiển thị 60 ngày&#10;Hỗ trợ 24/7"
+            />
+          </div>
+
+          <div className="form-actions">
+            <button type="submit" className="btn-primary-package">
+              <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Tạo gói mới
+            </button>
+            <button type="button" className="btn-secondary-package" onClick={onCancel}>
+              <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Hủy
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }

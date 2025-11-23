@@ -125,17 +125,39 @@ const PostJob = () => {
 
             const text = await res.text();
             let data = null;
-            try { data = text ? JSON.parse(text) : null; } catch { console.warn('Response không phải JSON:', text); }
 
-            if (!res.ok) throw new Error(data?.message || res.statusText || `Lỗi ${res.status}`);
+            try {
+                data = text ? JSON.parse(text) : null;
+            } catch {
+                console.warn('Response không phải JSON:', text);
+            }
 
-            alert(data?.message || 'Đăng tin thành công!');
+            if (!res.ok) {
+
+                const errorMessage = data?.message || res.statusText || `Lỗi ${res.status}`;
+
+
+                if (errorMessage.includes('hết lượt đăng tin')) {
+                    alert('⚠️ Bạn đã hết lượt đăng tin trong gói hiện tại.\n\nVui lòng nâng cấp gói dịch vụ để tiếp tục đăng tin tuyển dụng.');
+                } else if (errorMessage.includes('hết hạn')) {
+                    alert('⚠️ Gói dịch vụ của bạn đã hết hạn.\n\nVui lòng gia hạn để tiếp tục sử dụng.');
+                } else if (errorMessage.includes('chưa kích hoạt')) {
+                    alert('⚠️ Bạn chưa kích hoạt gói dịch vụ nào.\n\nVui lòng đăng ký gói dịch vụ để đăng tin tuyển dụng.');
+                } else {
+                    alert(`❌ ${errorMessage}`);
+                }
+
+                throw new Error(errorMessage);
+            }
+
+            alert('✅ ' + (data?.message || 'Đăng tin thành công!'));
             setJobData(initialJobData);
             setIsDropdownOpen(false);
             setSearchTerm('');
+
         } catch (err) {
-            console.error(err);
-            alert(err.message);
+            console.error('Lỗi khi đăng tin:', err);
+
         } finally {
             setLoading(false);
         }

@@ -50,10 +50,16 @@ public class PostPackageService implements IPostPackageService {
         pkg.setPrice(dto.getPrice());
         pkg.setDuration(formatDuration(dto.getDuration()));      // 90 → "90 Ngày"
         pkg.setDescription(dto.getDescription());
-        pkg.setFeatures(toJson(dto.getFeatures()));
+//        pkg.setFeatures(toJson(dto.getFeatures()));
         pkg.setTaxRate(dto.getTaxRate());
         pkg.setIsRecommended(dto.getIsRecommended());
         pkg.setIsHidden(dto.getIsHidden());
+        
+        pkg.setMaxPosts(dto.getMaxPosts());
+        pkg.setMaxCvViews(dto.getMaxCvViews());
+        pkg.setSupportPriorityDays(dto.getSupportPriorityDays());
+        pkg.setHas1on1Consult(dto.getHas1on1Consult());
+        pkg.setHasEmailSupport(dto.getHasEmailSupport());
         return toDTO(repo.save(pkg));
     }
     
@@ -70,13 +76,11 @@ public class PostPackageService implements IPostPackageService {
     }
 
     @Override
-    public boolean toggleHidden(Integer id) {
+    public PostPackageDTO toggleHidden(Integer id) {
         PostPackage pkg = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Gói không tồn tại"));
-        boolean current = pkg.getIsHidden() != null ? pkg.getIsHidden() : false;
-        pkg.setIsHidden(!current);
-        repo.save(pkg);
-        return !current;
+        pkg.setIsHidden(!pkg.getIsHidden());
+        return toDTO(repo.save(pkg));
     }
 
  
@@ -88,10 +92,16 @@ public class PostPackageService implements IPostPackageService {
         dto.setPrice(entity.getPrice());
         dto.setDuration(extractDay(entity.getDuration())); // "90 Ngày" → 90
         dto.setDescription(entity.getDescription());
-        dto.setFeatures(parseJsonList(entity.getFeatures()));
+//        dto.setFeatures(parseJsonList(entity.getFeatures()));
         dto.setTaxRate(entity.getTaxRate());
         dto.setIsRecommended(entity.getIsRecommended());
         dto.setIsHidden(entity.getIsHidden());
+        
+        dto.setMaxPosts(entity.getMaxPosts());
+        dto.setMaxCvViews(entity.getMaxCvViews());
+        dto.setSupportPriorityDays(entity.getSupportPriorityDays());
+        dto.setHas1on1Consult(entity.getHas1on1Consult());
+        dto.setHasEmailSupport(entity.getHasEmailSupport());
         return dto;
     }
 
@@ -111,10 +121,17 @@ public class PostPackageService implements IPostPackageService {
         entity.setPrice(dto.getPrice());
         entity.setDuration(dto.getDuration());
         entity.setDescription(dto.getDescription());
-        entity.setFeatures(toJson(dto.getFeatures()));
+//        entity.setFeatures(toJson(dto.getFeatures()));
         entity.setTaxRate(dto.getTaxRate());
         entity.setIsRecommended(dto.getIsRecommended());
         entity.setIsHidden(dto.getIsHidden());
+        
+        entity.setMaxPosts(dto.getMaxPosts());
+        entity.setMaxCvViews(dto.getMaxCvViews());
+        entity.setSupportPriorityDays(dto.getSupportPriorityDays());
+        entity.setHas1on1Consult(dto.getHas1on1Consult());
+        entity.setHasEmailSupport(dto.getHasEmailSupport());
+        
         return entity;
     }
 

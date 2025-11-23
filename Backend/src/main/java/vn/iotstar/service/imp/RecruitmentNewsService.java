@@ -7,12 +7,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;  
 import vn.iotstar.enums.EFormOfWork;
 import vn.iotstar.dto.RecruitmentNewsDTO;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.entity.Employer;
+import vn.iotstar.entity.EmployerPackageLimit;
 import vn.iotstar.enums.EStatus;
 import vn.iotstar.repository.IRecruitmentNewsRepository;
+import vn.iotstar.repository.IEmployerPackageLimitRepository;
 import vn.iotstar.repository.IEmployerRepository;
 import vn.iotstar.service.IRecruitmentNewsService;
 import vn.iotstar.service.ISkillService;
@@ -28,9 +31,29 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
     
     @Autowired
     private IEmployerRepository employerRepository;
+    
+    @Autowired
+    private IEmployerPackageLimitRepository employerLimitRepo;
 
     @Override
+    @Transactional  
     public RecruitmentNews save(RecruitmentNewsDTO dto) {
+    	
+        EmployerPackageLimit limit = employerLimitRepo
+                .findByEmployer_EmployerID(dto.getEmployerID())
+                .orElseThrow(() -> new RuntimeException("Bạn chưa kích hoạt gói dịch vụ nào."));
+
+        if (limit.getPostsLeft() != null && limit.getPostsLeft() <= 0) {
+            throw new RuntimeException("Bạn đã hết lượt đăng tin trong gói hiện tại.");
+        }
+
+        if (limit.getExpiryDate().isBefore(LocalDate.now())) {
+            throw new RuntimeException("Gói dịch vụ của bạn đã hết hạn.");
+        }
+
+        // Trừ 1 lượt
+        employerLimitRepo.decrementPostsLeft(dto.getEmployerID());
+         
         RecruitmentNews news = new RecruitmentNews();
         mapDtoToEntity(dto, news);
 
@@ -46,8 +69,6 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
         return recruitmentRepo.save(news);
     }
 
-
-
     @Override
     public List<RecruitmentNews> findAll() {
         return recruitmentRepo.findAll();
@@ -59,6 +80,7 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
     }
 
     @Override
+    @Transactional  
     public RecruitmentNews update(Integer id, RecruitmentNewsDTO dto) {
         RecruitmentNews existing = recruitmentRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tin tuyển dụng"));
@@ -67,6 +89,7 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
     }
 
     @Override
+    @Transactional  
     public void delete(Integer id) {
         recruitmentRepo.deleteById(id);
     }
@@ -86,7 +109,6 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
         entity.setExperience(dto.getExperience());
         entity.setLevel(dto.getLevel());
 
- 
         if (dto.getRequirements() != null && !dto.getRequirements().isEmpty()) {
             entity.setSkill(skillService.findOrCreateSkills(dto.getRequirements()));
         } else {
@@ -94,7 +116,6 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
         }
     }
 
-    
     private EFormOfWork mapFormOfWork(String formOfWork) {
         if (formOfWork == null || formOfWork.isEmpty()) return null;
 
@@ -106,7 +127,4 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
             throw new IllegalArgumentException("Giá trị formOfWork không hợp lệ: " + formOfWork);
         }
     }
-
-
-
 }

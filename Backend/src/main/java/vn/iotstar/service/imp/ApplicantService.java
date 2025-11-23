@@ -385,5 +385,36 @@ public class ApplicantService implements IApplicantService {
 		accountRepository.save(account);
 	}
 	
-	
+	@Override
+	@Transactional(readOnly = true)
+	public List<ApplicantDTO> searchAndFilterApplicantsLimit(
+	        ApplicantSearchDTO searchDTO, Integer cvViewsLeft) {
+
+	    String keyword = searchDTO.getSearchTerm() != null && !searchDTO.getSearchTerm().trim().isEmpty()
+	            ? searchDTO.getSearchTerm().trim() : null;
+	    String location = searchDTO.getLocation() != null && !searchDTO.getLocation().trim().isEmpty()
+	            ? searchDTO.getLocation().trim() : null;
+	    String desireLevel = searchDTO.getExperience() != null && !searchDTO.getExperience().trim().isEmpty()
+	            && !searchDTO.getExperience().equalsIgnoreCase("Tất cả")
+	            ? searchDTO.getExperience().trim() : null;
+	    List<String> skills = searchDTO.getSkills() != null && !searchDTO.getSkills().isEmpty()
+	            ? searchDTO.getSkills() : null;
+	    Long skillCount = skills != null ? (long) skills.size() : 0L;
+
+	    // 👇 Giới hạn theo gói
+	    int limit = cvViewsLeft != null && cvViewsLeft > 0 ? cvViewsLeft : 0;
+
+	    List<Applicant> applicants;
+	    if (skills != null) {
+	        applicants = applicantRepository.searchWithSkillsLimit(
+	                keyword, location, desireLevel, skills, skillCount, limit);
+	    } else {
+	        applicants = applicantRepository.searchWithoutSkillsLimit(
+	                keyword, location, desireLevel, limit);
+	    }
+
+	    return applicants.stream()
+	            .map(this::convertToDTO)
+	            .collect(Collectors.toList());
+	}
 }

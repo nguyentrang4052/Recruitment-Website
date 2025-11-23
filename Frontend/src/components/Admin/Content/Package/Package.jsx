@@ -26,8 +26,10 @@ export default function Packages() {
     setLoading(true);
     try {
       const { data } = await api.get('/api/admin/packages');
+      console.log('📦 Data received:', data);
       setList(data);
-    } catch {
+    } catch (error) {
+      console.error('Error:', error);
       alert('❌ Không thể tải danh sách gói');
     } finally {
       setLoading(false);
@@ -41,7 +43,7 @@ export default function Packages() {
   const handleCreate = async (dto) => {
     try {
       const { data } = await api.post('/api/admin/packages', dto);
-      setList([...list, data.data]);
+      setList([...list, data.data || data]);
       setIsAdding(false);
       alert('✅ Tạo gói thành công!');
     } catch (e) {
@@ -52,7 +54,7 @@ export default function Packages() {
   const handleEdit = async (dto) => {
     try {
       const { data } = await api.put(`/api/admin/packages/${dto.packageID}`, dto);
-      setList(list.map((p) => (p.packageID === dto.packageID ? data.data : p)));
+      setList(list.map((p) => (p.packageID === dto.packageID ? (data.data || data) : p)));
       setIsEditing(false);
       alert('✅ Cập nhật thành công!');
     } catch (e) {
@@ -68,6 +70,18 @@ export default function Packages() {
       alert('✅ Xóa thành công!');
     } catch (e) {
       alert('❌ ' + (e.response?.data?.message || 'Xóa thất bại'));
+    }
+  };
+
+  const handleToggleHidden = async (id, currentHidden) => {
+    try {
+      const { data } = await api.patch(`/api/admin/packages/${id}/toggle-hidden`, {
+        isHidden: !currentHidden,
+      });
+      setList(list.map((p) => (p.packageID === id ? (data.data || data) : p)));
+      alert('✅ Cập nhật trạng thái thành công!');
+    } catch (e) {
+      alert('❌ ' + (e.response?.data?.message || 'Cập nhật thất bại'));
     }
   };
 
@@ -98,24 +112,69 @@ export default function Packages() {
         {!isAdding && !isEditing && (
           <div className="package-grid">
             {list.map((p) => (
-              <div key={p.packageID} className="package-card">
+              <div key={p.packageID} className="package-card" data-hidden={p.isHidden}>
+                <div className="package-badge">
+                  {p.isRecommended && <span className="badge recommended">🌟 Đề xuất</span>}
+                  {p.isHidden && <span className="badge hidden">👁️ Ẩn</span>}
+                </div>
+
                 <h3 className="package-name">{p.packageName}</h3>
-                <div className="package-price">{p.price.toLocaleString('vi-VN')}đ</div>
-                <ul className="package-features">
-                  {(p.features || []).map((f, i) => (
-                    <li key={i}>{f}</li>
-                  ))}
-                </ul>
+                <div className="package-category">{p.category}</div>
+                <div className="package-price">
+                  {parseFloat(p.price) === 0
+                    ? 'Miễn phí'
+                    : `${parseFloat(p.price).toLocaleString('vi-VN')}đ`
+                  }
+                </div>
+
+                <div className="package-specs">
+                  <div className="spec">
+                    <span className="spec-label">📅 Thời hạn:</span>
+                    <span className="spec-value">{p.duration} ngày</span>
+                  </div>
+                  <div className="spec">
+                    <span className="spec-label">💼 Bài viết:</span>
+                    <span className="spec-value">
+                      {p.maxPosts != null ? p.maxPosts : 'Không giới hạn'}
+                    </span>
+                  </div>
+                  <div className="spec">
+                    <span className="spec-label">👁️ Lượt xem CV:</span>
+                    <span className="spec-value">
+                      {p.maxCvViews != null ? p.maxCvViews : 'Không giới hạn'}
+                    </span>
+                  </div>
+                  <div className="spec">
+                    <span className="spec-label">🎯 Ưu tiên duyệt tin trong vòng:</span>
+                    <span className="spec-value">
+                      {p.supportPriorityDays ?? 0} ngày
+                    </span>
+                  </div>
+                </div>
+
+                {(p.has1on1Consult || p.hasEmailSupport || p.taxRate) && (
+                  <div className="package-perks">
+                    {p.has1on1Consult && <span className="perk">💬 Tư vấn 1-1</span>}
+                    {p.hasEmailSupport && <span className="perk">📧 Hỗ trợ Email</span>}
+                    {p.taxRate && <span className="perk">🏷️ Thuế: {parseFloat(p.taxRate)}%</span>}
+                  </div>
+                )}
 
                 <div className="package-actions">
                   <button
-                    className="btn-outline blue full"
+                    className="btn-outline blue"
                     onClick={() => {
                       setSelected(p);
                       setIsEditing(true);
                     }}
                   >
                     Chỉnh sửa
+                  </button>
+                  <button
+                    className={`btn-outline ${p.isHidden ? 'green' : 'yellow'}`}
+                    onClick={() => handleToggleHidden(p.packageID, p.isHidden)}
+                  >
+                    {p.isHidden ? '👁️ Hiển thị' : '🚫 Ẩn'}
                   </button>
                   <button
                     className="btn-outline red full"

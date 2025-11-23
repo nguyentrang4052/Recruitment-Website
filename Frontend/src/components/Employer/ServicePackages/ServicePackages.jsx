@@ -5,7 +5,6 @@ import { faCheckCircle, faStar, faGift } from '@fortawesome/free-solid-svg-icons
 import './ServicePackages.css';
 import PaymentPage from '../PaymentPage/PaymentPage.jsx';
 
-
 const packageThemes = {
     'BASIC': {
         gradient: 'gradient-indigo',
@@ -24,7 +23,6 @@ const packageThemes = {
     }
 };
 
-
 const getAutoTheme = (index) => {
     const availableThemes = [
         { gradient: 'gradient-indigo', iconClass: 'indigo' },
@@ -36,7 +34,6 @@ const getAutoTheme = (index) => {
     ];
     return availableThemes[index % availableThemes.length];
 };
-
 
 const getThemeForPackage = (pkg, index) => {
     if (pkg.isRecommended) {
@@ -71,7 +68,6 @@ function ServicePackages() {
         fetchData();
     }, []);
 
-
     const fetchData = async () => {
         setLoading(true);
         setError(null);
@@ -92,7 +88,6 @@ function ServicePackages() {
                         `http://localhost:8080/api/employer/transactions/active?employerID=${employerID}`,
                         { headers: { Authorization: `Bearer ${token}` } }
                     )
-
                     .catch((err) => {
                         console.warn('Không thể lấy gói đang hoạt động:', err.response?.status);
                         return { data: [] };
@@ -132,7 +127,6 @@ function ServicePackages() {
                 );
                 alert(res.data.message);
                 await fetchData();
-                console.log('activePkgs sau khi fetch:', activePkgs);
             } catch (err) {
                 alert('❌ ' + (err.response?.data?.message || err.message));
             }
@@ -143,6 +137,38 @@ function ServicePackages() {
     };
 
     const handleGoBack = () => setSelectedPackageDetails(null);
+
+    // Function tạo features từ data có sẵn
+    const generateFeatures = (pkg) => {
+        const features = [];
+
+        if (pkg.maxPosts) {
+            features.push(`Đăng tối đa ${pkg.maxPosts} tin tuyển dụng`);
+        } else {
+            features.push('Đăng tin không giới hạn');
+        }
+
+        if (pkg.maxCvViews) {
+            features.push(`Xem tối đa ${pkg.maxCvViews} CV ứng viên`);
+        } else {
+            features.push('Xem CV không giới hạn');
+        }
+
+        if (pkg.supportPriorityDays > 0) {
+            features.push(`Ưu tiên duyệt tin trong vòng ${pkg.supportPriorityDays} ngày`);
+        }
+
+        if (pkg.has1on1Consult) {
+            features.push('Tư vấn 1-1 với chuyên gia');
+        }
+
+        if (pkg.hasEmailSupport) {
+            features.push('Hỗ trợ Email 24/7');
+        }
+
+
+        return features;
+    };
 
     if (selectedPackageDetails)
         return <PaymentPage packageInfo={selectedPackageDetails} onGoBack={handleGoBack} />;
@@ -164,7 +190,7 @@ function ServicePackages() {
                     const active = isActive(pkg.packageID);
                     const days = daysLeft(pkg.packageID);
                     const isSelected = selectedPackageDetails && selectedPackageDetails.packageName === pkg.packageName;
-
+                    const features = generateFeatures(pkg);
                     return (
                         <div
                             key={pkg.packageID}
@@ -179,16 +205,16 @@ function ServicePackages() {
                             <div className="card-header">
                                 <span className={`category ${theme.gradient}`}>{pkg.category}</span>
                                 <h3 className="package-name">{pkg.packageName}</h3>
-                                <p className="description">{pkg.description}</p>
+                                {pkg.description && <p className="description">{pkg.description}</p>}
                                 <p className="price">
-                                    {pkg.price.toLocaleString('vi-VN')} VND
+                                    {pkg.price === 0 ? 'Miễn phí' : `${pkg.price.toLocaleString('vi-VN')} VND`}
                                     <span className="duration"> / {pkg.duration} ngày</span>
                                 </p>
-
                             </div>
 
+
                             <ul className="features">
-                                {pkg.features.map((f, idx) => (
+                                {features.map((f, idx) => (
                                     <li key={idx}>
                                         <FontAwesomeIcon icon={faCheckCircle} className={`feature-icon ${theme.iconClass}`} />
                                         {f}

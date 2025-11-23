@@ -21,6 +21,7 @@ public class TransactionService implements ITransactionService {
     private final ITransactionDetailRepository transactionDetailRepo;
     private final IPostPackageRepository packageRepo;
     private final IEmployerRepository employerRepo;
+    private final IEmployerPackageLimitRepository employerLimitRepo;
 
     private LocalDate calculateExpiryDate(String duration) {
         try {
@@ -59,21 +60,37 @@ public class TransactionService implements ITransactionService {
                 .multiply(postPackage.getTaxRate() != null ? postPackage.getTaxRate() : BigDecimal.ZERO);
         BigDecimal totalAmount = postPackage.getPrice().add(taxAmount);
 
+        // Tạo Transaction và liên kết với PostPackage
         Transaction transaction = new Transaction();
         transaction.setEmployer(employer);
+        transaction.setPostPackage(postPackage);  // ✅ SET PACKAGE VÀO TRANSACTION
         transaction.setPaymentMethod(request.getPaymentMethod());
         transaction.setCreateDate(LocalDate.now());
         transaction.setTotal(totalAmount);
         transaction = transactionRepo.save(transaction);
 
+        // Tạo TransactionDetail với thông tin bổ sung
         TransactionDetail transactionDetail = new TransactionDetail();
         transactionDetail.setTransaction(transaction);
         transactionDetail.setExpiryDate(calculateExpiryDate(postPackage.getDuration()));
         transactionDetail = transactionDetailRepo.save(transactionDetail);
 
-        // ✅ THÊM PACKAGE VÀO TRANSACTION DETAIL
-        postPackage.setTransactionDetail(transactionDetail);
-        packageRepo.save(postPackage);
+        // Cập nhật EmployerLimit
+        EmployerPackageLimit limit = employerLimitRepo
+                .findByEmployer_EmployerID(employer.getEmployerID())
+                .orElse(new EmployerPackageLimit());
+
+        limit.setEmployer(employer);
+        limit.setMaxPosts(postPackage.getMaxPosts());
+        limit.setPostsLeft(postPackage.getMaxPosts());
+        limit.setMaxCvViews(postPackage.getMaxCvViews());
+        limit.setCvViewsLeft(postPackage.getMaxCvViews());
+        limit.setSupportPriorityDays(postPackage.getSupportPriorityDays());
+        limit.setHas1on1Consult(postPackage.getHas1on1Consult());
+        limit.setHasEmailSupport(postPackage.getHasEmailSupport());
+        limit.setExpiryDate(transactionDetail.getExpiryDate());
+
+        employerLimitRepo.save(limit);
 
         return new PaymentResponseDTO(
                 true,
@@ -108,22 +125,38 @@ public class TransactionService implements ITransactionService {
             return new PaymentResponseDTO(false, "Bạn đã sử dụng gói miễn phí rồi!", null, null);
         }
 
+        // Tạo Transaction và liên kết với PostPackage
         Transaction transaction = new Transaction();
         transaction.setEmployer(employer);
+        transaction.setPostPackage(postPackage);  // ✅ SET PACKAGE VÀO TRANSACTION
         transaction.setPaymentMethod("FREE");
         transaction.setCreateDate(LocalDate.now());
         transaction.setTotal(BigDecimal.ZERO);
         transaction = transactionRepo.save(transaction);
 
+        // Tạo TransactionDetail với thông tin bổ sung
         TransactionDetail transactionDetail = new TransactionDetail();
         transactionDetail.setTransaction(transaction);
         transactionDetail.setExpiryDate(calculateExpiryDate(postPackage.getDuration()));
         transactionDetail = transactionDetailRepo.save(transactionDetail);
 
-        // THÊM PACKAGE VÀO TRANSACTION DETAIL
-        postPackage.setTransactionDetail(transactionDetail);
-        packageRepo.save(postPackage);
+        // Cập nhật EmployerLimit
+        EmployerPackageLimit limit = employerLimitRepo
+                .findByEmployer_EmployerID(employer.getEmployerID())
+                .orElse(new EmployerPackageLimit());
 
+        limit.setEmployer(employer);
+        limit.setMaxPosts(postPackage.getMaxPosts());
+        limit.setPostsLeft(postPackage.getMaxPosts());
+        limit.setMaxCvViews(postPackage.getMaxCvViews());
+        limit.setCvViewsLeft(postPackage.getMaxCvViews());
+        limit.setSupportPriorityDays(postPackage.getSupportPriorityDays());
+        limit.setHas1on1Consult(postPackage.getHas1on1Consult());
+        limit.setHasEmailSupport(postPackage.getHasEmailSupport());
+        limit.setExpiryDate(transactionDetail.getExpiryDate());
+
+        employerLimitRepo.save(limit);
+        
         return new PaymentResponseDTO(
                 true,
                 "🎉 Gói miễn phí đã được kích hoạt thành công!",
@@ -136,13 +169,14 @@ public class TransactionService implements ITransactionService {
         return transactionDetailRepo
                .findActiveByEmployer(employerID, LocalDate.now())
                .stream()
-               .flatMap(td -> td.getPostPackages().stream()
-                       .map(pkg -> new ActivePackageDTO(
-                               pkg.getPackageID(),
-                               pkg.getPackageName(),
-                               td.getExpiryDate()
-                       ))
-               )
+               .map(td -> {
+                   PostPackage pkg = td.getTransaction().getPostPackage();  // ✅ LẤY PACKAGE TỪ TRANSACTION
+                   return new ActivePackageDTO(
+                           pkg.getPackageID(),
+                           pkg.getPackageName(),
+                           td.getExpiryDate()
+                   );
+               })
                .collect(Collectors.toList());
     }
 }

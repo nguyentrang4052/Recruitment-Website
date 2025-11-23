@@ -44,6 +44,7 @@ public class PaymentService implements IPaymentService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final EmailService emailService; 
+    private final IEmployerPackageLimitRepository employerLimitRepo;
   
     @Value("${vietqr.client-id}")
     private String vietqrClientId;
@@ -102,8 +103,12 @@ public class PaymentService implements IPaymentService {
             Employer employer = employerRepo.findById(request.getEmployerID())
                     .orElseThrow(() -> new RuntimeException("Nhà tuyển dụng không tồn tại"));
 
-            BigDecimal taxAmount = postPackage.getPrice()
-                    .multiply(postPackage.getTaxRate() != null ? postPackage.getTaxRate() : BigDecimal.ZERO);
+        
+            BigDecimal taxRate = postPackage.getTaxRate() != null 
+                ? postPackage.getTaxRate().divide(BigDecimal.valueOf(100)) 
+                : BigDecimal.ZERO;
+            
+            BigDecimal taxAmount = postPackage.getPrice().multiply(taxRate);
             BigDecimal totalAmount = postPackage.getPrice().add(taxAmount);
 
             String transferContent = generateTransferContent(employer.getEmployerID(), postPackage.getPackageID());
@@ -124,7 +129,6 @@ public class PaymentService implements IPaymentService {
             return new QRCodeResponseDTO(false, null, null, null, null, null, null, "Lỗi: " + e.getMessage());
         }
     }
-
 
     
     @Override
@@ -149,8 +153,11 @@ public class PaymentService implements IPaymentService {
             Employer employer = employerRepo.findById(employerID)
                     .orElseThrow(() -> new RuntimeException("Nhà tuyển dụng không tồn tại"));
 
-            BigDecimal taxAmount = postPackage.getPrice()
-                    .multiply(postPackage.getTaxRate() != null ? postPackage.getTaxRate() : BigDecimal.ZERO);
+            BigDecimal taxRate = postPackage.getTaxRate() != null 
+                    ? postPackage.getTaxRate().divide(BigDecimal.valueOf(100)) 
+                    : BigDecimal.ZERO;
+                
+            BigDecimal taxAmount = postPackage.getPrice().multiply(taxRate);
             BigDecimal totalAmount = postPackage.getPrice().add(taxAmount);
 
             // KIỂM TRA THANH TOÁN THẬT
@@ -177,12 +184,11 @@ public class PaymentService implements IPaymentService {
             transaction.setPaymentMethod("QR_CODE");
             transaction.setCreateDate(LocalDate.now());
             transaction.setTotal(totalAmount);
+            transaction.setPostPackage(postPackage);
             transaction = transactionRepo.save(transaction);
 
             TransactionDetail transactionDetail = new TransactionDetail();
             transactionDetail.setTransaction(transaction);
-//            transactionDetail.setQuantity(1);
-//            transactionDetail.setPostPackage(List.of(postPackage));
             transactionDetail.setExpiryDate(calculateExpiryDate(postPackage.getDuration()));
             transactionDetailRepo.save(transactionDetail);
             
@@ -195,6 +201,22 @@ public class PaymentService implements IPaymentService {
                 );
                 emailService.sendSimpleEmail(email, subject, content);
             }
+            
+            EmployerPackageLimit limit = employerLimitRepo
+                    .findByEmployer_EmployerID(employer.getEmployerID())
+                    .orElse(new EmployerPackageLimit());
+
+            limit.setEmployer(employer);
+            limit.setMaxPosts(postPackage.getMaxPosts());
+            limit.setPostsLeft(postPackage.getMaxPosts());
+            limit.setMaxCvViews(postPackage.getMaxCvViews());
+            limit.setCvViewsLeft(postPackage.getMaxCvViews());
+            limit.setSupportPriorityDays(postPackage.getSupportPriorityDays());
+            limit.setHas1on1Consult(postPackage.getHas1on1Consult());
+            limit.setHasEmailSupport(postPackage.getHasEmailSupport());
+            limit.setExpiryDate(transactionDetail.getExpiryDate());
+
+            employerLimitRepo.save(limit);	
             return new PaymentResponseDTO(
                     true,
                     "Thanh toán QR Code thành công! Gói dịch vụ đã được kích hoạt.",
@@ -226,16 +248,11 @@ public class PaymentService implements IPaymentService {
             Employer employer = employerRepo.findById(request.getEmployerID())
                     .orElseThrow(() -> new RuntimeException("Nhà tuyển dụng không tồn tại"));
 
-//            if (request.getTaxCode() != null && !request.getTaxCode().isEmpty()) {
-//                employer.setTaxCode(request.getTaxCode());
-//                if (request.getCompanyName() != null && !request.getCompanyName().isEmpty()) {
-//                    employer.setEmployerName(request.getCompanyName());
-//                }
-//                employerRepo.save(employer);
-//            }
-
-            BigDecimal taxAmount = postPackage.getPrice()
-                    .multiply(postPackage.getTaxRate() != null ? postPackage.getTaxRate() : BigDecimal.ZERO);
+            BigDecimal taxRate = postPackage.getTaxRate() != null 
+                    ? postPackage.getTaxRate().divide(BigDecimal.valueOf(100)) 
+                    : BigDecimal.ZERO;
+                
+            BigDecimal taxAmount = postPackage.getPrice().multiply(taxRate);
             BigDecimal totalAmount = postPackage.getPrice().add(taxAmount);
 
             Transaction transaction = new Transaction();
@@ -243,12 +260,11 @@ public class PaymentService implements IPaymentService {
             transaction.setPaymentMethod("BANK_TRANSFER");
             transaction.setCreateDate(LocalDate.now());
             transaction.setTotal(totalAmount);
+            transaction.setPostPackage(postPackage);
             transaction = transactionRepo.save(transaction);
 
             TransactionDetail transactionDetail = new TransactionDetail();
             transactionDetail.setTransaction(transaction);
-//            transactionDetail.setQuantity(1);
-//            transactionDetail.setPostPackage(List.of(postPackage));
             transactionDetail.setExpiryDate(calculateExpiryDate(postPackage.getDuration()));
             transactionDetailRepo.save(transactionDetail);
             

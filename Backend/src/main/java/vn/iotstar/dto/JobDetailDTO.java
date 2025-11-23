@@ -24,5 +24,6 @@ public class JobDetailDTO extends ActiveJobDTO {
     private Integer numbersOfRecords;
     private List<SkillDTO> skills; 
     private Integer quantity;
+    private Boolean isActive;
 
 }

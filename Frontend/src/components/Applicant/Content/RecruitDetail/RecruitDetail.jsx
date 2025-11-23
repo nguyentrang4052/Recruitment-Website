@@ -11,8 +11,27 @@ import axios from 'axios';
 import { formatDate } from '../../../../utils/Format'
 import { useNavigate } from 'react-router-dom';
 import { isTokenExpired } from '../../../../utils/Auth'
-function RecruitDetail() {
 
+//Hàm làm sạch HTML trước khi render
+const sanitizeHtml = (html) => {
+    if (!html) return '';
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+
+    const scripts = temp.querySelectorAll('script, style, iframe, object, embed');
+    scripts.forEach(el => el.remove());
+
+    const all = temp.querySelectorAll('*');
+    all.forEach(el => {
+        [...el.attributes].forEach(attr => {
+            if (attr.name.startsWith('on')) el.removeAttribute(attr.name);
+        });
+    });
+
+    return temp.innerHTML;
+};
+
+function RecruitDetail() {
     const { rnid } = useParams();
     const token = localStorage.getItem('token');
     const [recruitmentDetail, setRecruitmentDetail] = useState(null);
@@ -20,14 +39,19 @@ function RecruitDetail() {
     const [showForm, setShowForm] = useState(false);
     const [favoriteJobs, setFavoriteJobs] = useState([]);
 
+    const [cvFile, setCvFile] = useState(null);
+    const [coverLetter, setCoverLetter] = useState("");
+    const [msg, setMsg] = useState("");
+    const [msgType, setMsgType] = useState("");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDetail = async () => {
             try {
                 const response = await axios.get("http://localhost:8080/api/detail", { params: { id: rnid } });
                 setRecruitmentDetail(response.data);
-            }
-            catch (error) {
+            } catch (error) {
                 console.error("Lỗi khi tải chi tiết tin tuyển dụng", error);
                 setRecruitmentDetail(null);
             }
@@ -40,81 +64,30 @@ function RecruitDetail() {
             try {
                 const response = await axios.get("http://localhost:8080/api/applicant/relate-jobs", { params: { id: rnid } });
                 setRelatedJobs(response.data);
-            }
-            catch (error) {
+            } catch (error) {
                 console.error("Lỗi khi tải việc làm liên quan", error);
-                setRelatedJobs(null);
+                setRelatedJobs([]);
             }
         };
         if (rnid) fetchRelateJob();
     }, [rnid]);
-
 
     const calculateRemainingDays = (deadline) => {
         const deadlineDate = new Date(deadline);
         const currentDate = new Date();
         const timeDifference = deadlineDate - currentDate;
         const daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24));
-
         if (daysRemaining < 0) return 'Đã hết hạn ứng tuyển';
         return `Còn ${daysRemaining} ngày ứng tuyển`;
     };
 
-
     const handleApplyClick = () => {
-        const token = localStorage.getItem('token')
-        if (token) { setShowForm(true); }
-        else {
-            navigate('/applicant-login')
-            return
-        }
+        if (token) setShowForm(true);
+        else navigate('/applicant-login');
     };
 
-    const [cvFile, setCvFile] = useState(null);
-    const [coverLetter, setCoverLetter] = useState("");
-    const [msg, setMsg] = useState("");
-    const [msgType, setMsgType] = useState("");
-
-    // const handleApplyJob = async (e) => {
-    //     e.preventDefault();
-    //     if (!cvFile) {
-    //         setMsg("Vui lòng chọn CV!");
-    //         setMsgType("error");
-    //         return;
-    //     }
-
-
-    //     const applicantId = localStorage.getItem("applicantID");
-
-    //     const formData = new FormData();
-    //     formData.append("CV", cvFile);
-    //     formData.append("coverLetter", coverLetter);
-    //     formData.append("RNID", rnid);
-    //     formData.append("applicantID", applicantId);
-
-    //     const token = localStorage.getItem("token");
-
-    //     try {
-    //         await axios.post(
-    //             "http://localhost:8080/api/applicant/apply",
-    //             formData,
-    //             {
-    //                 headers: token ? { Authorization: `Bearer ${token}` } : {},
-    //             }
-    //         );
-    //         alert("Ứng tuyển thành công!");
-
-    //         setCoverLetter(null);
-    //         closeForm();
-    //     } catch {
-    //         setCoverLetter(null);
-    //         setMsg("Ứng tuyển thất bại. Vui lòng thử lại. (Chỉ được ứng tuyển 1 lần cho mỗi tin tuyển dụng)");
-    //         setMsgType("error");
-    //     }
-    // };
     const handleApplyJob = async (e) => {
         e.preventDefault();
-
         if (!cvFile) {
             setMsg("Vui lòng chọn CV!");
             setMsgType("error");
@@ -122,82 +95,44 @@ function RecruitDetail() {
         }
 
         const applicantId = localStorage.getItem("applicantID");
-
         const formData = new FormData();
         formData.append("CV", cvFile);
         formData.append("coverLetter", coverLetter);
         formData.append("RNID", rnid);
         formData.append("applicantID", applicantId);
 
-        const token = localStorage.getItem("token");
-
         try {
-            await axios.post(
-                "http://localhost:8080/api/applicant/apply",
-                formData,
-                {
-                    headers: {
-                        ...(token && { Authorization: `Bearer ${token}` }),
-                        "Content-Type": "multipart/form-data",
-                    }
+            await axios.post("http://localhost:8080/api/applicant/apply", formData, {
+                headers: {
+                    ...(token && { Authorization: `Bearer ${token}` }),
+                    "Content-Type": "multipart/form-data",
                 }
-            );
-
+            });
             alert("Ứng tuyển thành công!");
             setCoverLetter("");
             closeForm();
-
-        } catch (error) {
+        } catch {
             setCoverLetter("");
-
-            console.log("❌ BACKEND ERROR:", error);
-
-            let errorMessage = "Ứng tuyển thất bại. Vui lòng thử lại.";
-
-            // if (error.response?.data) {
-            //     errorMessage = error.response.data.message;
-            // }
-            // // Backend trả về message trong lỗi validation
-            // else if (typeof error.response?.data === "string") {
-            //     errorMessage = error.response.data;
-            // }
-            // // Không kết nối được backend
-            // else if (error.request) {
-            //     errorMessage = "Không thể kết nối tới server!";
-            // }
-
-            setMsg(errorMessage);
+            setMsg("Ứng tuyển thất bại. Vui lòng thử lại.");
             setMsgType("error");
         }
     };
 
-    const closeForm = () => {
-        setShowForm(false);
-    };
-    const navigate = useNavigate();
-    const viewDetail = (rnid) => {
-        navigate(`/recruitment/${rnid}`);
-    }
+    const closeForm = () => setShowForm(false);
+
+    const viewDetail = (rnid) => navigate(`/recruitment/${rnid}`);
 
     const toggleFavorite = async (rnid) => {
-        const token = localStorage.getItem('token');
-        const applicantID = localStorage.getItem('applicantID')
-
+        const applicantID = localStorage.getItem('applicantID');
         if (!token || isTokenExpired(token)) {
             navigate("/applicant-login");
             return;
         }
-
         try {
-            const res = await axios.post(
-                "http://localhost:8080/api/applicant/toggle", null,
-                {
-                    params: { applicantID, rnid },
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            );
-            console.log(res.data);
-
+            await axios.post("http://localhost:8080/api/applicant/toggle", null, {
+                params: { applicantID, rnid },
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setFavoriteJobs(prev =>
                 prev.includes(rnid) ? prev.filter(id => id !== rnid) : [...prev, rnid]
             );
@@ -206,60 +141,35 @@ function RecruitDetail() {
         }
     };
 
-
-    const applicantID = localStorage.getItem('applicantID')
     useEffect(() => {
         const fetchSaveJob = async () => {
             try {
-                const res = await axios.get(
-                    "http://localhost:8080/api/applicant/favourite-job",
-                    {
-                        params: { id: applicantID },
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        }
-                    }
-                );
-                const savedIds = res.data.map(job => job.rnid);
-                setFavoriteJobs(savedIds);
+                const res = await axios.get("http://localhost:8080/api/applicant/favourite-job", {
+                    params: { id: localStorage.getItem('applicantID') },
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setFavoriteJobs(res.data.map(job => job.rnid));
             } catch {
-                console.log('Loi khi tai tin yeu thich')
+                console.log('Lỗi khi tải tin yêu thích');
             }
         };
-        if (token && applicantID) {
-            fetchSaveJob();
+        if (token && localStorage.getItem('applicantID')) fetchSaveJob();
+    }, [token]);
 
-        };[applicantID, token]
-    })
-
-    const isFavorite = (rnid) => { return favoriteJobs.includes(rnid); }
+    const isFavorite = (rnid) => favoriteJobs.includes(rnid);
 
     const [note, setNote] = useState("");
-
     useEffect(() => {
         fetch("/note.txt")
-            .then((res) => res.text())
-            .then((text) => setNote(text))
-            .catch((err) => console.error("Lỗi đọc file:", err));
+            .then(res => res.text())
+            .then(text => setNote(text))
+            .catch(err => console.error("Lỗi đọc file:", err));
     }, []);
 
     const paragraphs = note.split(/\r?\n\r?\n/);
 
     if (!recruitmentDetail) return <div>Loading...</div>;
 
-    const fields = [
-        { label: 'Thu nhập', value: recruitmentDetail.salary },
-        { label: 'Hình thức làm việc', value: recruitmentDetail.form_of_work },
-        { label: 'Cấp bậc', value: recruitmentDetail.level },
-        { label: 'Học vấn', value: recruitmentDetail.literacy },
-        { label: 'Kinh nghiệm', value: recruitmentDetail.experience },
-        { label: 'Địa điểm làm việc', value: recruitmentDetail.location },
-        { label: 'Thời gian làm việc', value: recruitmentDetail.working_time },
-        { label: 'Số lượng tuyển', value: recruitmentDetail.numbers_of_records && `${recruitmentDetail.numbers_of_records} người` },
-        { label: 'Hạn nộp hồ sơ', value: formatDate(recruitmentDetail.deadline) },
-        { label: 'Quyền lợi', value: recruitmentDetail.benefit },
-        { label: 'Email nộp hồ sơ', value: recruitmentDetail.apply_by, isMail: true },
-    ];
     return (
         <>
             <div className={`recruit-wrapper ${token ? 'logged' : 'guest'}`}>
@@ -313,50 +223,65 @@ function RecruitDetail() {
                                     {isFavorite(recruitmentDetail.rnid) ? <FaHeart /> : <LuHeart />}
                                 </button>
                             </div>
-
                         </div>
 
                         <div className="job-info">
                             <div className="job-description">
                                 <h3>Mô tả công việc</h3>
-                                <p style={{ whiteSpace: 'pre-line' }}>{recruitmentDetail.description}</p>
+                                <div
+                                    className="formatted-content"
+                                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(recruitmentDetail.description) }}
+                                />
                             </div>
 
-                            {fields.map(
-                                ({ label, value, isMail }) =>
-                                    value && (
-                                        <div key={label}>
-                                            <strong>{label}:</strong> {isMail ? <a href={`mailto:${value}`}>{value}</a> : value}
-                                        </div>
-                                    )
+                            <div className="job-benefit">
+                                <h3>Quyền lợi</h3>
+                                <div
+                                    className="formatted-content"
+                                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(recruitmentDetail.benefit) }}
+                                />
+                            </div>
+
+                            {[
+                                { label: 'Thu nhập', value: recruitmentDetail.salary },
+                                { label: 'Hình thức làm việc', value: recruitmentDetail.form_of_work },
+                                { label: 'Cấp bậc', value: recruitmentDetail.level },
+                                { label: 'Học vấn', value: recruitmentDetail.literacy },
+                                { label: 'Kinh nghiệm', value: recruitmentDetail.experience },
+                                { label: 'Địa điểm làm việc', value: recruitmentDetail.location },
+                                { label: 'Thời gian làm việc', value: recruitmentDetail.working_time },
+                                { label: 'Số lượng tuyển', value: recruitmentDetail.numbers_of_records && `${recruitmentDetail.numbers_of_records} người` },
+                                { label: 'Hạn nộp hồ sơ', value: formatDate(recruitmentDetail.deadline) },
+                                { label: 'Email nộp hồ sơ', value: recruitmentDetail.apply_by, isMail: true },
+                            ].map(({ label, value, isMail }) =>
+                                value ? (
+                                    <div key={label}>
+                                        <strong>{label}:</strong> {isMail ? <a href={`mailto:${value}`}>{value}</a> : value}
+                                    </div>
+                                ) : null
                             )}
                         </div>
 
                         <button className="apply-button" onClick={handleApplyClick}>Ứng tuyển ngay</button>
                     </div>
+
                     <div className="right-col">
-                        <div>
-                            <h3>Việc làm liên quan</h3>
-                        </div>
-                        <div>
-
-                            <ul className="related-jobs">
-                                {relatedJobs.map((job) => (
-                                    <li className="related-job-item" key={job.rnid}>
-                                        <img className="related-job-logo" src={job.employer.logo} alt="" />
-                                        <div className="related-job-info">
-                                            <h4 className="related-job-title" onClick={() => viewDetail(job.rnid)}>
-                                                {job.position}
-                                            </h4>
-                                            <p className="related-job-company">{job.employer.name}</p>
-                                            <p className="related-job-location"><RiMapPinFill />{" " + job.location}</p>
-                                            <p className="related-job-salary"><TfiMoney />{" " + job.salary}</p>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-
-                        </div>
+                        <h3>Việc làm liên quan</h3>
+                        <ul className="related-jobs">
+                            {relatedJobs.map((job) => (
+                                <li className="related-job-item" key={job.rnid}>
+                                    <img className="related-job-logo" src={job.employer.logo} alt="" />
+                                    <div className="related-job-info">
+                                        <h4 className="related-job-title" onClick={() => viewDetail(job.rnid)}>
+                                            {job.position}
+                                        </h4>
+                                        <p className="related-job-company">{job.employer.name}</p>
+                                        <p className="related-job-location"><RiMapPinFill />{" " + job.location}</p>
+                                        <p className="related-job-salary"><TfiMoney />{" " + job.salary}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
 
@@ -367,16 +292,12 @@ function RecruitDetail() {
                             {msg && (
                                 <div className={`msg-line ${msgType}`}>
                                     <span>{msg}</span>
-                                    <button className="msg-close" onClick={() => setMsg("")}>
-                                        ×
-                                    </button>
+                                    <button className="msg-close" onClick={() => setMsg("")}>×</button>
                                 </div>
                             )}
-
                             <form>
                                 <div>
                                     <label>Chọn CV</label>
-
                                     <input
                                         type="file"
                                         accept=".pdf"
@@ -399,7 +320,6 @@ function RecruitDetail() {
                                         placeholder="Thư giới thiệu..."
                                     />
                                 </div>
-
                                 <div className="note-container">
                                     <h4>Lưu ý:</h4>
                                     {paragraphs.map((p, idx) => (
@@ -413,7 +333,6 @@ function RecruitDetail() {
                                         </p>
                                     ))}
                                 </div>
-
                                 <button type="button" className="btn-submit" onClick={handleApplyJob}>Nộp hồ sơ ứng tuyển</button>
                                 <button type="button" onClick={closeForm} className="btn-close">Đóng</button>
                             </form>

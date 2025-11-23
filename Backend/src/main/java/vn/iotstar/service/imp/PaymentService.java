@@ -181,8 +181,8 @@ public class PaymentService implements IPaymentService {
 
             TransactionDetail transactionDetail = new TransactionDetail();
             transactionDetail.setTransaction(transaction);
-            transactionDetail.setQuantity(1);
-            transactionDetail.setPostPackage(List.of(postPackage));
+//            transactionDetail.setQuantity(1);
+//            transactionDetail.setPostPackage(List.of(postPackage));
             transactionDetail.setExpiryDate(calculateExpiryDate(postPackage.getDuration()));
             transactionDetailRepo.save(transactionDetail);
             
@@ -247,8 +247,8 @@ public class PaymentService implements IPaymentService {
 
             TransactionDetail transactionDetail = new TransactionDetail();
             transactionDetail.setTransaction(transaction);
-            transactionDetail.setQuantity(1);
-            transactionDetail.setPostPackage(List.of(postPackage));
+//            transactionDetail.setQuantity(1);
+//            transactionDetail.setPostPackage(List.of(postPackage));
             transactionDetail.setExpiryDate(calculateExpiryDate(postPackage.getDuration()));
             transactionDetailRepo.save(transactionDetail);
             

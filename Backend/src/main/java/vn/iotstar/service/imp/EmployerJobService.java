@@ -137,6 +137,7 @@ public class EmployerJobService implements IEmployerJobService {
         dto.setPostedDate(recruitment.getPostedAt());
         dto.setDeadline(recruitment.getDeadline());
         dto.setQuantity(recruitment.getQuantity());
+        dto.setIsActive(recruitment.getIsActive());
         
       
         if (recruitment.getIsActive() != null && !recruitment.getIsActive()) {

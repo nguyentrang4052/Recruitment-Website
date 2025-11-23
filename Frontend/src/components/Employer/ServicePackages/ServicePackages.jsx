@@ -132,6 +132,7 @@ function ServicePackages() {
                 );
                 alert(res.data.message);
                 await fetchData();
+                console.log('activePkgs sau khi fetch:', activePkgs);
             } catch (err) {
                 alert('❌ ' + (err.response?.data?.message || err.message));
             }

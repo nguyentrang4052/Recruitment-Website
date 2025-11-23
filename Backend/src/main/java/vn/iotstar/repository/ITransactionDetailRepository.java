@@ -15,14 +15,13 @@ public interface ITransactionDetailRepository extends JpaRepository<TransactionD
  
     Optional<TransactionDetail> findByTransaction_TransactionID(Integer transactionID);
     
-    List<TransactionDetail> findByPostPackage_PackageID(Integer packageID);
+//    List<TransactionDetail> findByPostPackage_PackageID(Integer packageID);
     
     @Query("SELECT td FROM TransactionDetail td " +
- 	       "JOIN td.transaction t " +
- 	       "JOIN td.postPackage p " +
- 	       "WHERE t.employer.employerID = :employerID " +
- 	       "AND td.expiryDate >= :today")
- 	List<TransactionDetail> findActiveByEmployer(
- 	        @Param("employerID") Integer employerID,
- 	        @Param("today") LocalDate today);
+            "JOIN td.transaction t " +
+            "WHERE t.employer.employerID = :employerID " +
+            "AND td.expiryDate >= :today")
+     List<TransactionDetail> findActiveByEmployer(
+             @Param("employerID") Integer employerID,
+             @Param("today") LocalDate today);
 }

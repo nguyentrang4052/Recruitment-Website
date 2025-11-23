@@ -26,4 +26,10 @@ public interface ITransactionRepository extends JpaRepository<Transaction, Integ
     // Tìm giao dịch của employer theo phương thức thanh toán 
     List<Transaction> findByEmployer_EmployerIDAndPaymentMethod(Integer employerID, String paymentMethod);
     
+    @Query("SELECT t FROM Transaction t " +
+            "JOIN TransactionDetail td ON td.transaction = t " +
+            "WHERE t.employer.employerID = :employerId " +
+            "  AND t.paymentMethod = 'FREE' " +
+            "  AND td.expiryDate >= CURRENT_DATE ")
+     List<Transaction> findActiveFreeByEmployer(@Param("employerId") Integer employerId);
 }

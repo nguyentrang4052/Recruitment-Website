@@ -26,6 +26,7 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const applicantsPerPage = 4;
+    const [jobStatus, setJobStatus] = useState({ isActive: true });
 
     const API_BASE = "http://localhost:8080/api/employer/applications";
     const token = localStorage.getItem("token");
@@ -50,6 +51,21 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
             setLoading(false);
         }
     }, [recruitmentNewsId, token]);
+
+    useEffect(() => {
+        const fetchJobStatus = async () => {
+            try {
+                const res = await fetch(`http://localhost:8080/api/employer/jobs/${recruitmentNewsId}`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+                });
+                const data = await res.json();
+                setJobStatus({ isActive: data.isActive });
+            } catch (e) {
+                console.warn("Không thể kiểm tra trạng thái tin:", e);
+            }
+        };
+        if (recruitmentNewsId) fetchJobStatus();
+    }, [recruitmentNewsId]);
 
     useEffect(() => { fetchApplicants(); }, [fetchApplicants]);
 
@@ -117,10 +133,10 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
             <ViewApplicant
                 applicantId={selectedApplicantId}
                 recruitmentNewsId={recruitmentNewsId}
+                isJobActive={jobStatus.isActive}
                 onBack={handleBackFromCV}
                 onApprove={handleApprove}
                 onReject={handleReject}
-
                 showActions={selectedApplicant?.status === 'PENDING'}
             />
         );

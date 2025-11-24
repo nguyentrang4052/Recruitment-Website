@@ -10,50 +10,26 @@ export const Breadcrumb = () => {
   const { rnid } = useParams()
   const location = useLocation();
   const [detail, setCompanyDetail] = useState(null);
- const [loadingC, setLoadingC] = useState(Boolean(employerId));
-const [loadingR, setLoadingR] = useState(Boolean(rnid));
+  const [loadingC, setLoadingC] = useState(Boolean(employerId));
+  const [loadingR, setLoadingR] = useState(Boolean(rnid));
 
 
   useEffect(() => {
-  //   const fetchDetail = async () => {
-  //     try {
-  //       const res = await axios.get("http://localhost:8080/api/applicant/companies/detail", { params: { id: employerId } })
-  //       setCompanyDetail(res.data);
-  //     } catch (thrown) {
-  //       console.error("Chi tiết lỗi:", thrown);
-  //     } finally {
-  //       setLoadingC(false);
-  //     }
-  //   };
-  //   if (employerId) fetchDetail();
-  // }, [employerId]);
     if (!employerId) return;
-  setLoadingC(true);
-  axios.get("http://localhost:8080/api/applicant/companies/detail", {params: {id: employerId}})
-       .then(res => setCompanyDetail(res.data))
-       .finally(() => setLoadingC(false));
-}, [employerId]);
+    setLoadingC(true);
+    axios.get("http://localhost:8080/api/applicant/companies/detail", { params: { id: employerId } })
+      .then(res => setCompanyDetail(res.data))
+      .finally(() => setLoadingC(false));
+  }, [employerId]);
 
   const [recruitmentDetail, setRecruitmentDetail] = useState(null);
   useEffect(() => {
-  //   const fetchDetail = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:8080/api/detail", { params: { id: rnid } });
-  //       setRecruitmentDetail(response.data);
-  //     }
-  //     catch (error) {
-  //       console.error("Lỗi khi tải chi tiết tin tuyển dụng", error);
-  //       setLoadingR(false)
-  //     }
-  //   };
-  //   if (rnid) fetchDetail();
-  // }, [rnid]);
-  if (!rnid) return;
-  setLoadingR(true);
-  axios.get("http://localhost:8080/api/detail", {params: {id: rnid}})
-       .then(res => setRecruitmentDetail(res.data))
-       .finally(() => setLoadingR(false));
-}, [rnid]);
+    if (!rnid) return;
+    setLoadingR(true);
+    axios.get("http://localhost:8080/api/detail", { params: { id: rnid } })
+      .then(res => setRecruitmentDetail(res.data))
+      .finally(() => setLoadingR(false));
+  }, [rnid]);
 
 
   const breadcrumbMap = () => {
@@ -63,17 +39,27 @@ const [loadingR, setLoadingR] = useState(Boolean(rnid));
 
     ];
 
-    if (location.pathname.startsWith('/companies/') && employerId) {
+    if (location.pathname.startsWith('/companies/reviews/')) {
+      // Breadcrumb cho trang đánh giá công ty
+      base.push(
+        { label: 'Đánh giá công ty', link: '/companies/reviews' },
+        {
+          label: detail?.name || 'Đang tải...',
+          link: `/companies/reviews/${employerId}`
+        }
+      );
+    } else if (location.pathname.startsWith('/companies/') && employerId) {
+      // Breadcrumb cho trang chi tiết công ty
       base.push(
         { label: 'Công ty', link: '/companies' },
         {
           label: detail?.name || 'Đang tải...',
           link: `/companies/${employerId}`
-        });
+        }
+      );
     }
     if (location.pathname.startsWith('/recruitment/') && rnid) {
       base.push(
-        // { label: 'Tìm kiếm việc làm', link: '/dashboard' },
         {
           label: recruitmentDetail?.position || 'Đang tải...',
           link: `/recruitment/${rnid}`
@@ -81,24 +67,27 @@ const [loadingR, setLoadingR] = useState(Boolean(rnid));
     }
 
 
-    // các route cố định khác
-    if (location.pathname === '/cv-templates') {
-      return [...base.slice(0, 1), { label: 'Mẫu CV', link: '/cv-templates' }];
-    }else if (location.pathname === '/about') {
-      return [...base.slice(0, 1), { label: 'Về chúng tôi', link: '/about' }];
-    }
-    // if (location.pathname === '/recruitment') {
-    //   return [...base.slice(0, 1), { label: 'Việc làm', link: '/recruitment' }];
-    // }
-    // thêm các case khác nếu cần
 
-    return base;
+    const pathLabels = {
+      '/cv-templates': 'Mẫu CV',
+      '/about': 'Về chúng tôi',
+      '/profile': 'Hồ sơ cá nhân',
+      '/apply-jobs': 'Việc làm đã ứng tuyển',
+      '/save-jobs': 'Việc làm đã lưu',
+      '/notifications': 'Thông báo việc làm',
+      '/settings': 'Cài đặt tài khoản',
+    };
+
+    const label = pathLabels[location.pathname];
+
+    return label ? [...base.slice(0, 1), { label, link: location.pathname }] : base;
+
   };
 
   const items = breadcrumbMap();
 
-const showLoading = (employerId && loadingC) || (rnid && loadingR);
-if (showLoading) return <div>Loading...</div>;
+  const showLoading = (employerId && loadingC) || (rnid && loadingR);
+  if (showLoading) return <div>Loading...</div>;
   return (
     <nav className="breadcrumb">
       {items.map((crumb, i) => (

@@ -37,7 +37,7 @@ public class EmployerController {
 
 	@Autowired
 	private IRecruitmentService reService;
-	
+
 	@Autowired
 	private IRatingService ratingService;
 
@@ -64,16 +64,21 @@ public class EmployerController {
 		return reService.findByEmployer_EmployerID(id).stream().map(reService::mapToDetail).toList();
 
 	}
-	
+
 	@PostMapping("/companies/review")
 	public ResponseEntity<RatingDTO> createReview(@RequestBody RatingDTO dto, @RequestParam Integer applicantId) {
-        RatingDTO saved = ratingService.create(dto, applicantId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-    }
-	
+		RatingDTO saved = ratingService.create(dto, applicantId);
+		return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+	}
+
 	@DeleteMapping("/companies/review/delete")
 	public ResponseEntity<?> deleteReview(@RequestParam Integer applicantID, @RequestParam Integer employerID) {
-       ratingService.deleteByEmployer_EmployerIDAndApplicant_ApplicantID(employerID, applicantID);
-        return ResponseEntity.ok("Xoá đánh giá thành công");
-    }
+		ratingService.deleteByEmployer_EmployerIDAndApplicant_ApplicantID(employerID, applicantID);
+		return ResponseEntity.ok("Xoá đánh giá thành công");
+	}
+
+	@GetMapping("/rating")
+	public List<RatingDTO> getAllRating() {
+		return ratingService.findLatestRatings().stream().map(ratingService::maptoRating).toList();
+	}
 }

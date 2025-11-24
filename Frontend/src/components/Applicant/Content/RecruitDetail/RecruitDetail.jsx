@@ -75,7 +75,7 @@ function RecruitDetail() {
     const [msg, setMsg] = useState("");
     const [msgType, setMsgType] = useState("");
 
-    // const handleApplyJob = async (e) => {
+
     //     e.preventDefault();
     //     if (!cvFile) {
     //         setMsg("Vui lòng chọn CV!");
@@ -153,18 +153,6 @@ function RecruitDetail() {
             console.log("❌ BACKEND ERROR:", error);
 
             let errorMessage = "Ứng tuyển thất bại. Vui lòng thử lại.";
-
-            // if (error.response?.data) {
-            //     errorMessage = error.response.data.message;
-            // }
-            // // Backend trả về message trong lỗi validation
-            // else if (typeof error.response?.data === "string") {
-            //     errorMessage = error.response.data;
-            // }
-            // // Không kết nối được backend
-            // else if (error.request) {
-            //     errorMessage = "Không thể kết nối tới server!";
-            // }
 
             setMsg(errorMessage);
             setMsgType("error");
@@ -319,17 +307,40 @@ function RecruitDetail() {
                         <div className="job-info">
                             <div className="job-description">
                                 <h3>Mô tả công việc</h3>
-                                <p style={{ whiteSpace: 'pre-line' }}>{recruitmentDetail.description}</p>
+                                {/* <p style={{ whiteSpace: 'pre-line' }}>{recruitmentDetail.description}</p> */}
+                                <div
+                                    dangerouslySetInnerHTML={{ __html: recruitmentDetail.description }}
+                                    style={{ whiteSpace: 'normal' }}
+                                />
                             </div>
 
                             {fields.map(
-                                ({ label, value, isMail }) =>
-                                    value && (
+                                ({ label, value, isMail }) => {
+                                    // value && (
+                                    //     <div key={label}>
+                                    //         <strong>{label}:</strong> {isMail ? <a href={`mailto:${value}`}>{value}</a> : value}
+                                    //     </div>
+                                    // )
+                                    if (!value) return null;
+
+                                    if (label === 'Quyền lợi') {
+                                        return (
+                                            <div key={label}>
+                                                <strong>{label}:</strong>
+                                                <div
+                                                    dangerouslySetInnerHTML={{ __html: value }}
+                                                    style={{ whiteSpace: 'normal', marginTop: '8px', marginLeft: '20px' }}
+                                                />
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
                                         <div key={label}>
                                             <strong>{label}:</strong> {isMail ? <a href={`mailto:${value}`}>{value}</a> : value}
                                         </div>
-                                    )
-                            )}
+                                    );
+                                })}
                         </div>
 
                         <button className="apply-button" onClick={handleApplyClick}>Ứng tuyển ngay</button>

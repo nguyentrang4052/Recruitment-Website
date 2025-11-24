@@ -22,25 +22,47 @@ function CompanyReviews() {
   const applicantID = localStorage.getItem('applicantID');
 
   const submit = async () => {
-    
+
     if (!score || !content.trim()) return alert('Vui lòng chọn sao và nhập nội dung!');
     setLoading(true);
     try {
       await axios.post(
-            "http://localhost:8080/api/applicant/companies/review", 
-            { employerID: employerId, score, content }, // This should be in the body
-            { 
-                params: { applicantId: applicantID }, // Query parameter
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            }
-        );
-      alert('Gửi đánh giá thành công!');
+        "http://localhost:8080/api/applicant/companies/review",
+        { employerID: employerId, score, content }, // This should be in the body
+        {
+          params: { applicantId: applicantID }, // Query parameter
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }
+      );
       setScore(0);
       setContent('');
-    } catch{
+      alert('Gửi đánh giá thành công!');
+      window.location.reload();
+    } catch {
       alert('Bạn đã đánh giá công ty này rồi');
     } finally {
       setLoading(false);
+    }
+  };
+  const deleteReview = async () => {
+    if (!window.confirm('Bạn có chắc muốn xoá đánh giá này?')) return;
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/applicant/companies/review/delete`,
+        {
+          params: {
+            applicantID: applicantID,
+            employerID: employerId
+          },
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+
+      alert('Xoá đánh giá thành công!');
+      window.location.reload();
+    } catch {
+      alert('Không thể xoá đánh giá');
     }
   };
 
@@ -63,7 +85,7 @@ function CompanyReviews() {
     };
     if (employerId) fetchCompany();
   }, [employerId]);
-  
+
   const viewDetail = (rnid) => {
     navigate(`/recruitment/${rnid}`);
   }
@@ -78,7 +100,7 @@ function CompanyReviews() {
 
   if (loading) return <div className="loading">Loading…</div>;
   if (!company) return <div>Không tìm thấy công ty</div>;
-  
+
   return (
     <div className="company-reviews-page">
       {/* Header Banner */}
@@ -93,7 +115,7 @@ function CompanyReviews() {
             <div className="company-header-info">
               <div className="company-logo-large">
                 <div className="logo-box">
-                  <img src={company.logo} alt="logo" /> 
+                  <img src={company.logo} alt="logo" />
                 </div>
               </div>
               <div className="company-title-section">
@@ -101,12 +123,12 @@ function CompanyReviews() {
                 <div className="company-quick-info">
                   <MapPin size={16} />
                   <span>{company.address}</span>
-                  <span className="separator">•</span>
+                  {/* <span className="separator">•</span>
                   <Briefcase size={16} />
-                  <span>{company.jobs} job openings</span>
+                  <span>{company.jobs} việc làm đang tuyển</span> */}
                 </div>
                 <div className="company-actions">
-                  <button className="btn-write-review" onClick={scrollToReview}>Write review</button>
+                  <button className="btn-write-review" onClick={scrollToReview}>Viết đánh giá</button>
                 </div>
               </div>
             </div>
@@ -118,7 +140,7 @@ function CompanyReviews() {
                     <Star key={`banner-star-${i}`} size={16} className="star-filled" />
                   ))}
                 </div>
-                <div className="rating-count">{company.reviews} reviews</div>
+                <div className="rating-count">{company.reviews} đánh giá</div>
               </div>
             </div>
           </div>
@@ -146,21 +168,28 @@ function CompanyReviews() {
                         <p className="content-text">{review.content}</p>
                       </div>
                     </div>
+                    {token && review.applicantID == applicantID && (
+                      <div className="review-actions">
+                        <button className="btn-delete" onClick={() => deleteReview(review.id)}>
+                          Xoá đánh giá
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
               {
                 !token && (
                   <div className="sign-in-prompt">
-                    <a href="/applicant-login" className="sign-in-link">Sign in now</a>
-                    <span className="sign-in-text"> to see all reviews.</span>
+                    <a href="/applicant-login" className="sign-in-link">Đăng nhập</a>
+                    <span className="sign-in-text"> Để xem tất cả đánh giá</span>
                   </div>
                 )
               }
             </div>
-            
+
             {/* Write Review Form */}
-            <div id="review-anchor">
+            {token && ( <div id="review-anchor">
               <div className="write-review-mini">
                 <h4>Viết đánh giá</h4>
 
@@ -190,50 +219,47 @@ function CompanyReviews() {
                   {loading ? 'Đang gửi...' : 'Gửi đánh giá'}
                 </button>
               </div>
-            </div>
+            </div>)}
+           
           </div>
 
           {/* Right Column - Job Listings */}
           <div className="right-column">
             {jobListings && jobListings.length > 0 && (
               <div className="jobs-card">
-                <h2 className="jobs-title">{company.jobs} job openings</h2>
+                <h2 className="jobs-title">{company.jobs} tin đang tuyển</h2>
                 <div className="jobs-list">
                   {jobListings.map((job) => (
-                  <div key={job.rnid} className="job-card">
-                    <h3 className="job-title-detail" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
-                    <div className="job-posted">{job.postedDate}</div>
+                    <div key={job.rnid} className="job-card">
+                      <h3 className="job-title-detail" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
+                      <div className="job-posted">{job.postedDate}</div>
 
-                    <div className="job-company">
-                      <div className="job-company-logo">
-                        <img src={job.employer.logo} alt="logo" />
+                      <div className="job-company">
+                        <div className="job-company-logo">
+                          <img src={job.employer.logo} alt="logo" />
+                        </div>
+                        <span className="job-company-name">{job.employer.name}</span>
                       </div>
-                      <span className="job-company-name">{job.employer.name}</span>
-                    </div>
-
-                    {!token && (
                       <div className="job-salary">
                         <span className="salary-icon">💰</span>
-                        <a href="/applicant-login" className="salary-link">Đăng nhập để xem mức lương</a>
+                        <p className="salary">{job.salary}</p>
                       </div>
-                    )}
-                    
-                    <div className="job-meta">
-                      <div className="job-benefit-text">
-                        <Briefcase size={13} />
-                        <span className="benefit-content">{job.benefit}</span>
-                      </div>
-                      <div className="job-meta-item">
-                        <MapPin size={14} />
-                        <span>{job.employer.address}</span>
-                      </div>
+                      <div className="job-meta">
+                        <div className="job-benefit-text">
+                          <Briefcase size={13} />
+                          <span className="benefit-content">{job.benefit}</span>
+                        </div>
+                        <div className="job-meta-item">
+                          <MapPin size={14} />
+                          <span>{job.employer.address}</span>
+                        </div>
 
-                      <div className="job-posted-detail"><BsCalendarDate /> Hạn nộp {formatDate(job.deadline)}</div>
+                        <div className="job-posted-detail"><BsCalendarDate /> Hạn nộp {formatDate(job.deadline)}</div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
             )}
           </div>
         </div>

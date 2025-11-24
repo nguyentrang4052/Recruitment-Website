@@ -13,22 +13,17 @@ const AppliedJobs = () => {
   const applicantID = localStorage.getItem('applicantID')
   useEffect(() => {
     const fetchAppliedJob = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:8080/api/applicant/applied-job",
-          {
-            params: { id: applicantID },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
-          },
-        )
-        setAppliedJobs(res.data)
+      const res = await axios.get(
+        "http://localhost:8080/api/applicant/applied-job",
+        {
+          params: { id: applicantID },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        },
+      )
+      setAppliedJobs(res.data)
 
-
-      } catch {
-        console.log('Khong co tin da ung tuyen')
-      }
     };
     fetchAppliedJob([applicantID, token])
   })
@@ -58,7 +53,6 @@ const AppliedJobs = () => {
       </div>
 
       {!hasJobs ? (
-        // Trạng thái rỗng
         <div className="empty-state">
           <div className="empty-icon">
             <div className="send-circle">
@@ -73,28 +67,36 @@ const AppliedJobs = () => {
           </button>
         </div>
       ) : (
-        // Có việc đã ứng tuyển
         <div className="jobs-list-section">
-          {/* <p className="filter-label">Hôm nay</p> */}
 
           <div className="jobs-list">
             {appliedJobs.map((job) => (
               <div key={job.rnid} className="applied-job-card">
-                <img
-                  src={job.employer.logo}
-                  alt={"logo"}
-                  className="job-logo"
-                />
+                <div className="applied-above">
+                  <img
+                    src={job.employer.logo}
+                    alt={"logo"}
+                    className="job-logo"
+                  />
 
-                <div className="job-info">
-                  <h3 className="job-title" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
-                  <p className="job-company">{job.employer.name}</p>
+                  <div className="job-info">
+                    <h3 className="job-title" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
+                    <p className="job-company">{job.employer.name}</p>
+                  </div>
+                  <a href={`http://localhost:8080/uploads/cv/${job.application.cv}`}> <button className="view-cv-btn">CV đã nộp</button></a>
                 </div>
+                <div className="applied-below">
 
-                <div className="job-deadline">
-                  <span className="deadline-text">{formatDate(job.application.date)}</span>
+                  <div className="job-deadline">
+                    <span className="deadline-text">Ngày nộp: {formatDate(job.application.date)}</span>
+                  </div>
+
+                    <div className="job-status">
+                      <span className="status-text">{job.appStatus}</span>
+                    </div>
+
                 </div>
-                <a href={`http://localhost:8080/uploads/cv/${job.application.cv}`}> <button className="view-cv-btn">Xem CV</button></a>
+                {/* <a href={`http://localhost:8080/uploads/cv/${job.application.cv}`}> <button className="view-cv-btn">Xem CV</button></a> */}
               </div>
             ))}
           </div>

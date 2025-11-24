@@ -51,16 +51,15 @@ public class JwtFilter extends OncePerRequestFilter {
 //            filterChain.doFilter(request, response);
 //            return;
 //        }
-		
 
 		String authHeader = request.getHeader("Authorization");
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
-		
+
 		String token = authHeader.substring(7);
-		
+
 		String username;
 		String provider;
 		String jti;
@@ -135,14 +134,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		String path = request.getServletPath(); 
+		String path = request.getServletPath();
 		return path.equals("/api/logout") || path.equals("/api/") || path.equals("/api/detail")
 				|| path.equals("/api/applicant/relate-jobs") || path.equals("/api/applicant/companies")
 				|| path.equals("/api/applicant/companies/detail") || path.equals("/api/applicant/companies/job")
-				|| path.equals("/api/job/search") || path.startsWith("/api/auth/")
-				|| path.startsWith("/api/employer/register") || path.startsWith("/api/skills/list");
+				|| path.equals("/api/applicant/rating") || path.equals("/api/job/search")
+				|| path.startsWith("/api/auth/") || path.startsWith("/api/employer/register")
+				|| path.startsWith("/api/skills/list");
 //				|| path.equals("/api/applicant/notice/create");
 	}
 
 }
-

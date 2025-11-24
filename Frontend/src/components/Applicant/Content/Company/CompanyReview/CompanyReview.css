@@ -311,17 +311,7 @@
   margin-bottom: 0.75rem;
 }
 
-.review-logo {
-  width: 2.5rem;
-  height: 2.5rem;
-  background-color: #f3f4f6;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  flex-shrink: 0;
-}
+
 
 .review-company-info {
   flex: 1;
@@ -330,12 +320,24 @@
 
 .review-company-name {
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
+  color: #111827;
   margin-bottom: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #111827;
+  text-align: right;
+}
+.review-company-content {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
 }
 
 .star-rating {
@@ -353,20 +355,11 @@
   color: #d1d5db;
 }
 
-.review-text {
-  font-size: 0.875rem;
-  color: #374151;
-  margin-bottom: 0.5rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  line-height: 1.4;
-}
-
 .review-time {
   font-size: 0.75rem;
   color: #9ca3af;
+  display: block;
+  text-align: right;
 }
 
 .view-all-button {

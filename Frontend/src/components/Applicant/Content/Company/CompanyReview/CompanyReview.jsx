@@ -4,44 +4,59 @@ import './CompanyReview.css';
 import { Link } from 'react-router-dom'
 import axios from "axios"
 import companyImage from '../../../../../assets/company-image.jpg'
+import dayjs from 'dayjs';
 
 
 function CompanyPage() {
   const [companiesPerRow, setCompaniesPerRow] = useState(3);
-  const reviews = [
-    {
-      id: 1,
-      company: 'NAVER VIETNAM',
-      logo: '🟢',
-      rating: 5,
-      text: 'Mình rất thích văn hóa làm việc cởi mở, đồng nghiệp thân...',
-      time: '5 hours ago'
-    },
-    {
-      id: 2,
-      company: 'Rakuten Fintech Vietnam Co., Ltd.',
-      logo: '🔴',
-      rating: 5,
-      text: 'All the colleagues are nice. They support me every time I needed....',
-      time: '6 hours ago'
-    },
-    {
-      id: 3,
-      company: 'Thoughtworks Vietnam',
-      logo: '🔵',
-      rating: 4,
-      text: 'Great learning environment and opportunities for growth...',
-      time: '8 hours ago'
-    },
-    {
-      id: 4,
-      company: 'Samsung Vietnam',
-      logo: '⚫',
-      rating: 5,
-      text: 'Excellent benefits and professional work environment...',
-      time: '10 hours ago'
+  const [reviews, setReviews] = useState([]);
+  // const reviews = [
+  //   {
+  //     id: 1,
+  //     company: 'NAVER VIETNAM',
+  //     logo: '🟢',
+  //     rating: 5,
+  //     text: 'Mình rất thích văn hóa làm việc cởi mở, đồng nghiệp thân...',
+  //     time: '5 hours ago'
+  //   },
+  //   {
+  //     id: 2,
+  //     company: 'Rakuten Fintech Vietnam Co., Ltd.',
+  //     logo: '🔴',
+  //     rating: 5,
+  //     text: 'All the colleagues are nice. They support me every time I needed....',
+  //     time: '6 hours ago'
+  //   },
+  //   {
+  //     id: 3,
+  //     company: 'Thoughtworks Vietnam',
+  //     logo: '🔵',
+  //     rating: 4,
+  //     text: 'Great learning environment and opportunities for growth...',
+  //     time: '8 hours ago'
+  //   },
+  //   {
+  //     id: 4,
+  //     company: 'Samsung Vietnam',
+  //     logo: '⚫',
+  //     rating: 5,
+  //     text: 'Excellent benefits and professional work environment...',
+  //     time: '10 hours ago'
+  //   }
+  // ];
+useEffect(() => {
+  const fetchReview = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/applicant/rating");
+      setReviews(res.data); 
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
     }
-  ];
+  };
+
+  fetchReview();
+}, []);
+
 
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -179,32 +194,36 @@ function CompanyPage() {
 
               <div className="reviews-list">
                 {reviews.map((review) => (
-                  <div key={review.id} className="review-item">
+                  <div className="review-item">
                   
                     <div className="review-header">
-                      <div className="review-logo">
-                        {review.logo}
-                      </div>
+                      {/* <div className="review-logo">
+                        {review.name}
+                      </div> */}
                       <div className="review-company-info">
                         <h3 className="review-company-name">
-                          {review.company}
+                          {review.name}
                         </h3>
-                        <StarRating rating={review.rating} />
+                         <StarRating rating={review.score} />
+                        <h3 className="review-company-content">
+                          {review.content}
+                        </h3>
+                       
                       </div>
                     </div>
 
-                    <p className="review-text">
+                    {/* <p className="review-text">
                       {review.text}
-                    </p>
+                    </p> */}
 
-                    <span className="review-time">{review.time}</span>
+                    <span className="review-time">{dayjs(review.date).format('DD-MM-YYYY HH:mm')}</span>
                   </div>
                 ))}
               </div>
 
-              <button className="view-all-button">
+              {/* <button className="view-all-button">
                 View All Reviews →
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

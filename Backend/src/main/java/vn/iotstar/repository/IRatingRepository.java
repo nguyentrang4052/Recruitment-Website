@@ -1,6 +1,7 @@
 package vn.iotstar.repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,8 +18,11 @@ public interface IRatingRepository extends JpaRepository<Rating, RatingID> {
 
 	@Query("SELECT AVG(r.score) FROM Rating r WHERE r.employer.employerID = :employerID")
 	BigDecimal avgScore(@Param("employerID") Integer employerID);
-	
+
 	boolean existsByEmployer_EmployerIDAndApplicant_ApplicantID(Integer employerID, Integer applicantID);
-	
+
 	void deleteByEmployer_EmployerIDAndApplicant_ApplicantID(Integer employerID, Integer applicantID);
+
+	@Query(value = "SELECT * FROM Rating ORDER BY date DESC LIMIT 5", nativeQuery = true)
+	List<Rating> findLatestRatings();
 }

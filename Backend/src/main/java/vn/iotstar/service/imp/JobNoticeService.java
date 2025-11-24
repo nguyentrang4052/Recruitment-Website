@@ -87,6 +87,7 @@ public class JobNoticeService implements IJobNoticeService {
 //		notification.setEmailEnabled(request.getEmailEnabled());
 //		notification.setWebEnabled(request.getWebEnabled());
 		notification.setCreatedDate(LocalDateTime.now());
+		notification.setLastSentDate(LocalDate.of(1970,1,1));
 		notification.setIsActive(true);
 
 		notification = jobNoticeRepository.save(notification);

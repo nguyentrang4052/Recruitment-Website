@@ -48,7 +48,7 @@ public class Applicant implements Serializable {
 	@Column(name = "literacy", nullable = true, length = 255)
 	private String literacy;
 
-	@OneToOne(mappedBy = "applicant")
+	@OneToOne(mappedBy = "applicant", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private CareerInformation careerInformation;
 

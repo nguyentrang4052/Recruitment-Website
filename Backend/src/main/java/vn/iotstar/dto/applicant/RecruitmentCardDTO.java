@@ -65,13 +65,14 @@ public class RecruitmentCardDTO {
 	
 	
 	private Application application;
+	private String appStatus;
 	
 	
 	
 	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
 			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,
 			String experience, String literacy, String level, String other, String benefit, EFormOfWork formOfWork,
-			String workingTime, String applyBy, Application application) {
+			String workingTime, String applyBy, Application application, String appStatus) {
 		this.rnid = rnid;
 		this.position = position;
 		this.employer = employer;
@@ -91,6 +92,7 @@ public class RecruitmentCardDTO {
 		this.workingTime = workingTime;
 		this.applyBy = applyBy;
 		this.application = application;
+		this.appStatus = appStatus;
 	}
 
 	

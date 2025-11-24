@@ -261,6 +261,22 @@
   line-height: 1.6;
   text-align: left;
 }
+.review-actions {
+  margin-top: 8px;
+  text-align: right;
+}
+.btn-delete {
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-delete:hover {
+  background: #e63c3e;
+}
 
 /* Sign In Prompt */
 .sign-in-prompt {

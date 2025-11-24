@@ -16,13 +16,28 @@ public class RatingDTO {
 	private String content;
 	private LocalDateTime date;
 	private BigDecimal score;
-	public RatingDTO(String content, LocalDateTime date, BigDecimal score) {
+	private Integer applicantID;
+	private Integer employerID;
+	
+	
+	public RatingDTO(String content, LocalDateTime date, BigDecimal score, Integer applicantID, Integer employerID) {
 		this.content = content;
 		this.date = date;
 		this.score = score;
+		this.applicantID = applicantID;
+		this.employerID = employerID;
+	}
+
+
+	private String name;
+
+
+	public RatingDTO(String content, LocalDateTime date, BigDecimal score, String name) {
+		this.content = content;
+		this.date = date;
+		this.score = score;
+		this.name = name;
 	}
 	
-//	private Integer applicantID;
-	private Integer employerID;
-
+	
 }

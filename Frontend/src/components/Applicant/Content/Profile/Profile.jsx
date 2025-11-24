@@ -13,6 +13,7 @@ function Profile() {
     const [editingSection, setEditingSection] = useState(null);
     const [formData, setFormData] = useState({});
     const [goalForm, setGoalForm] = useState({});
+    const [titleForm, setTitleForm] = useState({});
     const [expForm, setExpForm] = useState({});
     const [eduForm, setEduForm] = useState({});
     const [skillsForm, setSkillsForm] = useState([]);
@@ -30,7 +31,6 @@ function Profile() {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setApplicant(res.data);
-                console.log('Applicant data:', res.data);
             } catch (err) {
                 console.error('Lỗi lấy profile:', err);
             }
@@ -89,6 +89,11 @@ function Profile() {
         setEditingSection('goal');
     };
 
+    const handleEditTitle = () => {
+        setTitleForm({ title: applicant.title || '' });
+        setEditingSection('title');
+    };
+
     const handleEditExp = () => {
         const parts = (applicant.experience || '').split(' - ');
         setExpForm({
@@ -140,7 +145,9 @@ function Profile() {
                     gender: formData.gender,
                     photo: applicant.photo,
                 };
-            } else if (editingSection === 'goal') {
+            } else if (editingSection === 'title') {
+                payload = { title: titleForm.title };
+            }else if (editingSection === 'goal') {
                 payload = { goal: goalForm.goal };
             } else if (editingSection === 'exp') {
                 const expString = `${expForm.company || ''} - ${expForm.position || ''}`.trim();
@@ -296,6 +303,34 @@ function Profile() {
                             </>
                         )}
                     </div>
+                </div>
+
+                <div className="profile-section">
+                    <h3>Vị trí muốn ứng tuyển</h3>
+                    {editingSection === 'title' ? (
+                        <>
+                            <div className="form-group-pr">
+                                <textarea
+                                    placeholder="Nhập vị trí muốn ứng tuyển"
+                                    value={titleForm.title || ''}
+                                    onChange={e => setTitleForm({ ...titleForm, title: e.target.value })}
+                                />
+                            </div>
+                            <button onClick={handleSave}>Lưu</button>
+                            <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>
+                                Hủy
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <div className="form-group-pr">
+                                <p>{applicant.title || 'Chưa có'}</p>
+                            </div>
+                            <button className="edit-goal" onClick={handleEditTitle}>
+                                <MdModeEdit /> Chỉnh sửa
+                            </button>
+                        </>
+                    )}
                 </div>
 
                 <div className="profile-section">

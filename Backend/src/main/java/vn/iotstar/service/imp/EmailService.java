@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -13,6 +14,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import vn.iotstar.dto.applicant.notice.EmailData;
 import vn.iotstar.entity.RecruitmentNews;
+import vn.iotstar.util.UrlUtil;
 
 @Service
 public class EmailService {
@@ -22,6 +24,9 @@ public class EmailService {
 	
 	@Value("${app.base-url}")
 	private String baseUrl;
+	
+	@Value("${app.backend-url}")
+	private String backendUrl;
 
 
 	public void sendVerificationEmail(String toEmail, String token) {
@@ -89,12 +94,22 @@ public class EmailService {
 
 			helper.setTo(to);
 			helper.setSubject("Có " + data.getJobCount() + " việc làm mới phù hợp với bạn");
+			
+			 data.getJobs().forEach(job -> {
+		            if (job.getEmployer() != null && job.getEmployer().getLogo() != null) {
+		                String logo = job.getEmployer().getLogo();
+		                logo = UrlUtil.replaceLocalhost(logo, backendUrl);
+		                job.getEmployer().setLogo(logo);
+		            }
+		        });
+
 
 			Context context = new Context();
 			context.setVariable("candidateName", data.getApplicantName());
 			context.setVariable("keyword", data.getKeyword());
 			context.setVariable("jobCount", data.getJobCount());
 			context.setVariable("jobs", data.getJobs());
+			context.setVariable("backendUrl", backendUrl);
 			context.setVariable("baseUrl", baseUrl);
 
 			String htmlContent = templateEngine.process("email/notice", context);

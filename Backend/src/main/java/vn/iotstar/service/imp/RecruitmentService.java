@@ -91,11 +91,21 @@ public class RecruitmentService implements IRecruitmentService {
 
 		Application application = appService
 				.findByApplicant_ApplicantIDAndRecruitmentNews_RNID(applicant.getApplicantID(), rn.getRNID());
+		
+		String applicationStatus = null;
+	    if (application != null && application.getStatus() != null) {
+	        switch (application.getStatus()) {
+	            case PENDING -> applicationStatus= "Đang chờ phê duyệt";
+	            case APPROVED -> applicationStatus = "Đã được duyệt";
+	            case REJECTED -> applicationStatus = "Bị từ chối";
+	        }
+	    }
+
 
 		return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(),
 				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
 				rn.getLevel(), rn.getOther(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(), rn.getApplyBy(),
-				application);
+				application, applicationStatus);
 	}
 
 	@Override

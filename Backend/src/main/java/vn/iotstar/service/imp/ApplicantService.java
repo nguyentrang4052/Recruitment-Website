@@ -61,6 +61,7 @@ public class ApplicantService implements IApplicantService {
 
 	@Autowired
 	private IRecruitmentRepository recruitmentRepo;
+	
 
 	@Value("${upload.cv.dir}")
 	private String uploadDir;
@@ -295,6 +296,7 @@ public class ApplicantService implements IApplicantService {
 
 	@Override
 	public ProfileDTO updateApplicant(Integer applicantID, ProfileDTO profileDTO) {
+		
 		Applicant existingApplicant = applicantRepository.findById(applicantID)
 				.orElseThrow(() -> new RuntimeException("Ứng viên không tồn tại"));
 		if (profileDTO.getGender() != null) {
@@ -307,12 +309,20 @@ public class ApplicantService implements IApplicantService {
 	        existingApplicant.setGender(genderValue);
 	    }
 		copyNonNull(profileDTO, existingApplicant.getAccount(), "photo");
-		copyNonNull(profileDTO, existingApplicant.getCareerInformation(), "title", "desireLevel", "formOfWork",
+		
+		CareerInformation ci = existingApplicant.getCareerInformation();
+		if (ci == null) {
+		    ci = new CareerInformation();
+		    ci.setApplicant(existingApplicant); 
+		    existingApplicant.setCareerInformation(ci);
+		}
+		copyNonNull(profileDTO, ci, "title", "desireLevel", "formOfWork",
 				"location");
 		copyNonNull(profileDTO, existingApplicant, "applicantName", "phone", "address", "birthday", "goal",
 				"experience", "literacy", "skills");
 		if (profileDTO.getSkills() != null)
 			existingApplicant.setSkill(profileDTO.getSkills());
+		applicantRepository.save(existingApplicant);
 		return profileDTO;
 
 	}

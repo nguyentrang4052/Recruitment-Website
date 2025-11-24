@@ -27,6 +27,12 @@
   text-align: left;
 }
 
+
+.applied-above {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 /* Nút toggle - xóa khi deploy production */
 .toggle-btn {
   padding: 8px 16px;
@@ -140,23 +146,22 @@
 
 .applied-job-card {
   display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
+  flex-direction: column;   /* 2 hàng dọc */
+  gap: 12px;                /* khoảng cách 2 hàng */
+  padding: 16px 20px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  background: white;
+  background: #fff;
   transition: all 0.3s ease;
 }
-
 .applied-job-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-color: #d0d0d0;
 }
 
 .job-logo {
-  width: 60px;
-  height: 60px;
+  width: 200px;
+  height: 100px;
   object-fit: contain;
   border-radius: 8px;
   background: #f5f5f5;
@@ -194,10 +199,26 @@
 }
 
 .deadline-text {
-  font-size: 0.9rem;
+  /* font-size: 0.9rem; */
   color: #00b14f;
   font-weight: 500;
   white-space: nowrap;
+  margin-left: 100px;
+}
+
+.applied-below {
+  display: flex;               
+  align-items: center;
+  gap: 16px;                   
+       
+  font-size: 1rem;
+  color: #555;
+  margin-top: 8px;            
+}
+
+.status-text {
+  font-weight: 600;
+    font-style: italic;   
 }
 
 /* Responsive Design */

@@ -79,7 +79,7 @@ public class EmployerService implements IEmployerService {
 
 		List<RatingDTO> rating = emp.getRatings().stream()
 				
-				.map(r -> new RatingDTO(r.getContent(), r.getDate(), r.getScore())).toList();
+				.map(r -> new RatingDTO(r.getContent(), r.getDate(), r.getScore(), r.getApplicant().getApplicantID(), r.getEmployer().getEmployerID())).toList();
 		String active = emp.getAccount().getActive() == 1 ? "Hoạt động" : "Bị khoá";
 		return new EmployerCardDTO(
 						emp.getEmployerName(),

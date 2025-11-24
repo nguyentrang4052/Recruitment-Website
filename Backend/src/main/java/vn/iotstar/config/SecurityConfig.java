@@ -43,12 +43,10 @@ public class SecurityConfig {
 						.permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/", "/api/detail", "/api/applicant/relate-jobs",
 								"/api/applicant/companies", "/api/applicant/companies/detail",
-								"/api/applicant/companies/job", "/api/job/search")
+								"/api/applicant/companies/job", "/api/job/search", "/api/applicant/rating")
 						.permitAll()
-//						.requestMatchers(HttpMethod.POST, "/api/applicant/companies/review").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/employer/recruitment/create")
 						.hasAuthority("ROLE_employer")
-//						.requestMatchers(HttpMethod.POST, "/api/applicant/notice/create").permitAll()
 						.requestMatchers("/api/admin/**").hasAuthority("ROLE_admin")
 						.requestMatchers("/api/applicant/apply", "/api/applicant/profile/**", "/api/employer/**",
 								"/api/applicant/toggle", "/api/applicant/favourite-job")

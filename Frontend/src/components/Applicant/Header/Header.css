@@ -11,13 +11,14 @@
   width: 100%; 
   height: 79px; 
   z-index: 1000;
-  padding: 0 20px;
+  padding: 0 30px;
+  box-sizing: border-box;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 20px;
+  flex-shrink: 0;
 }
 
 .homepage-logo {
@@ -28,102 +29,119 @@
   flex-shrink: 0;
 }
 
+/* Navigation Menu - Căn giữa */
 .nav-menu {
   display: flex; 
   align-items: center;
+  justify-content: center;
   padding: 0;
   margin: 0;
   list-style-type: none;
-  gap: 30px;
+  gap: 60px;
 }
 
 .nav-menu a {
   text-decoration: none;
   color: rgb(9, 11, 155);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   white-space: nowrap;
+}
+
+/* Link gần logo */
+.all-jobs-link {
+  color: rgb(9, 11, 155);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: 30px;
 }
 
 .nav-item {
   position: relative;
   cursor: pointer;
+  padding: 10px 0; /* Tăng vùng hover */
 }
+
+.nav-item .nav-link {
+  color: rgb(9, 11, 155);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  margin: 0 !important;
+}
+
+.cv-button {
+  color: rgb(9, 11, 155);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.about-link {
+  color: rgb(9, 11, 155);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 
 .dropdown {
   display: none;
   position: absolute;
-  top: 100%;
+  top: calc(100% - 5px); 
   left: 0;
   background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   list-style-type: none;
-  padding: 10px 0;
-  width: 180px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 13px 0 8px 0; 
+  min-width: 180px;
+  border-radius: 4px;
+  margin-top: 0;
   z-index: 1001;
 }
 
 .nav-item:hover .dropdown {
   display: block;
-  opacity: 1;
-  visibility: visible;
 }
+
 
 .dropdown li {
   text-align: left;
-  padding: 8px 20px;
 }
 
 .dropdown li a {
-  color: #0e0d0d;
+  color: #333;
   text-decoration: none;
   font-size: 14px;
   display: block;
-  padding: 6px 0;
+  padding: 10px 16px;
+  transition: background-color 0.2s ease;
 }
 
 .dropdown li a:hover {
-  color: #03775c; 
-  padding-left: 10px;
-  background-color: white;
+  background-color: #f0f0f0;
 }
 
-.all-buttons{
-  color: rgb(9, 11, 155);
-  font-size: 16px;
-  font-weight: 500;
-  text-decoration: none;
-  white-space: nowrap;
-  margin-left: 100px;
+.nav-item::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 5px; /* Vùng buffer invisible */
+  z-index: 1000;
 }
-
-.cv-button {
-  color: rgb(9, 11, 155);
-  font-size: 16px;
-  font-weight: 500;
-  text-decoration: none;
-  white-space: nowrap;
-  
-}
-
-
+/* Header Right */
 .header-right {
   display: flex;          
   align-items: center;     
   gap: 10px;                
   flex-shrink: 0;
   position: relative;
-}
-
-button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
 }
 
 .avatar {
@@ -176,36 +194,117 @@ button {
   background-color: #f0f0f0;
 }
 
-/* Mobile Menu Toggle Button */
-.mobile-menu-toggle {
+/* Hamburger Menu */
+.hamburger {
   display: none;
-  background: none;
-  border: none;
-  font-size: 24px;
+  flex-direction: column;
   cursor: pointer;
-  color: #333;
-  padding: 5px;
+  gap: 5px;
+  padding: 10px;
+  z-index: 1001;
 }
 
-/* Responsive Design */
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background-color: #0b0b0b;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
 
-/* Tablet - 1024px */
-@media (max-width: 1024px) {
-  .header {
-    padding: 0 15px;
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 79px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  z-index: 998;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.mobile-menu-overlay.active {
+  display: flex;
+}
+
+.mobile-menu-overlay .mobile-nav-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.mobile-menu-overlay .mobile-nav-item a {
+  color: rgb(9, 11, 155);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  display: block;
+  cursor: pointer;
+}
+
+.mobile-menu-overlay .mobile-dropdown {
+  display: none;
+  flex-direction: column;
+  padding: 10px 0 0 20px;
+  margin-top: 10px;
+}
+
+.mobile-menu-overlay .mobile-nav-item.open .mobile-dropdown {
+  display: flex;
+}
+
+.mobile-menu-overlay .mobile-dropdown a {
+  padding: 10px 0;
+  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+/* Desktop: > 1024px - Hiển thị đầy đủ */
+@media (min-width: 1025px) {
+  .hamburger,
+  .mobile-menu-overlay {
+    display: none !important;
+  }
+}
+
+/* Tablet: 769px - 1024px */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .nav-menu {
+    gap: 35px;
+  }
+
+  .all-jobs-link {
+    font-size: 13px;
+    margin-left: 20px;
+  }
+
+  .nav-menu a,
+  .nav-item .nav-link,
+  .cv-button,
+  .about-link {
+    font-size: 13px;
   }
 
   .homepage-logo {
     height: 50px;
-  }
-
-  .nav-menu {
-    gap: 15px;
-  }
-
-  .nav-menu a,
-  .cv-button {
-    font-size: 14px;
   }
 
   .avatar {
@@ -214,149 +313,74 @@ button {
   }
 }
 
-/* Tablet nhỏ - 768px */
+/* Mobile: <= 768px */
 @media (max-width: 768px) {
   .header {
     height: 60px;
-    padding: 0 10px;
+    padding: 0 15px;
   }
 
   .homepage-logo {
     height: 45px;
   }
 
-  .nav-menu {
-    display: none;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background-color: white;
-    flex-direction: column;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    gap: 0;
+  /* Ẩn desktop navigation và avatar */
+  .nav-menu,
+  .header-right,
+  .all-jobs-link {
+    display: none !important;
   }
 
-  .nav-menu.active {
+  /* Hiện hamburger */
+  .hamburger {
     display: flex;
   }
 
-  .nav-item {
-    width: 100%;
-    padding: 12px 0;
-    border-bottom: 1px solid #e0e0e0;
+  .mobile-menu-overlay {
+    top: 60px;
+  }
+}
   }
 
-  .nav-item:last-child {
-    border-bottom: none;
+  /* Ẩn desktop navigation và avatar */
+  .nav-menu,
+  .header-right {
+    display: none !important;
   }
 
-  .cv-button {
-    display: block;
-    padding: 12px 0;
-    width: 100%;
-  }
-
-  .dropdown {
-    position: static;
-    width: 100%;
-    box-shadow: none;
-    padding: 10px 0 10px 20px;
-    background-color: #f8f8f8;
-  }
-
-  .nav-item:hover .dropdown {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .mobile-menu-toggle {
-    display: block;
-    order: 2;
+  /* Hiện hamburger */
+  .hamburger {
+    display: flex;
     margin-left: auto;
   }
 
-  .header-right {
-    order: 3;
-  }
-
-  .avatar {
-    width: 40px;
-    height: 40px;
-  }
-
-  .avt-dropdown-menu {
-    top: 50px;
-    right: -10px;
+  .mobile-menu-overlay {
+    top: 60px;
   }
 }
 
-/* Mobile - 480px */
+/* Small Mobile: <= 480px */
 @media (max-width: 480px) {
   .header {
     height: 55px;
+    padding: 0 10px;
   }
 
   .homepage-logo {
     height: 40px;
   }
 
-  .avatar {
-    width: 35px;
-    height: 35px;
+  .hamburger span {
+    width: 22px;
+    height: 2px;
   }
 
-  .avt-dropdown-menu {
-    width: 200px;
-    right: -5px;
-  }
-
-  .avt-dropdown-menu ul li {
-    padding: 8px 15px;
-    font-size: 13px;
-  }
-
-  .nav-menu {
+  .mobile-menu-overlay {
     top: 55px;
     padding: 15px;
   }
 
-  .nav-item {
-    padding: 10px 0;
-  }
-
-  .nav-menu a,
-  .cv-button {
-    font-size: 14px;
-  }
-
-  .dropdown li a {
-    font-size: 13px;
-  }
-}
-
-/* Mobile nhỏ - 360px */
-@media (max-width: 360px) {
-  .header {
-    padding: 0 8px;
-  }
-
-  .homepage-logo {
-    height: 35px;
-  }
-
-  .avatar {
-    width: 32px;
-    height: 32px;
-  }
-
-  .avt-dropdown-menu {
-    width: 180px;
-  }
-
-  .avt-dropdown-menu ul li {
-    font-size: 12px;
-    padding: 7px 12px;
+  .mobile-menu-overlay .mobile-nav-item {
+    padding: 12px 0;
   }
 }

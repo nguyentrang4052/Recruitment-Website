@@ -237,6 +237,8 @@ function RecruitDetail() {
     if (!recruitmentDetail) return <div>Loading...</div>;
 
     const fields = [
+        { label: 'Yêu cầu công việc', value: recruitmentDetail.requirement },
+        { label: 'Quyền lợi', value: recruitmentDetail.benefit },
         { label: 'Thu nhập', value: recruitmentDetail.salary },
         { label: 'Hình thức làm việc', value: recruitmentDetail.form_of_work },
         { label: 'Cấp bậc', value: recruitmentDetail.level },
@@ -246,7 +248,7 @@ function RecruitDetail() {
         { label: 'Thời gian làm việc', value: recruitmentDetail.working_time },
         { label: 'Số lượng tuyển', value: recruitmentDetail.numbers_of_records && `${recruitmentDetail.numbers_of_records} người` },
         { label: 'Hạn nộp hồ sơ', value: formatDate(recruitmentDetail.deadline) },
-        { label: 'Quyền lợi', value: recruitmentDetail.benefit },
+
         { label: 'Email nộp hồ sơ', value: recruitmentDetail.apply_by, isMail: true },
     ];
     return (
@@ -257,31 +259,31 @@ function RecruitDetail() {
                         <div className="recruitment-detail-container">
                             <h2 className="recruitment-position">{recruitmentDetail.position}</h2>
 
-                            <div className="summary-info">
+                            <div className="summary-detail-info">
                                 <div className="info-block">
-                                    <div className="info-label">
+                                    <div className="info-detail-label">
                                         <FaMoneyBill1Wave className="info-icon" />
                                         <strong> Mức lương:</strong><br />
                                     </div>
-                                    <div className="info-value">
+                                    <div className="info-detail-value">
                                         <span> {recruitmentDetail.salary}</span>
                                     </div>
                                 </div>
                                 <div className="info-block">
-                                    <div className="info-label">
+                                    <div className="info-detail-label">
                                         <RiMapPinFill className="info-icon" />
                                         <strong> Địa điểm làm việc:</strong><br />
                                     </div>
-                                    <div className="info-value">
+                                    <div className="info-detail-value">
                                         <span> {recruitmentDetail.location}</span>
                                     </div>
                                 </div>
                                 <div className="info-block">
-                                    <div className="info-label">
+                                    <div className="info-detail-label">
                                         <CgSandClock className="info-icon" />
                                         <strong> Kinh nghiệm:</strong><br />
                                     </div>
-                                    <div className="info-value">
+                                    <div className="info-detail-value">
                                         <span> {recruitmentDetail.experience}</span>
                                     </div>
                                 </div>
@@ -320,7 +322,20 @@ function RecruitDetail() {
                                 ({ label, value, isMail }) => {
                                     if (!value) return null;
 
-                                    if (label === 'Quyền lợi') {
+
+                                    if (label == 'Quyền lợi') {
+                                        return (
+                                            <div key={label}>
+                                                <strong>{label}:</strong>
+                                                <div className='benefit-value'
+                                                    dangerouslySetInnerHTML={formatDescription(value)}
+                                                    style={{ whiteSpace: 'normal', marginTop: '8px', marginLeft: '16px' }}
+                                                />
+                                            </div>
+                                        );
+                                    }
+                                    
+                                    if (label == 'Yêu cầu công việc') {
                                         return (
                                             <div key={label}>
                                                 <strong>{label}:</strong>
@@ -370,7 +385,7 @@ function RecruitDetail() {
 
                 {showForm && (
                     <div className="detail-popup-form">
-                        <div className="popup-message">
+                        <div className="popup-detail-message">
                             <h3>Ứng tuyển công việc</h3>
                             {msg && (
                                 <div className={`msg-line ${msgType}`}>

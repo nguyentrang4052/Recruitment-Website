@@ -73,7 +73,7 @@ public class RecruitmentService implements IRecruitmentService {
 
 		return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(),
 				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
-				rn.getLevel(), rn.getOther(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(),
+				rn.getLevel(), rn.getRequirement(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(),
 				rn.getApplyBy(), viewRepository.countView(rn.getRNID()), rn.getIsActive());
 	}
 
@@ -104,7 +104,7 @@ public class RecruitmentService implements IRecruitmentService {
 
 		return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(),
 				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
-				rn.getLevel(), rn.getOther(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(), rn.getApplyBy(),
+				rn.getLevel(), rn.getRequirement(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(), rn.getApplyBy(),
 				application, applicationStatus);
 	}
 

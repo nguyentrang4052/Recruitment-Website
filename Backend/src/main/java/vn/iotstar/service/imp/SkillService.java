@@ -60,9 +60,11 @@ public class SkillService implements ISkillService {
     	return new SkillDTO(skill.getSkillID(), skill.getSkillName(), skill.getDescription());
     }
 
+	
+
 	@Override
-	public List<Skill> findBySkillNameContaining(String skillName) {
-		return skillRepository.findBySkillNameContaining(skillName);
+	public List<Skill> findBySkillNameContainingIgnoreCase(String skillName) {
+		return skillRepository.findBySkillNameContainingIgnoreCase(skillName);
 	}
 
 	@Override

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import './RecruitmentDetail.css';
 import axios from 'axios';
-
+import { formatDescription } from '../../../../utils/formatDescription';
 export default function RecruitmentDetail({ job, onBack, onUpdate }) {
 
     const API = "http://localhost:8080/api/admin/recruitment";
@@ -135,13 +135,25 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                     {/* Description */}
                     <div className="section border-b">
                         <h3 className="section-title">Mô tả công việc</h3>
-                        <p className="section-content">{localJob.description}</p>
+                        {/* <p className="section-content">dangerouslySetInnerHTML= {formatDescription(localJob.description)}</p> */}
+                        <div
+                            className="section-content"
+                            dangerouslySetInnerHTML={formatDescription(localJob.description)}
+                        />
                     </div>
 
                     {/* Requirements & Job Info */}
                     <div className="two-col-section border-b">
                         <div>
-                            <h3 className="section-title">Yêu cầu</h3>
+                            <h3 className="section-title">Yêu cầu công việc</h3>
+                            <div className="info-row">
+                                <p className="info-label">Mô tả yêu cầu</p>
+                                {/* <p className="info-value">{localJob.other}</p> */}
+                                {/* <div
+                                    className="section-content"
+                                    dangerouslySetInnerHTML={formatDescription(localJob.requirement)}
+                                /> */}
+                            </div>
                             <div className="info-row">
                                 <p className="info-label">Kinh nghiệm</p>
                                 <p className="info-value">{localJob.experience}</p>
@@ -154,10 +166,7 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                                 <p className="info-label">Cấp độ</p>
                                 <p className="info-value">{localJob.level}</p>
                             </div>
-                            <div className="info-row">
-                                <p className="info-label">Khác</p>
-                                <p className="info-value">{localJob.other}</p>
-                            </div>
+
                         </div>
 
                         <div>
@@ -180,7 +189,10 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                     {/* Benefits */}
                     <div className="section border-b">
                         <h3 className="section-title">Quyền lợi</h3>
-                        <p className="section-content">{localJob.benefit}</p>
+                        <div
+                            className="section-content"
+                            dangerouslySetInnerHTML={formatDescription(localJob.benefit)}
+                        />
                     </div>
 
                     {/* Skills */}

@@ -316,7 +316,7 @@ public class ApplicantService implements IApplicantService {
 		    ci.setApplicant(existingApplicant); 
 		    existingApplicant.setCareerInformation(ci);
 		}
-		copyNonNull(profileDTO, ci, "title", "desireLevel", "formOfWork",
+		copyNonNull(profileDTO, ci, "title", "desireLevel", "formOfWork", "desireSalary",
 				"location");
 		copyNonNull(profileDTO, existingApplicant, "applicantName", "phone", "address", "birthday", "goal",
 				"experience", "literacy", "skills");

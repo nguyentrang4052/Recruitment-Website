@@ -38,9 +38,9 @@ export default function Employers({ onViewDetail }) {
     <div className="employers-wrapper">
       <h1 className="content-title">Quản lý Nhà tuyển dụng</h1>
       <div className="card">
-        <div className="table-toolbar">
+        {/* <div className="table-toolbar">
           <input type="text" placeholder="Tìm kiếm nhà tuyển dụng..." className="table-search" />
-        </div>
+        </div> */}
 
         <table className="data-table">
           <thead>

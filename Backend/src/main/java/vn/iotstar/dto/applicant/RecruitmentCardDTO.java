@@ -28,7 +28,7 @@ public class RecruitmentCardDTO {
 	private String experience;
 	private String literacy;
 	private String level;
-	private String other;
+	private String requirement;
 	private String benefit;
 	private EFormOfWork formOfWork;
 	private String workingTime;
@@ -38,7 +38,7 @@ public class RecruitmentCardDTO {
 	private boolean active;
 	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
 			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,
-			String experience, String literacy, String level, String other, String benefit, EFormOfWork formOfWork,
+			String experience, String literacy, String level, String requirement, String benefit, EFormOfWork formOfWork,
 			String workingTime, String applyBy, Integer view, boolean active) {
 		this.rnid = rnid;
 		this.position = position;
@@ -53,7 +53,7 @@ public class RecruitmentCardDTO {
 		this.experience = experience;
 		this.literacy = literacy;
 		this.level = level;
-		this.other = other;
+		this.requirement = requirement;
 		this.benefit = benefit;
 		this.formOfWork = formOfWork;
 		this.workingTime = workingTime;
@@ -71,7 +71,7 @@ public class RecruitmentCardDTO {
 	
 	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
 			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,
-			String experience, String literacy, String level, String other, String benefit, EFormOfWork formOfWork,
+			String experience, String literacy, String level, String requirement, String benefit, EFormOfWork formOfWork,
 			String workingTime, String applyBy, Application application, String appStatus) {
 		this.rnid = rnid;
 		this.position = position;
@@ -86,7 +86,7 @@ public class RecruitmentCardDTO {
 		this.experience = experience;
 		this.literacy = literacy;
 		this.level = level;
-		this.other = other;
+		this.requirement = requirement;
 		this.benefit = benefit;
 		this.formOfWork = formOfWork;
 		this.workingTime = workingTime;

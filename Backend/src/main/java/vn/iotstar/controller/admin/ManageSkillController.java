@@ -52,7 +52,7 @@ public class ManageSkillController {
 
 	@GetMapping("/skill/search")
 	public List<SkillDTO> searchSkill(@RequestParam String skillName) {
-		return skillService.findBySkillNameContaining(skillName).stream().map(skillService::mapToDetail).toList();
+		return skillService.findBySkillNameContainingIgnoreCase(skillName).stream().map(skillService::mapToDetail).toList();
 	}
 
 	@DeleteMapping("/skill/delete/{id}")

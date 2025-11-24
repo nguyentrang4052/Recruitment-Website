@@ -13,7 +13,6 @@ public interface ISkillService {
 
 	SkillDTO mapToDetail(Skill skill);
 
-	List<Skill> findBySkillNameContaining(String skillName);
 
 	Skill findBySkillName(String skillName);
 
@@ -23,5 +22,7 @@ public interface ISkillService {
 
 	boolean existsById(Integer id);
 
-	boolean isSkillInUse(Integer skillId); 
+	boolean isSkillInUse(Integer skillId);
+
+	List<Skill> findBySkillNameContainingIgnoreCase(String skillName); 
 }

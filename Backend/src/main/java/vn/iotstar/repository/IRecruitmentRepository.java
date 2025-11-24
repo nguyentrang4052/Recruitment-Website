@@ -43,7 +43,16 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 	@Query("SELECT r FROM RecruitmentNews r WHERE LOWER(r.location) LIKE LOWER(CONCAT('%', :location, '%')) AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true")
 	List<RecruitmentNews> findByLocation(String location);
 
-	List<RecruitmentNews> findByApplication_Applicant_ApplicantID(Integer id);
+	@Query("""
+			    SELECT r
+			    FROM RecruitmentNews r
+			    JOIN Application a
+			  	ON r.RNID=a.recruitmentNews.RNID
+			  	JOIN Applicant app ON app.applicantID = a.applicant.applicantID
+			    WHERE app.applicantID = :id
+			    ORDER BY a.date DESC
+			""")
+	List<RecruitmentNews> findByApplication_Applicant_ApplicantID (@Param("id") Integer id);
 
 	@Query("SELECT r FROM RecruitmentNews r WHERE r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE"
 			+ " AND r.minSalary >= :minSalary"
@@ -55,44 +64,44 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 	List<RecruitmentNews> findAllNews();
 
 	@Query("""
-		    SELECT r FROM RecruitmentNews r
-		    WHERE r.deadline >= CURRENT_DATE
-		      AND (r.postedAt > :lastSentDate)
-		      AND r.employer.account.active=1 AND r.isActive = true
-		      AND ( :jobTitle IS NULL OR :jobTitle = '' 
-		            OR r.position IS NULL 
-		            OR LOWER(r.position) LIKE LOWER(CONCAT('%', :jobTitle, '%')) )
+			    SELECT r FROM RecruitmentNews r
+			    WHERE r.deadline >= CURRENT_DATE
+			      AND (r.postedAt > :lastSentDate)
+			      AND r.employer.account.active=1 AND r.isActive = true
+			      AND ( :jobTitle IS NULL OR :jobTitle = ''
+			            OR r.position IS NULL
+			            OR LOWER(r.position) LIKE LOWER(CONCAT('%', :jobTitle, '%')) )
 
-		      AND ( :location IS NULL OR :location = '' 
-		            OR r.location IS NULL
-		            OR r.location LIKE CONCAT('%', :location, '%') )
+			      AND ( :location IS NULL OR :location = ''
+			            OR r.location IS NULL
+			            OR r.location LIKE CONCAT('%', :location, '%') )
 
-		      AND ( :level IS NULL OR :level = '' 
-		            OR r.level IS NULL
-		            OR r.level = :level )
+			      AND ( :level IS NULL OR :level = ''
+			            OR r.level IS NULL
+			            OR r.level = :level )
 
-		      AND (
-		            :salaryRange IS NULL OR :salaryRange = ''
-		            OR r.minSalary IS NULL OR r.maxSalary IS NULL
+			      AND (
+			            :salaryRange IS NULL OR :salaryRange = ''
+			            OR r.minSalary IS NULL OR r.maxSalary IS NULL
 
-		            OR (:salaryRange = 'duoi1' 
-		                AND r.maxSalary < 1000000)
+			            OR (:salaryRange = 'duoi1'
+			                AND r.maxSalary < 1000000)
 
-		            OR (:salaryRange = '2-4' 
-		                AND r.minSalary >= 2000000 AND r.maxSalary <= 4000000)
+			            OR (:salaryRange = '2-4'
+			                AND r.minSalary >= 2000000 AND r.maxSalary <= 4000000)
 
-		            OR (:salaryRange = '4-10' 
-		                AND r.minSalary >= 4000000 AND r.maxSalary <= 10000000)
+			            OR (:salaryRange = '4-10'
+			                AND r.minSalary >= 4000000 AND r.maxSalary <= 10000000)
 
-		            OR (:salaryRange = '10-20' 
-		                AND r.minSalary >= 10000000 AND r.maxSalary <= 20000000)
+			            OR (:salaryRange = '10-20'
+			                AND r.minSalary >= 10000000 AND r.maxSalary <= 20000000)
 
-		            OR (:salaryRange = 'tren20' 
-		                AND r.maxSalary > 20000000)
-		      )
-		      
-		      ORDER BY r.postedAt DESC
-		""")
+			            OR (:salaryRange = 'tren20'
+			                AND r.maxSalary > 20000000)
+			      )
+
+			      ORDER BY r.postedAt DESC
+			""")
 	List<RecruitmentNews> findMatchingJobs(@Param("jobTitle") String jobTitle, @Param("location") String location,
 			@Param("salaryRange") String salaryRange, @Param("level") String level,
 			@Param("lastSentDate") LocalDate lastSentDate);

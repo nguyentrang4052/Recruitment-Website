@@ -1,5 +1,6 @@
 package vn.iotstar.controller.admin;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,20 +34,20 @@ public class ManageRecruitmentController {
 
 	@GetMapping("/recruitment/approve")
 	public List<RecruitmentCardDTO> getRecruitmentApprove() {
-		return rService.findAll().stream().filter(rn -> rn.getStatus() == EStatus.APPROVED).map(rService::mapToDetail)
-				.toList();
+		return rService.findAll().stream().filter(rn -> rn.getStatus() == EStatus.APPROVED)
+				.sorted(Comparator.comparing(RecruitmentNews::getPostedAt)).map(rService::mapToDetail).toList();
 	}
 
 	@GetMapping("/recruitment/pending")
 	public List<RecruitmentCardDTO> getRecruitmentPending() {
-		return rService.findAll().stream().filter(rn -> rn.getStatus() == EStatus.PENDING).map(rService::mapToDetail)
-				.toList();
+		return rService.findAll().stream().filter(rn -> rn.getStatus() == EStatus.PENDING)
+				.sorted(Comparator.comparing(RecruitmentNews::getPostedAt)).map(rService::mapToDetail).toList();
 	}
 
 	@GetMapping("/recruitment/rejected")
 	public List<RecruitmentCardDTO> getRecruitmentRejected() {
-		return rService.findAll().stream().filter(rn -> rn.getStatus() == EStatus.REJECTED).map(rService::mapToDetail)
-				.toList();
+		return rService.findAll().stream().filter(rn -> rn.getStatus() == EStatus.REJECTED)
+				.sorted(Comparator.comparing(RecruitmentNews::getPostedAt)).map(rService::mapToDetail).toList();
 	}
 
 	@GetMapping("/recruitment/detail")

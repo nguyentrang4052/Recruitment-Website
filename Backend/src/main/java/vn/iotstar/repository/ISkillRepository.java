@@ -16,7 +16,7 @@ public interface ISkillRepository extends JpaRepository<Skill, Integer> {
 //    @Query("SELECT s FROM Skill s WHERE s.skillName LIKE %:skillName%")
 //    List<Skill> findBySkillNameContaining(@Param("skillName") String skillName);
     
-    List<Skill> findBySkillNameContaining(String skillName);
+    List<Skill> findBySkillNameContainingIgnoreCase(String skillName);
     
     Skill findBySkillName(String skillName);
 }

@@ -4,20 +4,21 @@ import axios from "axios"
 import { formatDate } from '../../../../utils/Format';
 import { MdModeEdit } from "react-icons/md";
 import { useRef } from 'react';
+import locations from '../../../../../data/provinces.json'
 
 function Profile() {
     const level = ['Tất cả', 'Fresher', 'Junior', 'Mid-level', 'Senior', 'Manager'];
-
+    const timeWork = ['PART_TIME', 'FULL_TIME', 'REMOTE', 'HYBRID'];
     const [applicant, setApplicant] = useState({});
 
     const [editingSection, setEditingSection] = useState(null);
     const [formData, setFormData] = useState({});
     const [goalForm, setGoalForm] = useState({});
-    const [titleForm, setTitleForm] = useState({});
+
     const [expForm, setExpForm] = useState({});
     const [eduForm, setEduForm] = useState({});
     const [skillsForm, setSkillsForm] = useState([]);
-    const [levelForm, setLevelForm] = useState('');
+    const [careerInfoForm, setCareerInfoForm] = useState({});
     const [preview, setPreview] = useState(null);
     const fileInputRef = useRef(null);
     const [skillList, setSkillList] = useState([])
@@ -89,10 +90,6 @@ function Profile() {
         setEditingSection('goal');
     };
 
-    const handleEditTitle = () => {
-        setTitleForm({ title: applicant.title || '' });
-        setEditingSection('title');
-    };
 
     const handleEditExp = () => {
         const parts = (applicant.experience || '').split(' - ');
@@ -117,9 +114,17 @@ function Profile() {
         setEditingSection('skills');
     };
 
-    const handleEditLevel = () => {
-        setLevelForm(applicant.desireLevel || '');
-        setEditingSection('level');
+    const handleEditCareer = () => {
+        setCareerInfoForm({
+            title: applicant.title || '',
+            desireLevel: applicant.desireLevel || '',
+            desireSalary: applicant.desireSalary || '',
+            formOfWork: applicant.formOfWork || '',
+            location: applicant.location || '',
+        });
+        // setEditingSection('personal');
+        // setLevelForm(applicant.desireLevel || '');
+        setEditingSection('career-info');
     };
 
 
@@ -145,9 +150,9 @@ function Profile() {
                     gender: formData.gender,
                     photo: applicant.photo,
                 };
-            } else if (editingSection === 'title') {
-                payload = { title: titleForm.title };
-            }else if (editingSection === 'goal') {
+                // } else if (editingSection === 'title') {
+                //     payload = { title: titleForm.title };
+            } else if (editingSection === 'goal') {
                 payload = { goal: goalForm.goal };
             } else if (editingSection === 'exp') {
                 const expString = `${expForm.company || ''} - ${expForm.position || ''}`.trim();
@@ -157,8 +162,14 @@ function Profile() {
                 payload = { literacy: eduString };
             } else if (editingSection === 'skills') {
                 payload = { skills: skillsForm };
-            } else if (editingSection === 'level') {
-                payload = { desireLevel: levelForm };
+            } else if (editingSection === 'career-info') {
+                payload = {
+                    title: careerInfoForm.title,
+                    desireLevel: careerInfoForm.desireLevel,
+                    desireSalary: careerInfoForm.desireSalary,
+                    formOfWork: careerInfoForm.formOfWork,
+                    location: careerInfoForm.location,
+                };
             }
 
             const res = await axios.put(
@@ -305,7 +316,7 @@ function Profile() {
                     </div>
                 </div>
 
-                <div className="profile-section">
+                {/* <div className="profile-section">
                     <h3>Vị trí muốn ứng tuyển</h3>
                     {editingSection === 'title' ? (
                         <>
@@ -331,7 +342,7 @@ function Profile() {
                             </button>
                         </>
                     )}
-                </div>
+                </div> */}
 
                 <div className="profile-section">
                     <h3>Mục tiêu nghề nghiệp</h3>
@@ -433,7 +444,7 @@ function Profile() {
                     )}
                 </div>
 
-                <div className="profile-section">
+                {/* <div className="profile-section">
                     <h3>Cấp bậc</h3>
                     {editingSection === 'level' ? (
                         <>
@@ -448,6 +459,94 @@ function Profile() {
                         <>
                             <p>{applicant.desireLevel || 'Chưa chọn'}</p>
                             <button className="edit-goal" onClick={handleEditLevel}><MdModeEdit /> Chỉnh sửa</button>
+                        </>
+                    )}
+                </div> */}
+                <div className="profile-section">
+                    <h3>Thông tin nghề nghiệp</h3>
+                    {editingSection === 'career-info' ? (
+                        <>
+                            <div className="form-group-pr">
+                                <label>Vị trí muốn ứng tuyển</label>
+                                <input type="text"
+                                    placeholder="Nhập vị trí muốn ứng tuyển"
+                                    value={careerInfoForm.title || ''}
+                                    onChange={e => setCareerInfoForm({ ...careerInfoForm, title: e.target.value })}
+                                />
+                            </div>
+                            <div className="form-group-pr">
+                                <label>Cấp bậc mong muốn</label>
+                                <select
+                                    value={careerInfoForm.desireLevel || ''}
+                                    onChange={e => setCareerInfoForm({ ...careerInfoForm, desireLevel: e.target.value })}
+                                >
+                                    <option value="">Chọn cấp bậc</option>
+                                    {level.map(l => <option key={l} value={l}>{l}</option>)}
+                                </select>
+                            </div>
+                            <div className="form-group-pr">
+                                <label>Mức lương mong muốn</label>
+                                <input
+                                    type="number"
+                                    placeholder="Nhập mức lương mong muốn"
+                                    value={careerInfoForm.desireSalary}
+                                    onChange={e =>
+                                        setCareerInfoForm({ ...careerInfoForm, desireSalary: e.target.value })
+                                    }
+                                />
+
+                            </div>
+                            <div className="form-group-pr">
+                                <label>Hình thức làm việc</label>
+                                <select
+                                    value={careerInfoForm.formOfWork || ''}
+                                    onChange={e => setCareerInfoForm({ ...careerInfoForm, formOfWork: e.target.value })}
+                                >
+                                    <option value="">Chọn hình thức làm việc</option>
+                                    {timeWork.map(l => <option key={l} value={l}>{l}</option>)}
+                                </select>
+                            </div>
+                            <div className="form-group-pr">
+                                <label>Địa điểm làm việc mong muốn</label>
+                                <select
+                                    value={careerInfoForm.location || ''}
+                                    onChange={e => setCareerInfoForm({ ...careerInfoForm, location: e.target.value })}
+                                >
+                                    <option value="">Chọn địa điểm</option>
+                                    {locations.map((loc, idx) => (
+                                        <option key={idx} value={loc.name}>{loc.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div style={{ marginTop: '1rem' }}>
+                                <button onClick={handleSave}>Lưu</button>
+                                <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>
+                                    Hủy
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="career-info-display">
+                                <div className="form-group-pr">
+                                    <p><strong>- Vị trí muốn ứng tuyển:</strong> {applicant.title || 'Chưa cập nhật'}</p>
+                                </div>
+                                <div className="form-group-pr">
+                                    <p><strong>- Cấp bậc mong muốn:</strong> {applicant.desireLevel || 'Chưa cập nhật'}</p>
+                                </div>
+                                <div className="form-group-pr">
+                                    <p><strong>- Mức lương mong muốn:</strong> {applicant.desireSalary || 'Chưa cập nhật'}</p>
+                                </div>
+                                <div className="form-group-pr">
+                                    <p><strong>- Hình thức làm việc:</strong> {applicant.formOfWork || 'Chưa cập nhật'}</p>
+                                </div>
+                                <div className="form-group-pr">
+                                    <p><strong>- Địa điểm làm việc:</strong> {applicant.location || 'Chưa cập nhật'}</p>
+                                </div>
+                            </div>
+                            <button className="edit-goal" onClick={handleEditCareer}>
+                                <MdModeEdit /> Chỉnh sửa
+                            </button>
                         </>
                     )}
                 </div>

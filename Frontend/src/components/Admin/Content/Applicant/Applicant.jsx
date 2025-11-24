@@ -17,7 +17,7 @@ export default function Applicant({ onViewDetail }) {
   }, []);
 
   const deleteApplicant = async (id) => {
-    try {
+    try { 
       const res = await axios.post(`http://localhost:8080/api/admin/applicant/delete`, null, {
         headers: { Authorization: `Bearer ${token}` },
         params: { id }
@@ -38,9 +38,9 @@ export default function Applicant({ onViewDetail }) {
     <div className="applicant-wrapper">
       <h1 className="content-title">Quản lý Ứng viên</h1>
       <div className="card">
-        <div className="table-toolbar">
+        {/* <div className="table-toolbar">
           <input type="text" placeholder="Tìm kiếm ứng viên..." className="table-search" />
-        </div>
+        </div> */}
 
         <table className="data-table">
           <thead>

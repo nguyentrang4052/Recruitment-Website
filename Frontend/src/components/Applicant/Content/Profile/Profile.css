@@ -153,6 +153,21 @@ select:focus {
    padding: 10px 16px;
 }
 
+.form-group-pr,
+.form-group-pr-exp {
+  margin-bottom: 15px;
+}
+
+.form-group-pr label,
+.form-group-pr-exp label {
+  display: block;
+  text-align: left  ;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
 .delete-photo-btn {
   margin-top: 8px;
   font-size: 0.85rem;

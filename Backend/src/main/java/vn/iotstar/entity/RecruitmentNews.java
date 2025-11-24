@@ -46,8 +46,8 @@ public class RecruitmentNews implements Serializable {
 	@Column(name = "level", nullable = true, length = 255)
 	private String level;
 
-	@Column(name = "other", nullable = true, length = 2500)
-	private String other;
+	@Column(name = "requirement", nullable = true, length = 2500)
+	private String requirement;
 
 
 	@Column(name = "minSalary", nullable = true, precision = 10, scale = 2)

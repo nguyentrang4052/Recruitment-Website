@@ -25,7 +25,6 @@ import vn.iotstar.util.SecurityUtil;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 public class AccountService implements IAccountService {
 
@@ -46,7 +45,7 @@ public class AccountService implements IAccountService {
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	 private String googleClientId = "393089958981-77pg8slhbj7eoceklnrunm4ofb0jd1k9.apps.googleusercontent.com";
+	private String googleClientId = "393089958981-77pg8slhbj7eoceklnrunm4ofb0jd1k9.apps.googleusercontent.com";
 
 	public AccountService(IAccountRepository accountRepository) {
 		this.accountRepository = accountRepository;
@@ -87,7 +86,6 @@ public class AccountService implements IAccountService {
 	public boolean existsByUsername(String username) {
 		return accountRepository.existsByUsername(username);
 	}
-
 
 	@Override
 	public SignupResponseDTO registerUser(SignupRequestDTO signupRequestDTO) {
@@ -230,16 +228,61 @@ public class AccountService implements IAccountService {
 			account.setProvider("google");
 			applicant.setAccount(account);
 			accountRepository.save(account);
+			return jwtUtil.generateToken(email, "google");
+		} else {
+			if (account.getUsername() != null)
+				return jwtUtil.generateToken(account.getUsername(), "local");
+			else
+				return jwtUtil.generateToken(email, "google");
 		}
 
-		return jwtUtil.generateToken(account.getEmail(), "google");
 	}
 
 	@Override
 	public Account findByApplicant_ApplicantID(Integer applicantID) {
 		return accountRepository.findByApplicant_ApplicantID(applicantID);
 	}
-	
-	
+
+	@Override
+	public String loginByGoogleEmp(String idTokenString) throws Exception {
+
+		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
+				GsonFactory.getDefaultInstance()).setAudience(Collections.singletonList(googleClientId)).build();
+		GoogleIdToken idToken = verifier.verify(idTokenString);
+		if (idToken == null) {
+			throw new IllegalArgumentException("Invalid ID token");
+		}
+		Payload payload = idToken.getPayload();
+
+		String email = payload.getEmail();
+
+		String name = (String) payload.get("name");
+
+		Account account = accountRepository.findByEmail(email);
+		if (account == null) {
+			Role role = roleRepository.findByRoleName("applicant");
+
+			Employer emp = new Employer();
+			emp.setEmployerName(name);
+			account = new Account();
+			account.setEmail(email);
+			account.setUsername(null);
+			account.setPassword(null);
+			account.setEmployer(emp);
+			account.setRole(role);
+			account.setActive(1);
+
+			account.setProvider("google");
+			emp.setAccount(account);
+			accountRepository.save(account);
+			return jwtUtil.generateToken(account.getEmail(), "google");
+		} else {
+			if (account.getUsername() != null)
+				return jwtUtil.generateToken(account.getUsername(), "local");
+			else
+				return jwtUtil.generateToken(email, "google");
+		}
+
+	}
 
 }

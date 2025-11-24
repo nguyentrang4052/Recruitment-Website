@@ -11,6 +11,7 @@ import axios from 'axios';
 import { formatDate } from '../../../../utils/Format'
 import { useNavigate } from 'react-router-dom';
 import { isTokenExpired } from '../../../../utils/Auth'
+import { formatDescription } from '../../../../utils/formatDescription';
 function RecruitDetail() {
 
     const { rnid } = useParams();
@@ -307,29 +308,25 @@ function RecruitDetail() {
                         <div className="job-info">
                             <div className="job-description">
                                 <h3>Mô tả công việc</h3>
-                                {/* <p style={{ whiteSpace: 'pre-line' }}>{recruitmentDetail.description}</p> */}
+                              
                                 <div
-                                    dangerouslySetInnerHTML={{ __html: recruitmentDetail.description }}
-                                    style={{ whiteSpace: 'normal' }}
+                                    className="job-description"
+                                    dangerouslySetInnerHTML={formatDescription(recruitmentDetail.description)}
                                 />
+
                             </div>
 
                             {fields.map(
                                 ({ label, value, isMail }) => {
-                                    // value && (
-                                    //     <div key={label}>
-                                    //         <strong>{label}:</strong> {isMail ? <a href={`mailto:${value}`}>{value}</a> : value}
-                                    //     </div>
-                                    // )
                                     if (!value) return null;
 
                                     if (label === 'Quyền lợi') {
                                         return (
                                             <div key={label}>
                                                 <strong>{label}:</strong>
-                                                <div
-                                                    dangerouslySetInnerHTML={{ __html: value }}
-                                                    style={{ whiteSpace: 'normal', marginTop: '8px', marginLeft: '20px' }}
+                                                <div className='benefit-value'
+                                                    dangerouslySetInnerHTML={formatDescription(value)}
+                                                    style={{ whiteSpace: 'normal', marginTop: '8px', marginLeft: '16px' }}
                                                 />
                                             </div>
                                         );

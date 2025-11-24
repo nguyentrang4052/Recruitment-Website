@@ -8,15 +8,15 @@ main, #app {
 
 
 
-.setting-container {
+.setting-emp-container {
     width: auto;
-    margin: 20px auto;
+    margin: 50px auto;
     padding: 30px 40px;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     width: 1000px;
-    margin-left: 400px;
+    margin-left: 350px;
 }
 
 .setting-title {

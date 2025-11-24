@@ -8,11 +8,11 @@ export const AboutUs = () => (
       <div className="section-content">
         <p className="intro-text">
           <strong>GZCONNECT</strong> là nền tảng tuyển dụng chuyên biệt dành riêng cho ngành Công nghệ Thông tin, 
-          được thành lập với sứ mệnh kết nối những tài năng IT xuất sắc với các doanh nghiệp công nghệ hàng đầu tại Việt Nam.
+          được thành lập với sứ mệnh kết nối những tài năng IT xuất sắc với các doanh nghiệp công nghệ tại Việt Nam.
         </p>
         <p>
           Chúng tôi hiểu rằng ngành IT có những yêu cầu đặc thù và độc đáo. Vì vậy, chúng tôi đã xây dựng một hệ thống 
-          tìm kiếm thông minh, cho phép ứng viên lọc công việc theo ngôn ngữ lập trình, framework, công nghệ và cấp độ kinh nghiệm.
+          tìm kiếm thông minh, cho phép ứng viên lọc công việc theo vị trí tuyển dụng, cấp bậc, kỹ năng công nghệ, mức lương, địa điểm.
         </p>
         <div className="highlight-box">
           <h3>Giá trị cốt lõi của chúng tôi:</h3>
@@ -29,8 +29,8 @@ export const AboutUs = () => (
           </ul>
         </div>
         <p>
-          Với hơn <strong>5,000+ công ty công nghệ</strong> và <strong>50,000+ ứng viên</strong> tin tưởng, 
-          chúng tôi tự hào là cầu nối đáng tin cậy trong cộng đồng IT Việt Nam.
+          Với sự tin tưởng <strong> công ty công nghệ</strong> và <strong> ứng viên</strong>
+          chúng tôi tự hào là cầu nối trong cộng đồng IT Việt Nam.
         </p>
       </div>
     </div>
@@ -64,13 +64,13 @@ export const TermsOfService = () => (
           </ul>
         </div>
 
-        <div className="subsection">
+        {/* <div className="subsection">
           <h3>3. Cơ chế giải quyết tranh chấp</h3>
           <p>
             Mọi tranh chấp phát sinh sẽ được giải quyết thông qua thương lượng, hòa giải. 
             Trường hợp không đạt được thỏa thuận, các bên có quyền khởi kiện tại Tòa án có thẩm quyền.
           </p>
-        </div>
+        </div> */}
 
         <div className="warning-box">
           <strong>Lưu ý:</strong> Nền tảng có quyền tạm khóa hoặc xóa tài khoản vi phạm quy chế mà không cần báo trước.
@@ -92,7 +92,6 @@ export const PrivacyPolicy = () => (
             <li>Thông tin cá nhân: Họ tên, email, số điện thoại, địa chỉ</li>
             <li>Thông tin nghề nghiệp: Kinh nghiệm, kỹ năng, bằng cấp</li>
             <li>Dữ liệu sử dụng: Lịch sử tìm kiếm, công việc đã xem, đã ứng tuyển</li>
-            <li>Thông tin kỹ thuật: IP address, loại thiết bị, trình duyệt</li>
           </ul>
         </div>
 
@@ -100,14 +99,14 @@ export const PrivacyPolicy = () => (
           <h3>2. Mục đích sử dụng thông tin</h3>
           <ul>
             <li>Kết nối ứng viên với nhà tuyển dụng phù hợp</li>
-            <li>Cải thiện trải nghiệm người dùng và thuật toán gợi ý công việc</li>
+            <li>Cải thiện trải nghiệm người dùng gợi ý công việc</li>
             <li>Gửi thông báo về cơ hội việc làm phù hợp</li>
             <li>Phân tích và thống kê để phát triển dịch vụ</li>
             <li>Tuân thủ các yêu cầu pháp lý</li>
           </ul>
         </div>
 
-        <div className="subsection">
+        {/* <div className="subsection">
           <h3>3. Bảo vệ thông tin</h3>
           <p>Chúng tôi áp dụng các biện pháp bảo mật tiên tiến:</p>
           <ul>
@@ -117,14 +116,12 @@ export const PrivacyPolicy = () => (
             <li>Sao lưu dữ liệu định kỳ</li>
             <li>Kiểm tra bảo mật thường xuyên bởi bên thứ ba</li>
           </ul>
-        </div>
+        </div> */}
 
         <div className="subsection">
           <h3>4. Quyền của người dùng</h3>
           <p>
-            Bạn có quyền truy cập, chỉnh sửa, xóa hoặc yêu cầu xuất dữ liệu cá nhân của mình. 
-            Bạn cũng có thể từ chối nhận email marketing bất cứ lúc nào thông qua liên kết 
-            "Hủy đăng ký" trong email hoặc cài đặt tài khoản.
+            Bạn có quyền truy cập, chỉnh sửa dữ liệu cá nhân của mình. 
           </p>
         </div>
 
@@ -155,7 +152,6 @@ export const TermsAndConditions = () => (
           <ul>
             <li>Bạn chịu trách nhiệm bảo mật thông tin đăng nhập của mình</li>
             <li>Một người chỉ được tạo một tài khoản duy nhất</li>
-            <li>Bạn phải từ 16 tuổi trở lên để tạo tài khoản</li>
             <li>Bạn phải thông báo ngay lập tức nếu phát hiện tài khoản bị sử dụng trái phép</li>
           </ul>
         </div>
@@ -164,7 +160,7 @@ export const TermsAndConditions = () => (
           <h3>3. Quyền sở hữu trí tuệ</h3>
           <p>
             Tất cả nội dung trên nền tảng (logo, thiết kế, mã nguồn, văn bản) là tài sản của 
-            GZCONNECT và được bảo vệ bởi luật sở hữu trí tuệ. Người dùng không được:
+            GZCONNECT. Người dùng không được:
           </p>
           <ul>
             <li>Sao chép, sửa đổi hoặc phân phối nội dung mà không có sự cho phép</li>
@@ -234,10 +230,10 @@ export const Contact = () => {
                   <strong>Địa chỉ:</strong>
                   <span>Thủ Đức, Thành phố Hồ Chí Minh</span>
                 </div>
-                <div className="info-item">
+                {/* <div className="info-item">
                   <strong>Hotline:</strong>
                   <span>1900-xxxx (8:00 - 18:00, T2-T6)</span>
-                </div>
+                </div> */}
                 <div className="info-item">
                   <strong>Email:</strong>
                   <span>gzconnect.team@gmail.com</span>

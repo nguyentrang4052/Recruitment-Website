@@ -37,5 +37,7 @@ public interface IAccountService {
 
 	Account findByApplicant_ApplicantID(Integer applicantID);
 
+	String loginByGoogleEmp(String idTokenString) throws Exception;
+
 
 }

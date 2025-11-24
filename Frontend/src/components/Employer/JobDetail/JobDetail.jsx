@@ -24,6 +24,31 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+
+const htmlToPlainText = (html) => {
+    if (!html) return '';
+
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+
+
+    const listItems = temp.querySelectorAll('li');
+    if (listItems.length > 0) {
+        return Array.from(listItems)
+            .map(li => `• ${li.textContent.trim()}`)
+            .join('\n');
+    }
+
+    const paragraphs = temp.querySelectorAll('p');
+    if (paragraphs.length > 0) {
+        return Array.from(paragraphs)
+            .map(p => p.textContent.trim())
+            .join('\n');
+    }
+
+    return temp.textContent.trim();
+};
+
 const formatHtmlContent = (text) => {
     if (!text) return '';
 
@@ -116,7 +141,6 @@ const JobDetail = ({ jobId, onBack }) => {
 
             if (response.data.success) {
                 alert('✅ Đã ngừng tuyển dụng');
-                // ✅ Cập nhật trạng thái job ngay lập tức
                 setJob(prev => ({ ...prev, status: 'INACTIVE' }));
                 setEditData(prev => ({ ...prev, status: 'INACTIVE' }));
             }
@@ -150,7 +174,12 @@ const JobDetail = ({ jobId, onBack }) => {
 
     const handleEdit = () => {
         setIsEditing(true);
-        setEditData(job);
+        setEditData({
+            ...job,
+            description: htmlToPlainText(job.description),
+            benefit: htmlToPlainText(job.benefit),
+            applyBy: htmlToPlainText(job.applyBy)
+        });
     };
 
     const handleCancelEdit = () => {
@@ -217,6 +246,23 @@ const JobDetail = ({ jobId, onBack }) => {
         }
     };
 
+    const handleTextareaKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const { name, value, selectionStart } = e.target;
+
+
+            const newValue = value.substring(0, selectionStart) + '\n• ' + value.substring(selectionStart);
+
+            setEditData(prev => ({ ...prev, [name]: newValue }));
+
+
+            setTimeout(() => {
+                e.target.selectionStart = e.target.selectionEnd = selectionStart + 3;
+            }, 0);
+        }
+    };
+
     if (loading) {
         return (
             <div className="jd-container">
@@ -265,7 +311,6 @@ const JobDetail = ({ jobId, onBack }) => {
                             <button className="jd-btn jd-btn-delete" onClick={handleDelete}>
                                 <FontAwesomeIcon icon={faTrash} /> Xóa
                             </button>
-                            {/* ✅ Chỉ hiện nút khi status là APPROVED VÀ chưa hết hạn */}
                             {job.status === 'APPROVED' && !isExpired() && (
                                 <button className="jd-btn jd-btn-deactivate" onClick={handleDeactivate}>
                                     <FontAwesomeIcon icon={faPauseCircle} /> Ngừng tuyển
@@ -494,9 +539,10 @@ const JobDetail = ({ jobId, onBack }) => {
                                     name="description"
                                     value={editData.description || ''}
                                     onChange={handleInputChange}
+                                    onKeyDown={handleTextareaKeyDown}
                                     rows="6"
                                     required
-                                    placeholder="Nhập mô tả công việc (xuống dòng mỗi ý, dùng dấu - cho bullet points)"
+                                    placeholder="Nhập mô tả công việc (xuống dòng mỗi ý, dùng dấu • hoặc - cho bullet points)"
                                 />
                             </div>
 
@@ -506,18 +552,20 @@ const JobDetail = ({ jobId, onBack }) => {
                                     name="benefit"
                                     value={editData.benefit || ''}
                                     onChange={handleInputChange}
+                                    onKeyDown={handleTextareaKeyDown}
                                     rows="4"
-                                    placeholder="Nhập quyền lợi (xuống dòng mỗi ý, dùng dấu - cho bullet points)"
+                                    placeholder="Nhập quyền lợi (xuống dòng mỗi ý, dùng dấu • hoặc - cho bullet points)"
                                 />
                             </div>
 
                             <div className="jd-form-group">
                                 <label>Cách thức ứng tuyển</label>
-                                <input
-                                    type="text"
+                                <textarea
                                     name="applyBy"
                                     value={editData.applyBy || ''}
                                     onChange={handleInputChange}
+                                    rows="3"
+                                    placeholder="Nhập cách thức ứng tuyển"
                                 />
                             </div>
 

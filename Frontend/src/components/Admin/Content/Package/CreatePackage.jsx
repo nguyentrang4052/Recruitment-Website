@@ -19,41 +19,60 @@ export default function CreatePackage({ onCreate, onCancel }) {
     price: '',
     duration: '',
     description: '',
-    features: '',
     taxRate: '',
     isRecommended: false,
+    isHidden: false,
+    maxPosts: '',
+    maxCvViews: '',
+    supportPriorityDays: '',
+    has1on1Consult: false,
+    hasEmailSupport: false,
   });
   const [err, setErr] = useState({});
 
   const handle = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
     if (err[name]) setErr((prev) => ({ ...prev, [name]: '' }));
   };
 
   const validate = () => {
     const e = {};
     if (!form.packageName.trim()) e.packageName = 'Vui lòng nhập tên gói';
-    if (!form.category.trim()) e.category = 'Vui lòng nhập danh mục';
-    if (!/^[0-9,]+$/.test(form.price)) e.price = 'Giá không hợp lệ (VD: 1,500,000)';
+    if (!form.category.trim()) e.category = 'Vui lòng chọn danh mục';
+    if (form.price === '' || Number(form.price) < 0) e.price = 'Giá phải ≥ 0';
     if (!form.duration || Number(form.duration) < 1) e.duration = 'Thời hạn ≥ 1 ngày';
-    if (!form.taxRate || Number(form.taxRate) < 0) e.taxRate = 'Thuế không hợp lệ';
+    if (form.taxRate && Number(form.taxRate) < 0) e.taxRate = 'Thuế không được âm';
+    if (form.maxPosts && Number(form.maxPosts) < 0) e.maxPosts = 'Số bài viết không được âm';
+    if (form.maxCvViews && Number(form.maxCvViews) < 0) e.maxCvViews = 'Lượt xem CV không được âm';
+    if (form.supportPriorityDays && Number(form.supportPriorityDays) < 0)
+      e.supportPriorityDays = 'Ngày hỗ trợ không được âm';
+
     setErr(e);
     return Object.keys(e).length === 0;
   };
 
-  const submit = async (e) => {
+  const submit = (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     const dto = {
-      ...form,
-      price: Number(form.price.replace(/,/g, '')),
-      taxRate: Number(form.taxRate),
-      features: form.features
-        .split('\n')
-        .map((f) => f.trim())
-        .filter(Boolean),
+      packageName: form.packageName.trim(),
+      category: form.category.trim(),
+      price: Number(form.price),
+      duration: form.duration,
+      description: form.description.trim(),
+      taxRate: Number(form.taxRate) || 0,
+      isRecommended: form.isRecommended,
+      isHidden: form.isHidden,
+      maxPosts: form.maxPosts ? Number(form.maxPosts) : null,
+      maxCvViews: form.maxCvViews ? Number(form.maxCvViews) : null,
+      supportPriorityDays: form.supportPriorityDays ? Number(form.supportPriorityDays) : null,
+      has1on1Consult: form.has1on1Consult,
+      hasEmailSupport: form.hasEmailSupport,
     };
 
     onCreate(dto);
@@ -68,6 +87,8 @@ export default function CreatePackage({ onCreate, onCancel }) {
         </div>
 
         <form onSubmit={submit}>
+
+          <div className="form-section-title">📋 Thông tin cơ bản</div>
           <div className="form-grid">
             <div className="form-group">
               <label className="form-label">
@@ -78,7 +99,7 @@ export default function CreatePackage({ onCreate, onCancel }) {
                 value={form.packageName}
                 onChange={handle}
                 className={`form-input ${err.packageName ? 'error' : ''}`}
-                placeholder="VD: Gói VIP"
+                placeholder="VD: Gói Free, Gói Premium"
               />
               {err.packageName && <span className="error-message">{err.packageName}</span>}
             </div>
@@ -87,13 +108,18 @@ export default function CreatePackage({ onCreate, onCancel }) {
               <label className="form-label">
                 Danh mục <span className="required">*</span>
               </label>
-              <input
+              <select
                 name="category"
                 value={form.category}
                 onChange={handle}
                 className={`form-input ${err.category ? 'error' : ''}`}
-                placeholder="VD: Premium"
-              />
+              >
+                <option value="">-- Chọn danh mục --</option>
+                <option value="Free">Free</option>
+                <option value="Basic">Basic</option>
+                <option value="Premium">Premium</option>
+                <option value="Enterprise">Enterprise</option>
+              </select>
               {err.category && <span className="error-message">{err.category}</span>}
             </div>
 
@@ -103,10 +129,13 @@ export default function CreatePackage({ onCreate, onCancel }) {
               </label>
               <input
                 name="price"
+                type="number"
+                step="0.01"
+                min="0"
                 value={form.price}
                 onChange={handle}
                 className={`form-input ${err.price ? 'error' : ''}`}
-                placeholder="1,500,000"
+                placeholder="0 (miễn phí) hoặc 1500000"
               />
               {err.price && <span className="error-message">{err.price}</span>}
             </div>
@@ -128,19 +157,92 @@ export default function CreatePackage({ onCreate, onCancel }) {
             </div>
 
             <div className="form-group">
-              <label className="form-label">
-                Thuế (%) <span className="required">*</span>
-              </label>
+              <label className="form-label">Thuế (%)</label>
               <input
                 name="taxRate"
                 type="number"
                 step="0.01"
+                min="0"
                 value={form.taxRate}
                 onChange={handle}
                 className={`form-input ${err.taxRate ? 'error' : ''}`}
                 placeholder="10"
               />
               {err.taxRate && <span className="error-message">{err.taxRate}</span>}
+            </div>
+          </div>
+
+
+          <div className="form-section-title">🔒 Giới hạn quyền</div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Số bài viết tối đa</label>
+              <input
+                name="maxPosts"
+                type="number"
+                min="0"
+                value={form.maxPosts}
+                onChange={handle}
+                className={`form-input ${err.maxPosts ? 'error' : ''}`}
+                placeholder="20 (để trống = không giới hạn)"
+              />
+              {err.maxPosts && <span className="error-message">{err.maxPosts}</span>}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Lượt xem CV tối đa</label>
+              <input
+                name="maxCvViews"
+                type="number"
+                min="0"
+                value={form.maxCvViews}
+                onChange={handle}
+                className={`form-input ${err.maxCvViews ? 'error' : ''}`}
+                placeholder="100 (để trống = không giới hạn)"
+              />
+              {err.maxCvViews && <span className="error-message">{err.maxCvViews}</span>}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Ưu tiên duyệt tin trong vòng (ngày)</label>
+              <input
+                name="supportPriorityDays"
+                type="number"
+                min="0"
+                value={form.supportPriorityDays}
+                onChange={handle}
+                className={`form-input ${err.supportPriorityDays ? 'error' : ''}`}
+                placeholder="30"
+              />
+              {err.supportPriorityDays && <span className="error-message">{err.supportPriorityDays}</span>}
+            </div>
+          </div>
+
+
+          <div className="form-section-title">⭐ Dịch vụ bổ sung</div>
+          <div className="form-grid">
+            <div className="form-group checkbox-group">
+              <label>
+                <input
+                  type="checkbox"
+                  name="has1on1Consult"
+                  checked={form.has1on1Consult}
+                  onChange={handle}
+                />
+                Tư vấn 1-1 (với chuyên gia)
+              </label>
+            </div>
+
+            <div className="form-group checkbox-group">
+              <label>
+                <input
+                  type="checkbox"
+                  name="hasEmailSupport"
+                  checked={form.hasEmailSupport}
+                  onChange={handle}
+                />
+                Hỗ trợ Email 24/7
+              </label>
             </div>
 
             <div className="form-group checkbox-group">
@@ -151,32 +253,34 @@ export default function CreatePackage({ onCreate, onCancel }) {
                   checked={form.isRecommended}
                   onChange={handle}
                 />
-                Gói đề xuất
+                Gói được đề xuất (hiển thị dấu ⭐)
+              </label>
+            </div>
+
+            <div className="form-group checkbox-group">
+              <label>
+                <input
+                  type="checkbox"
+                  name="isHidden"
+                  checked={form.isHidden}
+                  onChange={handle}
+                />
+                Ẩn gói này (không hiển thị cho khách hàng)
               </label>
             </div>
           </div>
 
+
+          <div className="form-section-title">📝 Mô tả</div>
           <div className="form-group full-width">
-            <label className="form-label">Mô tả</label>
+            <label className="form-label">Mô tả chi tiết</label>
             <textarea
               name="description"
               value={form.description}
               onChange={handle}
-              rows={3}
-              className="form-input"
-              placeholder="Mô tả ngắn gọn về gói dịch vụ..."
-            />
-          </div>
-
-          <div className="form-group full-width">
-            <label className="form-label">Tính năng (mỗi dòng 1 tính năng)</label>
-            <textarea
-              name="features"
-              value={form.features}
-              onChange={handle}
               rows={4}
               className="form-input"
-              placeholder="20 tin tuyển dụng&#10;Hiển thị 60 ngày&#10;Hỗ trợ 24/7"
+              placeholder="Mô tả ngắn gọn về gói dịch vụ..."
             />
           </div>
 

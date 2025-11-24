@@ -96,7 +96,7 @@ export default function EmployerSetting() {
 
 
   return (
-    <div className="setting-container">
+    <div className="setting-emp-container">
       <h2 className="setting-title">QUẢN LÝ TÀI KHOẢN</h2>
       <div className="setting-row">
 

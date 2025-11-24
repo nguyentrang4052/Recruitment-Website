@@ -72,6 +72,7 @@ public class EmployerInfoService implements IEmployerInfoService, InitializingBe
         EmployerInfoDTO dto = new EmployerInfoDTO();
         dto.setEmployerID(employer.getEmployerID());
         dto.setEmployerName(employer.getEmployerName());
+        dto.setFullName(employer.getFullName());
         dto.setRepresentative(employer.getRepresentative());
         dto.setPhone(employer.getPhone());
         dto.setCompanyWebsite(employer.getCompanyWebsite());
@@ -96,6 +97,7 @@ public class EmployerInfoService implements IEmployerInfoService, InitializingBe
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Công ty không tồn tại"));
 
         if(dto.getEmployerName() != null) employer.setEmployerName(dto.getEmployerName());
+        if(dto.getFullName() != null) employer.setFullName(dto.getFullName());
         if(dto.getRepresentative() != null) employer.setRepresentative(dto.getRepresentative());
         if(dto.getPhone() != null) employer.setPhone(dto.getPhone());
         if(dto.getCompanyWebsite() != null) employer.setCompanyWebsite(dto.getCompanyWebsite());

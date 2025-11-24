@@ -56,7 +56,6 @@ function Login() {
 
     const handleGoogleLogin = async (response) => {
         const idToken = response.credential;
-        console.log("Google ID Token:", idToken);
         if (!idToken) {
             console.error("Không nhận được idToken từ Google");
             return;
@@ -68,7 +67,6 @@ function Login() {
             const { token, email, roleName, applicantID } = res.data;
 
             if (!token) {
-                console.error("Backend không trả về token");
                 return;
             }
 
@@ -86,8 +84,7 @@ function Login() {
                 navigate('/login');
             }
 
-        } catch (err) {
-            console.error("Đăng nhập bằng Google thất bại:", err);
+        } catch {
             alert("Đăng nhập bằng Google thất bại. Vui lòng thử lại.");
         }
     };

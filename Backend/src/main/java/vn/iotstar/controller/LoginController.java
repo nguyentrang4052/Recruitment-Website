@@ -39,49 +39,22 @@ public class LoginController {
 	@Autowired
 	private IApplicantService applicantService;
 
-	// @PostMapping("/login")
-	// public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
-	// try {
-	// Authentication authentication = authenticationManager.authenticate(
-	// new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-	// loginRequest.getPassword())
-	// );
-
-	// CustomUserDetail userDetails = (CustomUserDetail)
-	// uService.loadUserByUsername(loginRequest.getUsername());
-
-	// Account account = userDetails.getAccount();
-
-	// String token = jwtUtil.generateToken(userDetails.getUsername(), "local");
-
-	// Applicant applicant =
-	// applicantService.findByAccount_accountID(account.getAccountID());
-	// LoginResponseDTO response = new LoginResponseDTO();
-	// response.setToken(token);
-	// response.setUsername(account.getUsername());
-	// response.setEmail(account.getEmail());
-	// response.setRoleName(account.getRole().getRoleName());
-	// response.setApplicantID(applicant.getApplicantID());
-
-	// return ResponseEntity.ok(response);
-
-	// } catch (BadCredentialsException e) {
-	// return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tên người dùng
-	// hoặc mật khẩu không đúng");
-	// }
-	// }
 	@PostMapping("/google")
 	public ResponseEntity<?> authenticateWithGoogle(@RequestBody LoginGGRequestDTO req) throws Exception {
 		String idTokenString = req.getIdToken();
 		try {
 			String token = accountService.loginByGoogle(idTokenString);
 			if (token != null) {
-				String email = jwtUtil.extractUsername(token);
-				Account account = accountService.findByEmail(email);
+				String authen = jwtUtil.extractUsername(token);
+				Account account = accountService.findByUsername(authen);
+				if (account == null) {
+					account = accountService.findByEmail(authen);
+				}
+				
 				Applicant applicant = applicantService.findByAccount_accountID(account.getAccountID());
 				Map<String, Object> response = new HashMap<>();
 				response.put("token", token);
-				response.put("email", email);
+				response.put("email", account.getEmail());
 				response.put("roleName", account.getRole().getRoleName());
 				response.put("applicantID", applicant.getApplicantID());
 
@@ -106,8 +79,9 @@ public class LoginController {
 					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
 			CustomUserDetail userDetails = (CustomUserDetail) uService.loadUserByUsername(loginRequest.getUsername());
+			
 			Account account = userDetails.getAccount();
-
+			
 			if (account.getActive() == 0) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tài khoản đã bị khoá");
 			}
@@ -139,6 +113,40 @@ public class LoginController {
 
 		} catch (BadCredentialsException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tên người dùng hoặc mật khẩu không đúng");
+		}
+	}
+	
+	@PostMapping("/employer/google")
+	public ResponseEntity<?> authenticateWithGoogleEmp(@RequestBody LoginGGRequestDTO req) throws Exception {
+		String idTokenString = req.getIdToken();
+		try {
+			String token = accountService.loginByGoogle(idTokenString);
+			if (token != null) {
+				String authen = jwtUtil.extractUsername(token);
+				
+				Account account = accountService.findByUsername(authen);
+				if (account == null) {
+					account = accountService.findByEmail(authen);
+				}
+				
+//				Applicant applicant = applicantService.findByAccount_accountID(account.getAccountID());
+				Employer emp = employerService.findByAccount_accountID(account.getAccountID());
+				Map<String, Object> response = new HashMap<>();
+				response.put("token", token);
+				response.put("email", account.getEmail());
+				response.put("roleName", account.getRole().getRoleName());
+//				response.put("applicantID", applicant.getApplicantID());
+				response.put("employerID", emp.getEmployerID());
+				response.put("username", emp.getAccount().getUsername());
+
+				return ResponseEntity.ok(response);
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error verifying token");
 		}
 	}
 

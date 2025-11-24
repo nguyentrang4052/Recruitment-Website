@@ -1,57 +1,91 @@
+/* ===================================
+   Footer – phiên bản clean
+   =================================== */
 .footer {
-  display: grid;
-  grid-template-rows: auto auto; 
-  margin-top: 50px; 
-  color: white;
+  margin-top: 50px;
+  color: #fff;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+/* ---------- row 1: nội dung ---------- */
 .footer-item:first-child {
+  background: #001f3d;
+  padding: 3rem 1.5rem 2.5rem;
   display: flex;
   flex-wrap: wrap;
-  background-color: #001F3D;
-  gap: 2rem;
+  gap: 2.5rem;
   justify-content: space-between;
-  padding: 2rem;
 }
 
-.footer-item:last-child {
-  text-align: center;
-  font-size: 0.875rem;
-  color: #666;
-  background-color: white;
-  padding: 2rem;
-  margin-top: 0;
+/* mỗi cột */
+.footer-section {
+  flex: 1 1 200px;              /* vừa co giãn vừa không quá nhỏ */
+  min-width: 180px;
 }
 
 .footer-section h3 {
-  font-size: 1.2em;
-  margin-bottom: 10px;
+  font-size: 1.1rem;
+  margin: 0 0 1rem;
+  color: #4dc9e6;               /* làm nổi tiêu đề */
+  letter-spacing: .5px;
 }
 
 .footer-section ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .footer-section ul li {
-  margin-bottom: 8px;
-  text-align: left;
+  margin-bottom: .6rem;
   cursor: pointer;
+  transition: color .2s;
 }
 
-.footer-section .social-media a {
-  color: white;
-  margin-right: 10px;
-  text-decoration: none;
+.footer-section ul li:hover {
+  color: #4dc9e6;
 }
 
-.footer-section .social-media {
-  margin-top: 10px;
-}
-
-
-.footer .footer-section:nth-child(6) {
+/* ----- social ----- */
+.social-media {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: .8rem;
+  margin-top: .8rem;
+}
+
+.social-media a {
+  color: #fff;
+  font-size: .9rem;
+  text-decoration: none;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 4px;
+  transition: background .25s, color .25s;
+}
+
+.social-media a:hover {
+  background: rgba(255, 255, 255, .9);
+  color: #001f3d;
+}
+
+/* ---------- row 2: copyright ---------- */
+.footer-item:last-child {
+  text-align: center;
+  font-size: .8rem;
+  color: #666;
+  background: #fff;
+  padding: 1.5rem 1rem;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 600px) {
+  .footer-item:first-child {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .footer-section {
+    width: 100%;
+  }
 }

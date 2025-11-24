@@ -7,6 +7,7 @@ const CompanyManagement = () => {
     const [companyInfo, setCompanyInfo] = useState({
         employerID: null,
         employerName: '',
+        fullName: '',
         representative: '',
         phone: '',
         companyWebsite: '',
@@ -55,6 +56,7 @@ const CompanyManagement = () => {
             setCompanyInfo({
                 employerID: data.employerID,
                 employerName: data.employerName || '',
+                fullName: data.fullName || '',
                 companySize: data.companySize || 0,
                 representative: data.representative || '',
                 phone: data.phone || '',
@@ -202,6 +204,7 @@ const CompanyManagement = () => {
         const payload = {
             employerID: companyInfo.employerID,
             employerName: companyInfo.employerName,
+            fullName: companyInfo.fullName,
             representative: companyInfo.representative,
             phone: companyInfo.phone,
             companyWebsite: companyInfo.companyWebsite,
@@ -278,6 +281,12 @@ const CompanyManagement = () => {
                         <label>Tên Công ty</label>
                         <input type="text" name="employerName" value={companyInfo.employerName} onChange={handleInputChange} />
                         {errors.employerName && <span className="error-message">{errors.employerName}</span>}
+                    </div>
+
+                     <div className="form-group">
+                        <label>Tên đầy đủ</label>
+                        <input type="text" name="fullName" value={companyInfo.fullName} onChange={handleInputChange} />
+                        {errors.fullName && <span className="error-message">{errors.fullName}</span>}
                     </div>
 
                     <div className="form-group">
@@ -358,7 +367,7 @@ const CompanyManagement = () => {
                             </div>
                         </div>
                     )}
-
+                    <p><strong>Tên đầy đủ:</strong> {companyInfo.fullName}</p>
                     <p><strong>Tên Công ty:</strong> {companyInfo.employerName}</p>
                     <p><strong>Tên người liên hệ:</strong> {companyInfo.representative}</p>
                     <p><strong>Địa chỉ:</strong> {`${companyInfo.detailedAddress || ''}${companyInfo.registeredWard ? ', ' + companyInfo.registeredWard : ''}${companyInfo.registeredProvince ? ', ' + companyInfo.registeredProvince : ''}` || 'Chưa cập nhật'}</p>

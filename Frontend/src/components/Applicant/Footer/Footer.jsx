@@ -35,13 +35,13 @@ const scrollToSection = (sectionId) => {
             <li onClick={() => navigate("/cv-templates")}>Mẫu CV xin việc</li>
           </ul>
         </div>
-        <div className="footer-section">
+        {/* <div className="footer-section">
           <h3>Dành cho nhà tuyển dụng</h3>
           <ul>
             <li>Dịch vụ nhân sự cao cấp</li>
             <li>Cẩm nang tuyển dụng</li>
           </ul>
-        </div>
+        </div> */}
         <div className="footer-section">
           <div className="social-media">
             <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>

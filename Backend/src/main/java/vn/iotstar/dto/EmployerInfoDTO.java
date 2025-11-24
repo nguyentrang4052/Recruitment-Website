@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class EmployerInfoDTO {
     private Integer employerID;
     private String employerName;
+    private String fullName;
     private String representative;
     private String phone;
     private String companyWebsite;

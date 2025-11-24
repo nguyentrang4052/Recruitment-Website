@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #5eb9c1 0%, #73c5cb 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .icon-wrapper {
+            background-color: #fff;
+            width: 200px;
+            height: 140px;
+            margin: 0 auto;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .envelope {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 100px;
+        }
+        
+        .envelope-back {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 50px solid #e85d5d;
+        }
+        
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 50px solid #c74d4d;
+            z-index: 2;
+        }
+        
+        .envelope-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 160px;
+            height: 50px;
+            background-color: #e85d5d;
+            z-index: 1;
+        }
+        
+        .paper {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 80px;
+            background-color: #fff;
+            border: 2px solid #e0e0e0;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .checkmark {
+            width: 50px;
+            height: 50px;
+            background-color: #e85d5d;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .checkmark::after {
+            content: '✓';
+            color: #fff;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 40px 40px 20px;
+            color: #333;
+            line-height: 1.8;
+        }
+        
+        .content p {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .content strong {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .company-name {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .position-link {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .position-link:hover {
+            text-decoration: underline;
+        }
+        
+        .greeting {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .success-message {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .info-row {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .info-label {
+            min-width: 120px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="icon-wrapper">
+                <div class="paper">
+                    <div class="checkmark"></div>
+                </div>
+                <div class="envelope">
+                    <div class="envelope-back"></div>
+                    <div class="envelope-bottom"></div>
+                    <div class="envelope-front"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <p class="greeting">Chào bạn</p>
+            
+            <div class="success-message">
+                <p><strong>Bạn vừa nộp hồ sơ ứng tuyển vào :</strong></p>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Công ty :</span>
+                <span class="company-name" th:text="${companyName}"></span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Vị trí ứng tuyển:</span>
+                <!--<p class="position-link" th:text="${position}" ></p>-->
+				<a class="position-link" th:text="${position}" th:href="${baseUrl + '/recruitment/' + rnid}"></a>
+            </div>
+            
+            <p style="margin-top: 30px;"><strong>Chúc bạn thành công</strong></p>
+        </div>
+    </div>
+</body>
+</html>

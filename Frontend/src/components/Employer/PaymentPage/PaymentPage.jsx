@@ -4,7 +4,6 @@ import {
     faShieldAlt,
     faCheckCircle,
     faArrowLeft,
-    // faUniversity,
     faQrcode,
 } from '@fortawesome/free-solid-svg-icons';
 import './PaymentPage.css';
@@ -19,30 +18,51 @@ function PaymentPage({ packageInfo, onGoBack }) {
         duration: '90 Ngày',
         description: 'Giải pháp toàn diện, tối ưu hóa quá trình tìm kiếm ứng viên tiềm năng.',
         features: ['Đăng 20 tin tuyển dụng', 'Tiếp cận 500 CV cao cấp', 'Báo cáo hiệu suất hàng tuần'],
-        taxRate: 0.1,
+        taxRate: 10.00,
+    };
+
+    const generateFeatures = (pkg) => {
+        if (!pkg) return defaultPackage.features;
+
+        const features = [];
+
+        if (pkg.maxPosts) {
+            features.push(`Đăng tối đa ${pkg.maxPosts} tin tuyển dụng`);
+        } else {
+            features.push('Đăng tin không giới hạn');
+        }
+
+        if (pkg.maxCvViews) {
+            features.push(`Xem tối đa ${pkg.maxCvViews} CV ứng viên`);
+        } else {
+            features.push('Xem CV không giới hạn');
+        }
+
+        if (pkg.supportPriorityDays > 0) {
+            features.push(`Uu tiên duyệt tin trong vòng ${pkg.supportPriorityDays} ngày`);
+        }
+
+        if (pkg.has1on1Consult) {
+            features.push('Tư vấn 1-1 với chuyên gia');
+        }
+
+        if (pkg.hasEmailSupport) {
+            features.push('Hỗ trợ Email 24/7');
+        }
+
+        return features.length > 0 ? features : defaultPackage.features;
     };
 
     const currentPackage = {
         name: packageInfo?.packageName || defaultPackage.name,
         price: packageInfo?.price ?? defaultPackage.price,
-        duration: packageInfo?.duration || defaultPackage.duration,
+        duration: `${packageInfo?.duration || defaultPackage.duration} ngày`,
         description: packageInfo?.description || defaultPackage.description,
-        features: packageInfo?.features || defaultPackage.features,
+        features: generateFeatures(packageInfo),
         taxRate: packageInfo?.taxRate ?? defaultPackage.taxRate,
     };
 
-    const [paymentMethod, setPaymentMethod] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedBank, setSelectedBank] = useState(null);
-    const [bankForm, setBankForm] = useState({
-        accountHolder: '',
-        accountNumber: '',
-        cardNumber: '',
-        transferDate: '',
-        transferReference: '',
-        receiptFileName: '',
-    });
-
+    const [paymentMethod, setPaymentMethod] = useState('QR_CODE');
     const [qrCode, setQrCode] = useState(null);
     const [qrTransactionRef, setQrTransactionRef] = useState(null);
     const [qrChecking, setQrChecking] = useState(false);
@@ -55,39 +75,9 @@ function PaymentPage({ packageInfo, onGoBack }) {
         if (stored) setEmail(stored);
     }, []);
 
-    const [banks, setBanks] = useState([]);
-    useEffect(() => {
-        const token = getToken();
-        fetch(`${API_BASE}/banks`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error('Không thể tải danh sách ngân hàng');
-                return res.json();
-            })
-            .then((json) => {
-                if (json.code === '00') {
-                    // Lọc bỏ ví điện tử, chỉ giữ lại ngân hàng 
-                    const excludeList = ['momo', 'VTLMONEY', 'VNPTMONEY', 'CAKE', 'Ubank', 'TIMO'];
-                    const cleaned = json.data
-                        .filter((b) => !excludeList.includes(b.code))
-                        .map((b) => ({
-                            ...b,
-                            logo: b.logo.trim(),
-                        }));
-                    setBanks(cleaned);
-                }
-            })
-            .catch((err) => console.error('Lỗi tải ngân hàng:', err));
-    }, []);
 
-    const filteredBanks = banks.filter(
-        (b) =>
-            b.shortName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            b.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const vatAmount = currentPackage.price * currentPackage.taxRate;
+    const taxRateDecimal = currentPackage.taxRate / 100;
+    const vatAmount = currentPackage.price * taxRateDecimal;
     const totalAmount = currentPackage.price + vatAmount;
 
     const formatCurrency = (amount) =>
@@ -110,78 +100,8 @@ function PaymentPage({ packageInfo, onGoBack }) {
         return res.json();
     };
 
-    const handleBankSelect = (bankCode) => {
-        setSelectedBank(bankCode);
-        setBankForm({
-            accountHolder: '',
-            accountNumber: '',
-            cardNumber: '',
-            transferDate: '',
-            transferReference: '',
-            receiptFileName: '',
-        });
-    };
-
-    const validateBankForm = () => {
-        if (!selectedBank) return { ok: false, msg: 'Vui lòng chọn ngân hàng.' };
-        if (!bankForm.transferDate) return { ok: false, msg: 'Vui lòng nhập ngày chuyển.' };
-        if (!bankForm.accountNumber && !bankForm.cardNumber)
-            return { ok: false, msg: 'Vui lòng nhập Số tài khoản HOẶC Số thẻ.' };
-        if (!bankForm.accountHolder)
-            return { ok: false, msg: 'Vui lòng nhập Tên chủ tài khoản đã thực hiện chuyển khoản.' };
-        return { ok: true };
-    };
-
-    const fetchCardInfo = async (cardNumber) => {
-        if (cardNumber.replace(/\s/g, '').length < 6) return;
-
-        try {
-            const res = await fetch(`${API_BASE}/card-info`, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${getToken()}`,
-                },
-                body: JSON.stringify({ cardNumber }),
-            });
-
-            const data = await res.json();
-            if (data.success) {
-                setBankForm((prev) => ({
-                    ...prev,
-                    accountHolder: data.cardHolder || '',
-                }));
-            }
-        } catch (err) {
-            console.warn('Không lấy được thông tin thẻ:', err);
-        }
-    };
-
     const handlePaymentSubmit = async (e) => {
         e.preventDefault();
-
-        if (paymentMethod === 'BANK_TRANSFER') {
-            const v = validateBankForm();
-            if (!v.ok) return alert(v.msg);
-
-            const payload = {
-                amount: totalAmount,
-                bankId: selectedBank,
-                accountHolder: bankForm.accountHolder,
-                accountNumber: bankForm.accountNumber || bankForm.cardNumber,
-                transferDate: bankForm.transferDate,
-                transferReference: bankForm.transferReference,
-                email: email,
-            };
-            try {
-                const res = await postJSON('/bank-transfer', payload);
-                alert(res.message || 'Gửi thông tin chuyển khoản thành công!');
-            } catch (err) {
-                alert('Lỗi gửi thông tin: ' + err.message);
-            }
-            return;
-        }
 
         if (paymentMethod === 'QR_CODE') {
             if (!qrTransactionRef) return alert('Vui lòng tạo mã QR trước.');
@@ -211,7 +131,7 @@ function PaymentPage({ packageInfo, onGoBack }) {
             return;
         }
 
-        alert(`Bạn đã chọn thanh toán gói ${currentPackage.name} với tổng ${formatCurrency(totalAmount)}. Vui lòng chọn phương thức thanh toán.`);
+        alert(`Bạn đã chọn thanh toán gói ${currentPackage.name} với tổng ${formatCurrency(totalAmount)}.`);
     };
 
     useEffect(() => {
@@ -295,7 +215,7 @@ function PaymentPage({ packageInfo, onGoBack }) {
                             <span className="package-name-summary">{currentPackage.name}</span>
                         </div>
                         <div className="summary-item">
-                            <span>Thời hạn (ngày): </span>
+                            <span>Thời hạn: </span>
                             <span>{currentPackage.duration}</span>
                         </div>
                         <ul className="feature-list-summary">
@@ -308,14 +228,7 @@ function PaymentPage({ packageInfo, onGoBack }) {
                     </div>
 
                     <div className="section-card payment-method-selection">
-                        <h2>Thanh toán</h2>
-                        {/* <div
-                            className={`method-option bank-transfer-main ${paymentMethod === 'BANK_TRANSFER' ? 'selected' : ''}`}
-                            onClick={() => setPaymentMethod('BANK_TRANSFER')}
-                        >
-                            <span>Thẻ nội địa và tài khoản ngân hàng</span>
-                            <FontAwesomeIcon icon={faUniversity} className="bank-icon-lg" />
-                        </div> */}
+                        <h2>Phương thức thanh toán</h2>
                         <div
                             className={`method-option qr-payment ${paymentMethod === 'QR_CODE' ? 'selected' : ''}`}
                             onClick={() => setPaymentMethod('QR_CODE')}
@@ -325,135 +238,19 @@ function PaymentPage({ packageInfo, onGoBack }) {
                         </div>
                     </div>
 
-                    {paymentMethod === 'BANK_TRANSFER' && (
-                        <div className="section-card bank-transfer-block">
-                            <h2>Chọn Ngân hàng</h2>
-                            <div className="bank-search-wrapper">
-                                <input
-                                    type="text"
-                                    placeholder="Tìm kiếm ngân hàng..."
-                                    className="bank-search-input"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-                            <div className="bank-grid">
-                                {filteredBanks.length ? (
-                                    filteredBanks.map((bank) => (
-                                        <button
-                                            key={bank.id}
-                                            type="button"
-                                            className={`bank-item ${selectedBank === bank.code ? 'active' : ''}`}
-                                            onClick={() => handleBankSelect(bank.code)}
-                                        >
-                                            {bank.logo ? (
-                                                <img
-                                                    src={bank.logo.trim()}
-                                                    alt={bank.shortName}
-                                                    className="bank-logo-img"
-                                                    onError={(e) => {
-                                                        e.target.style.display = 'none';
-                                                        e.target.parentElement.innerHTML = `<div style="font-size:12px;font-weight:600;color:#64748b;">${bank.shortName}</div>`;
-                                                    }}
-                                                />
-                                            ) : (
-                                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>
-                                                    {bank.shortName}
-                                                </div>
-                                            )}
-                                        </button>
-                                    ))
-                                ) : (
-                                    <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#718096' }}>
-                                        Không tìm thấy ngân hàng nào.
-                                    </p>
-                                )}
-                            </div>
-                            {selectedBank && (
-                                <div className="bank-detail-form">
-                                    <h3>Thông tin thanh toán từ {banks.find((b) => b.code === selectedBank)?.shortName}</h3>
-                                    <label>Số thẻ:</label>
-                                    <input
-                                        type="text"
-                                        placeholder="XXXX XXXX XXXX XXXX"
-                                        required
-                                        value={bankForm.cardNumber}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
-                                            setBankForm((prev) => ({ ...prev, cardNumber: value }));
-                                            fetchCardInfo(value);
-                                        }}
-                                    />
-                                    <label>Tên chủ thẻ:</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Tên chủ thẻ"
-                                        required
-                                        value={bankForm.accountHolder}
-                                        onChange={(e) => setBankForm((prev) => ({ ...prev, accountHolder: e.target.value }))}
-                                    />
-                                    <div className="card-info-row">
-                                        <div>
-                                            <label>Ngày phát hành:</label>
-                                            <input type="text" placeholder="MM/YY" required />
-                                        </div>
-                                        <div>
-                                            <label>CVV:</label>
-                                            <input type="text" placeholder="XXX" required />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
                     {paymentMethod === 'QR_CODE' && (
                         <div className="section-card qr-payment-block">
                             <h2>Quét mã QR để thanh toán</h2>
                             <div className="qr-payment-section">
                                 <div className="qr-code-box">
                                     {qrLoading ? (
-                                        <div
-                                            style={{
-                                                width: 180,
-                                                height: 180,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                color: '#6366f1',
-                                                fontSize: '14px',
-                                                fontWeight: 600,
-                                            }}
-                                        >
+                                        <div style={{ width: 180, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366f1', fontSize: '14px', fontWeight: 600 }}>
                                             Đang tạo mã QR...
                                         </div>
                                     ) : qrCode ? (
-                                        <img
-                                            src={qrCode}
-                                            alt="QR Code Thanh Toán"
-                                            style={{ width: 180, height: 180 }}
-                                            onError={(e) => {
-                                                e.target.style.display = 'none';
-                                                e.target.parentElement.innerHTML =
-                                                    '<div style="color:red;text-align:center;padding:20px;">Không thể hiển thị QR Code</div>';
-                                            }}
-                                        />
+                                        <img src={qrCode} alt="QR Code Thanh Toán" style={{ width: 180, height: 180 }} />
                                     ) : (
-                                        <div
-                                            style={{
-                                                width: 180,
-                                                height: 180,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                border: '2px dashed #e2e8f0',
-                                                borderRadius: 8,
-                                                color: '#94a3b8',
-                                                fontSize: '13px',
-                                                textAlign: 'center',
-                                                padding: 20,
-                                            }}
-                                        >
+                                        <div style={{ width: 180, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px dashed #e2e8f0', borderRadius: 8, color: '#94a3b8', fontSize: '13px', textAlign: 'center', padding: 20 }}>
                                             Mã QR sẽ xuất hiện ở đây
                                         </div>
                                     )}
@@ -464,10 +261,6 @@ function PaymentPage({ packageInfo, onGoBack }) {
                                         <span className="qr-info-label">Số tiền:</span>
                                         <span className="qr-info-value qr-amount">{formatCurrency(totalAmount)}</span>
                                     </div>
-                                    {/* <div className="qr-info-row">
-                                        <span className="qr-info-label">Nội dung:</span>
-                                        <span className="qr-info-value">Thanh toán gói {currentPackage.name}</span>
-                                    </div> */}
                                     <div className="qr-info-row">
                                         <span className="qr-info-label">Bước 1:</span>
                                         <span className="qr-info-value">Mở ứng dụng ngân hàng/Ví điện tử</span>
@@ -492,20 +285,10 @@ function PaymentPage({ packageInfo, onGoBack }) {
                         <div className="section-card">
                             <h2>Thông tin Khách hàng</h2>
                             <label>Email nhận hóa đơn:</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                disabled
-                                required
-                            />
+                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled required />
                         </div>
 
-                        <button
-                            type="submit"
-                            className="complete-payment-btn"
-                            disabled={qrChecking || (paymentMethod === 'QR_CODE' && paymentVerified)}
-                        >
+                        <button type="submit" className="complete-payment-btn" disabled={qrChecking || (paymentMethod === 'QR_CODE' && paymentVerified)}>
                             {paymentMethod === 'QR_CODE'
                                 ? qrChecking
                                     ? 'Đang kiểm tra...'
@@ -524,7 +307,8 @@ function PaymentPage({ packageInfo, onGoBack }) {
                         <span>{formatCurrency(currentPackage.price)}</span>
                     </div>
                     <div className="price-row">
-                        <span>VAT (10%): </span>
+                        <span>VAT ({currentPackage.taxRate.toFixed(0)}%): </span>
+
                         <span>{formatCurrency(vatAmount)}</span>
                     </div>
                     <div className="total-row">

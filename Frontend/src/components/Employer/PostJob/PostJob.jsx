@@ -1,72 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PostJob.css';
-
-const RichTextEditor = ({ name, value, onChange, placeholder }) => {
-    const editorRef = useRef(null);
-    const isComposingRef = useRef(false);
-
-    useEffect(() => {
-
-        if (editorRef.current && !isComposingRef.current) {
-            const currentContent = editorRef.current.innerHTML;
-            if (currentContent !== value) {
-                editorRef.current.innerHTML = value || '';
-            }
-        }
-    }, [value]);
-
-    const handleCommand = (command) => {
-        document.execCommand(command, false, null);
-        editorRef.current.focus();
-
-        handleInput();
-    };
-
-    const handleInput = () => {
-        isComposingRef.current = true;
-        onChange({
-            target: {
-                name: name,
-                value: editorRef.current.innerHTML
-            }
-        });
-
-        setTimeout(() => {
-            isComposingRef.current = false;
-        }, 0);
-    };
-
-    return (
-        <div className="rich-text-editor">
-            <div className="editor-toolbar">
-                <button type="button" onClick={() => handleCommand('bold')} title="In đậm">
-                    <b>B</b>
-                </button>
-                <button type="button" onClick={() => handleCommand('italic')} title="In nghiêng">
-                    <i>I</i>
-                </button>
-                <button type="button" onClick={() => handleCommand('underline')} title="Gạch chân">
-                    <u>U</u>
-                </button>
-                <button type="button" onClick={() => handleCommand('insertUnorderedList')} title="Danh sách đấu">
-                    • List
-                </button>
-                <button type="button" onClick={() => handleCommand('insertOrderedList')} title="Danh sách số">
-                    1. List
-                </button>
-            </div>
-            <div
-                ref={editorRef}
-                className="editor-content"
-                contentEditable
-                onInput={handleInput}
-                onBlur={handleInput}
-                suppressContentEditableWarning={true}
-                data-placeholder={placeholder}
-            />
-        </div>
-    );
-};
 
 const PostJob = () => {
     const initialJobData = {
@@ -126,6 +59,22 @@ const PostJob = () => {
         setJobData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleTextareaKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const { name, value, selectionStart } = e.target;
+
+            const newValue = value.substring(0, selectionStart) + '\n• ' + value.substring(selectionStart);
+
+            setJobData(prev => ({ ...prev, [name]: newValue }));
+
+
+            setTimeout(() => {
+                e.target.selectionStart = e.target.selectionEnd = selectionStart + 3;
+            }, 0);
+        }
+    };
+
     const handleSkillToggle = (skill) => {
         setJobData(prev => {
             const skills = prev.requirements.includes(skill)
@@ -176,17 +125,39 @@ const PostJob = () => {
 
             const text = await res.text();
             let data = null;
-            try { data = text ? JSON.parse(text) : null; } catch { console.warn('Response không phải JSON:', text); }
 
-            if (!res.ok) throw new Error(data?.message || res.statusText || `Lỗi ${res.status}`);
+            try {
+                data = text ? JSON.parse(text) : null;
+            } catch {
+                console.warn('Response không phải JSON:', text);
+            }
 
-            alert(data?.message || 'Đăng tin thành công!');
+            if (!res.ok) {
+
+                const errorMessage = data?.message || res.statusText || `Lỗi ${res.status}`;
+
+
+                if (errorMessage.includes('hết lượt đăng tin')) {
+                    alert('⚠️ Bạn đã hết lượt đăng tin trong gói hiện tại.\n\nVui lòng nâng cấp gói dịch vụ để tiếp tục đăng tin tuyển dụng.');
+                } else if (errorMessage.includes('hết hạn')) {
+                    alert('⚠️ Gói dịch vụ của bạn đã hết hạn.\n\nVui lòng gia hạn để tiếp tục sử dụng.');
+                } else if (errorMessage.includes('chưa kích hoạt')) {
+                    alert('⚠️ Bạn chưa kích hoạt gói dịch vụ nào.\n\nVui lòng đăng ký gói dịch vụ để đăng tin tuyển dụng.');
+                } else {
+                    alert(`❌ ${errorMessage}`);
+                }
+
+                throw new Error(errorMessage);
+            }
+
+            alert('✅ ' + (data?.message || 'Đăng tin thành công!'));
             setJobData(initialJobData);
             setIsDropdownOpen(false);
             setSearchTerm('');
+
         } catch (err) {
-            console.error(err);
-            alert(err.message);
+            console.error('Lỗi khi đăng tin:', err);
+
         } finally {
             setLoading(false);
         }
@@ -280,17 +251,20 @@ const PostJob = () => {
                         />
                     </div>
                     <div className="form-group">
-                        {/* Để trống hoặc thêm field khác nếu cần */}
+
                     </div>
                 </div>
 
                 <div className="form-group">
                     <label>Mô tả và yêu cầu công việc</label>
-                    <RichTextEditor
+                    <textarea
                         name="description"
                         value={jobData.description}
                         onChange={handleInputChange}
-                        placeholder="Nhập mô tả và yêu cầu công việc..."
+                        onKeyDown={handleTextareaKeyDown}
+                        placeholder="Nhập mô tả công việc (nhấn Enter để tự động thêm dấu •)"
+                        rows="6"
+                        required
                     />
                 </div>
 
@@ -337,11 +311,13 @@ const PostJob = () => {
 
                 <div className="form-group">
                     <label>Quyền lợi</label>
-                    <RichTextEditor
+                    <textarea
                         name="benefit"
                         value={jobData.benefit}
                         onChange={handleInputChange}
-                        placeholder="Nhập quyền lợi..."
+                        onKeyDown={handleTextareaKeyDown}
+                        placeholder="Nhập quyền lợi (nhấn Enter để tự động thêm dấu •)"
+                        rows="4"
                     />
                 </div>
 

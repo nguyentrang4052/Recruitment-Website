@@ -15,5 +15,8 @@ public interface IPostPackageService {
 
 	void deletePackage(Integer id);
 
-	boolean toggleHidden(Integer id);
+	PostPackageDTO toggleHidden(Integer id);
+	
+    
+   
 }

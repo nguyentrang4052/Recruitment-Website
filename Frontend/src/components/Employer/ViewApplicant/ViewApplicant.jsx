@@ -10,7 +10,7 @@ import avatarPlaceholder from '../../../assets/avatar.png';
 
 const API_BASE_URL = 'http://localhost:8080/api/employer';
 
-const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onReject, showActions = true, hideApplicationInfo = false }) => {
+const ViewApplicant = ({ applicantId, recruitmentNewsId, isJobActive = true, onBack, onApprove, onReject, showActions = true, hideApplicationInfo = false }) => {
     const [applicant, setApplicant] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -384,7 +384,7 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, onBack, onApprove, onRe
                         </div>
                     )}
 
-                    {currentApplication?.status === 'PENDING' && showActions && recruitmentNewsId && !isJobExpired() && (
+                    {currentApplication?.status === 'PENDING' && showActions && recruitmentNewsId && !isJobExpired() && isJobActive && (
                         <div className="action-buttons">
                             <button
                                 className="primary-btn approve-btn"

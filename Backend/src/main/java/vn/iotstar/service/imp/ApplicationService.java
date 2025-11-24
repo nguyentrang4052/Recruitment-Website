@@ -123,16 +123,28 @@ public class ApplicationService implements IApplicationService {
 	    }).collect(Collectors.toList());
 	}
 
-    @Override
-    @Transactional
-    public void approveApplicant(Integer recruitmentNewsId, Integer applicantId) {
-        apRepository.updateApplicationStatus(recruitmentNewsId, applicantId, EStatus.APPROVED);
-    }
+	@Override
+	@Transactional
+	public void approveApplicant(Integer recruitmentNewsId, Integer applicantId) {
+	    apRepository.updateApplicationStatus(recruitmentNewsId, applicantId, EStatus.APPROVED);
+	    Long activeCount = apRepository.countActiveApplicants(recruitmentNewsId);
+	    RecruitmentNews rn = recruitmentRepo.findById(recruitmentNewsId)
+	            .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy tin ID: " + recruitmentNewsId));
+	    rn.setNumbersOfRecords(activeCount.intValue());
+	    recruitmentRepo.save(rn);
+	}
 
     @Override
     @Transactional
     public void rejectApplicant(Integer recruitmentNewsId, Integer applicantId) {
-        apRepository.updateApplicationStatus(recruitmentNewsId, applicantId, EStatus.REJECTED);
+    	apRepository.deleteApplicationByCompositeKey(recruitmentNewsId, applicantId);
+
+        
+        Long activeCount = apRepository.countActiveApplicants(recruitmentNewsId);
+        RecruitmentNews rn = recruitmentRepo.findById(recruitmentNewsId)
+                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy tin ID: " + recruitmentNewsId));
+        rn.setNumbersOfRecords(activeCount.intValue());
+        recruitmentRepo.save(rn);
     }
 
 }

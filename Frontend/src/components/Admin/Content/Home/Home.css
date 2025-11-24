@@ -1,4 +1,3 @@
-/* src/components/Home/Home.css */
 .home-wrapper .content-header {
   margin-bottom: 24px;
 }
@@ -29,6 +28,12 @@
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-left: 4px solid;
+  transition: all 0.3s ease;
+}
+
+.home-wrapper .stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .home-wrapper .stat-card.blue  { border-left-color: #3b82f6; }
@@ -52,4 +57,27 @@
   font-size: 32px;
   font-weight: bold;
   color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.home-wrapper .stat-card-details {
+  background-color: #f9fafb;
+  padding: 16px;
+  border-radius: 6px;
+  margin-top: 12px;
+  border-left: 3px solid #e5e7eb;
+}
+
+.home-wrapper .stat-card-details p {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.home-wrapper .stat-card-details p strong {
+  font-weight: 700;
+  font-size: 16px;
 }

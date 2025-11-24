@@ -308,7 +308,7 @@ function RecruitDetail() {
                         <div className="job-info">
                             <div className="job-description">
                                 <h3>Mô tả công việc</h3>
-                              
+
                                 <div
                                     className="job-description"
                                     dangerouslySetInnerHTML={formatDescription(recruitmentDetail.description)}

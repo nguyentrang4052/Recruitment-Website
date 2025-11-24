@@ -47,5 +47,7 @@ public interface IApplicantService {
 
 	void deleteApplicant(Integer id);
 
+	List<ApplicantDTO> searchAndFilterApplicantsLimit(ApplicantSearchDTO searchDTO, Integer cvViewsLeft);
+
     
 }

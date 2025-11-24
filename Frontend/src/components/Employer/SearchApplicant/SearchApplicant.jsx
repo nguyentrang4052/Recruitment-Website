@@ -68,7 +68,6 @@ const SearchApplicant = () => {
             skills: selectedSkills.length > 0 ? selectedSkills : null,
             page: page,
             size: DEFAULT_PAGE_SIZE,
-
         };
 
         try {
@@ -83,17 +82,45 @@ const SearchApplicant = () => {
 
             const data = await res.json();
 
+
             if (!res.ok) {
+                if (res.status === 402) {
+                    const errorType = data.errorType;
+
+                    if (errorType === 'NO_PACKAGE') {
+                        alert('⚠️ Bạn chưa đăng ký gói dịch vụ nào.\n\nVui lòng đăng ký gói để sử dụng tính năng tìm kiếm ứng viên.');
+
+                    } else if (errorType === 'EXPIRED') {
+                        alert(`⚠️ Gói dịch vụ của bạn đã hết hạn.\n\nVui lòng gia hạn để tiếp tục sử dụng.\n\nNgày hết hạn: ${data.expiryDate}`);
+
+                    } else if (errorType === 'NO_CV_VIEWS_LEFT') {
+                        alert('⚠️ Bạn đã hết lượt xem CV trong gói hiện tại.\n\nVui lòng nâng cấp gói dịch vụ để tiếp tục.');
+                    } else {
+                        alert('⚠️ ' + (data.message || 'Bạn cần đăng ký hoặc gia hạn gói dịch vụ.'));
+                    }
+
+                    setCandidates([]);
+                    setTotalResults(0);
+                    setTotalPages(0);
+                    return;
+                }
+
                 throw new Error(data?.message || `Lỗi ${res.status}: Không thể tìm kiếm ứng viên.`);
             }
+
 
             setCandidates(data.candidates || []);
             setTotalResults(data.totalResults || 0);
             setTotalPages(data.totalPages || 0);
 
+
+            if (data.maxCvViews && data.maxCvViews > 0) {
+                console.log(`📊 Lượt xem CV: ${data.cvViewsLeft}/${data.maxCvViews}`);
+            }
+
         } catch (err) {
             console.error("Lỗi gọi API tìm kiếm:", err);
-            alert(`Lỗi tìm kiếm: ${err.message}`);
+            alert(`❌ Lỗi tìm kiếm: ${err.message}`);
             setCandidates([]);
             setTotalResults(0);
             setTotalPages(0);

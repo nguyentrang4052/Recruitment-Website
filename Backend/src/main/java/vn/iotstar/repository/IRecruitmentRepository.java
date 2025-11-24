@@ -59,7 +59,6 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 		    WHERE r.deadline >= CURRENT_DATE
 		      AND (r.postedAt > :lastSentDate)
 		      AND r.employer.account.active=1 AND r.isActive = true
-
 		      AND ( :jobTitle IS NULL OR :jobTitle = '' 
 		            OR r.position IS NULL 
 		            OR LOWER(r.position) LIKE LOWER(CONCAT('%', :jobTitle, '%')) )
@@ -99,4 +98,5 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 			@Param("lastSentDate") LocalDate lastSentDate);
 
 	List<RecruitmentNews> findBySkill_skillID(Integer skillID);
+
 }

@@ -97,7 +97,8 @@ import vn.iotstar.key.ApplicationID;
 
 		    
 
-
+		    @Query("SELECT COUNT(a) FROM Application a WHERE a.recruitmentNews.RNID = :rnId AND a.status != 'REJECTED'")
+		    Long countActiveApplicants(@Param("rnId") Integer rnId);
 
 		   
 	}

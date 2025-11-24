@@ -78,6 +78,47 @@ public interface IApplicantRepository extends JpaRepository<Applicant, Integer> 
             Pageable pageable
     );
     
-   
+    
 
+    @Query(value = "SELECT a.* FROM applicant a " +
+            "LEFT JOIN career_information ci ON a.applicantid = ci.applicantid " +
+            "LEFT JOIN applicant_skill a_s ON a.applicantid = a_s.applicantid " +
+            "LEFT JOIN skill s ON a_s.skillid = s.skillid " +
+            "WHERE (:keyword IS NULL OR LOWER(a.applicant_name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "   OR LOWER(ci.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND (:location IS NULL OR ci.location = :location) " +
+            "AND (:desireLevel IS NULL OR ci.desire_level = :desireLevel) " +
+            "AND (COALESCE(:skillNameList, NULL) IS NULL OR s.skill_name IN (:skillNameList)) " +
+            "GROUP BY a.applicantid " +
+            "HAVING (COALESCE(:skillNameList, NULL) IS NULL OR COUNT(DISTINCT s.skill_name) >= :skillCount) " +
+            "ORDER BY a.applicantid ASC " +
+            "LIMIT :limit",  // giới hạn theo gói
+    nativeQuery = true)
+    List<Applicant> searchWithSkillsLimit(
+            @Param("keyword") String keyword,
+            @Param("location") String location,
+            @Param("desireLevel") String desireLevel,
+            @Param("skillNameList") List<String> skillNameList,
+            @Param("skillCount") Long skillCount,
+            @Param("limit") Integer limit
+    );
+
+    @Query(value = "SELECT a.* FROM applicant a " +
+            "LEFT JOIN career_information ci ON a.applicantid = ci.applicantid " +
+            "WHERE (:keyword IS NULL OR LOWER(a.applicant_name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "   OR LOWER(ci.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND (:location IS NULL OR ci.location = :location) " +
+            "AND (:desireLevel IS NULL OR ci.desire_level = :desireLevel) " +
+            "GROUP BY a.applicantid ORDER BY a.applicantid ASC " +
+            "LIMIT :limit",  // giới hạn theo gói
+    nativeQuery = true)
+    List<Applicant> searchWithoutSkillsLimit(
+            @Param("keyword") String keyword,
+            @Param("location") String location,
+            @Param("desireLevel") String desireLevel,
+            @Param("limit") Integer limit
+    );
+   
+    @Query("SELECT COUNT(a) FROM Applicant a")
+    Long countTotalApplicants();
 }

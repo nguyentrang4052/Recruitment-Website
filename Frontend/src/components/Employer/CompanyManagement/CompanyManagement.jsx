@@ -108,6 +108,23 @@ const CompanyManagement = () => {
         setCompanyInfo(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleTextareaKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const { name, value, selectionStart } = e.target;
+
+
+            const newValue = value.substring(0, selectionStart) + '\n• ' + value.substring(selectionStart);
+
+            setCompanyInfo(prev => ({ ...prev, [name]: newValue }));
+
+
+            setTimeout(() => {
+                e.target.selectionStart = e.target.selectionEnd = selectionStart + 3;
+            }, 0);
+        }
+    };
+
     const handleProvinceChange = (e) => {
         setCompanyInfo(prev => ({
             ...prev,
@@ -163,7 +180,6 @@ const CompanyManagement = () => {
         let logoUrl = companyInfo.logoPreview;
         let imageUrl = companyInfo.companyImagePreview;
 
-
         if (companyInfo.logo) {
             try {
                 const formData = new FormData();
@@ -181,7 +197,6 @@ const CompanyManagement = () => {
                 return;
             }
         }
-
 
         if (companyInfo.companyImage) {
             try {
@@ -260,7 +275,6 @@ const CompanyManagement = () => {
                         </div>
                     </div>
 
-
                     <div className="image-upload-section rectangle">
                         <label>Ảnh công ty</label>
                         <div className="image-box" onClick={handleImageClick}>
@@ -275,7 +289,6 @@ const CompanyManagement = () => {
                             <input type="file" accept="image/*" onChange={handleImageChange} ref={imageInputRef} style={{ display: 'none' }} />
                         </div>
                     </div>
-
 
                     <div className="form-group">
                         <label>Tên Công ty</label>
@@ -340,7 +353,14 @@ const CompanyManagement = () => {
 
                     <div className="form-group">
                         <label>Mô tả công ty</label>
-                        <textarea name="companyProfile" value={companyInfo.companyProfile} onChange={handleInputChange} rows="6" placeholder="- Tên công ty: ABC&#10;- Địa chỉ: 123 Nguyễn Trãi&#10;- Quy mô: 100 người" />
+                        <textarea
+                            name="companyProfile"
+                            value={companyInfo.companyProfile}
+                            onChange={handleInputChange}
+                            onKeyDown={handleTextareaKeyDown}
+                            rows="6"
+                            placeholder="Nhập mô tả công ty (nhấn Enter để tự động thêm dấu •)"
+                        />
                     </div>
 
                     <div className="button-group">

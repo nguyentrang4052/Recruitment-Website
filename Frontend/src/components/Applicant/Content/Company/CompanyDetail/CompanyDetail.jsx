@@ -8,14 +8,32 @@ import { formatDate } from '../../../../../utils/Format'
 import { BsCalendarDate } from "react-icons/bs";
 import companyImage from '../../../../../assets/company-image.jpg'
 
+// Hàm làm sạch HTML
+const sanitizeHtml = (html) => {
+    if (!html) return '';
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+
+    const scripts = temp.querySelectorAll('script, style, iframe, object, embed');
+    scripts.forEach(el => el.remove());
+
+    const all = temp.querySelectorAll('*');
+    all.forEach(el => {
+        [...el.attributes].forEach(attr => {
+            if (attr.name.startsWith('on')) el.removeAttribute(attr.name);
+        });
+    });
+
+    return temp.innerHTML;
+};
+
+
 function CompanyDetail() {
     const { employerId } = useParams();
     const [companyDetail, setCompanyDetail] = useState(null);
     const [jobListings, setJobListings] = useState(null);
     const [loading, setLoading] = useState(true);
-    // const token = localStorage.getItem("token");
     const navigate = useNavigate()
-    // const {rnid} = useParams
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -35,37 +53,32 @@ function CompanyDetail() {
         if (employerId) fetchAll();
     }, [employerId]);
 
-
-
     const viewDetail = (rnid) => {
         navigate(`/recruitment/${rnid}`);
     }
 
-      const reviewDetail = (employerId) => {
-    navigate(`/companies/reviews/${employerId}`);
-  }
-
+    const reviewDetail = (employerId) => {
+        navigate(`/companies/reviews/${employerId}`);
+    }
 
     if (loading) return <div className="loading">Loading…</div>;
     if (!companyDetail || !jobListings) return <div className="error">No data</div>;
+
     return (
         <div className="company-detail-page">
             <div className="company-banner">
-
                 <div className="banner-image">
                     {companyDetail && companyDetail.image ? (
-                        <img src={companyDetail.image} />
+                        <img src={companyDetail.image} alt="banner" />
                     ) : (
-                        <img src={companyImage} />
+                        <img src={companyImage} alt="default banner" />
                     )}
-
                 </div>
                 <div className="banner-overlay">
                     <div className="banner-content">
                         <div className="company-header-info">
                             <div className="company-logo-large">
                                 <img src={companyDetail.logo} alt="logo" />
-
                             </div>
                             <div className="company-title-section">
                                 <h1 className="company-name-large">{companyDetail.name}</h1>
@@ -74,7 +87,9 @@ function CompanyDetail() {
                                     <span>{companyDetail.address}</span>
                                 </div>
                                 <div className="company-actions">
-                                    <button className="btn-write-review" onClick={() => reviewDetail(companyDetail.employerId)}>Viết đánh giá</button>
+                                    <button className="btn-write-review" onClick={() => reviewDetail(companyDetail.employerId)}>
+                                        Viết đánh giá
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +97,6 @@ function CompanyDetail() {
                             <div className="rating-box">
                                 <p>{companyDetail.ranking}</p>
                                 <div className="rating-number"><StarRating rating={companyDetail.ranking} /></div>
-
                                 <div className="rating-count-detail">{companyDetail.reviews} đánh giá</div>
                             </div>
                         </div>
@@ -115,10 +129,12 @@ function CompanyDetail() {
                             <div className="overview-content">
                                 <h3 className="overview-subtitle">{companyDetail.fullName}</h3>
                                 <h4 className="overview-heading">Về chúng tôi</h4>
-                                <p className="overview-text">{companyDetail.profile}</p>
+                                <div
+                                    className="overview-text formatted-content"
+                                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(companyDetail.profile) }}
+                                />
                             </div>
                         </div>
-
 
                         <div className="map-container">
                             <a
@@ -132,19 +148,15 @@ function CompanyDetail() {
                         </div>
                     </div>
 
-
-
-
                     <div className="right-column">
                         <div className="jobs-card">
-
-                            <h2 className="jobs-title">{companyDetail.jobs} tin đang tuyển </h2>
+                            <h2 className="jobs-title">{companyDetail.jobs} tin đang tuyển</h2>
                             <div className="jobs-list">
                                 {jobListings.map((job) => (
-                                    <div key={job.employerId} className="job-card">
-
-                                        <h3 className="job-title-detail" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
-
+                                    <div key={job.rnid} className="job-card">
+                                        <h3 className="job-title-detail" onClick={() => viewDetail(job.rnid)}>
+                                            {job.position}
+                                        </h3>
                                         <div className="job-company-detail">
                                             <div className="job-company-logo-detail">
                                                 <img src={job.employer.logo} alt="logo" />
@@ -153,33 +165,33 @@ function CompanyDetail() {
                                         </div>
                                         <div className="job-salary">
                                             <span className="salary-icon">💰</span>
-                                            <p  className="salary">{job.salary}</p>
+                                            <p className="salary">{job.salary}</p>
                                         </div>
-                                        
-
                                         <div className="job-meta">
                                             <div className="job-benefit-text">
                                                 <Briefcase size={13} />
-                                                <span className="benefit-content">{job.benefit}</span>
+                                                <div
+                                                    className="benefit-content formatted-content"
+                                                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(job.benefit) }}
+                                                />
                                             </div>
                                             <div className="job-meta-item">
                                                 <MapPin size={14} />
                                                 <span>{job.employer.address}</span>
                                             </div>
-
-                                            <div className="job-posted-detail"><BsCalendarDate /> Hạn nộp {formatDate(job.deadline)}</div>
+                                            <div className="job-posted-detail">
+                                                <BsCalendarDate /> Hạn nộp {formatDate(job.deadline)}
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
     );
-};
+}
 
 export default CompanyDetail;

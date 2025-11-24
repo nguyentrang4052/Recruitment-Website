@@ -23,9 +23,7 @@ public class AdminPostPackageController {
 
     private final IPostPackageService service;
 
-    /**
-     * Lấy danh sách tất cả gói dịch vụ
-     */
+   
     @GetMapping
     public ResponseEntity<List<PostPackageDTO>> getAll() {
         log.info("📦 Fetching all packages");
@@ -33,18 +31,14 @@ public class AdminPostPackageController {
         return ResponseEntity.ok(packages);
     }
 
-    /**
-     * Lấy gói dịch vụ theo ID
-     */
+  
     @GetMapping("/{id}")
     public ResponseEntity<PostPackageDTO> getById(@PathVariable Integer id) {
         log.info("📦 Fetching package ID: {}", id);
         return ResponseEntity.ok(service.getPackageById(id));
     }
 
-    /**
-     * Tạo gói dịch vụ mới
-     */
+
     @PostMapping
     public ResponseEntity<Map<String, Object>> create(@RequestBody PostPackageDTO dto) {
         log.info("➕ Creating package: {}", dto.getPackageName());
@@ -65,9 +59,7 @@ public class AdminPostPackageController {
         }
     }
 
-    /**
-     * Cập nhật gói dịch vụ
-     */
+   
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> update(
             @PathVariable Integer id,
@@ -90,9 +82,7 @@ public class AdminPostPackageController {
         }
     }
 
-    /**
-     * Xóa gói dịch vụ
-     */
+  
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Integer id) {
         log.info("🗑️ Deleting package ID: {}", id);
@@ -112,9 +102,7 @@ public class AdminPostPackageController {
         }
     }
 
-    /**
-     * Ẩn/Hiển thị gói (cập nhật isHidden)
-     */
+   
     @PatchMapping("/{id}/toggle-hidden")
     public ResponseEntity<Map<String, Object>> toggleHidden(@PathVariable Integer id) {
         log.info("👁️ Toggling hidden status for package ID: {}", id);
@@ -135,9 +123,7 @@ public class AdminPostPackageController {
         }
     }
 
-    /**
-     * (Optional) Ẩn/Hiển thị gói (legacy - dùng boolean toggle)
-     */
+   
     @PatchMapping("/{id}/toggle")
     public ResponseEntity<Map<String, Object>> toggleVisibility(@PathVariable Integer id) {
         log.info("👁️ Toggling visibility for package ID: {}", id);

@@ -101,7 +101,7 @@ public class RecruitmentNews implements Serializable {
 	@JsonManagedReference
 	private List<Application> application;
 	
-	@OneToMany(mappedBy = "reNews")
+	@OneToMany(mappedBy = "reNews", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<ViewLog> viewLog;
 	

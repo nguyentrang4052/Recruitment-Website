@@ -119,5 +119,6 @@ public interface IApplicantRepository extends JpaRepository<Applicant, Integer> 
             @Param("limit") Integer limit
     );
    
-
+    @Query("SELECT COUNT(a) FROM Applicant a")
+    Long countTotalApplicants();
 }

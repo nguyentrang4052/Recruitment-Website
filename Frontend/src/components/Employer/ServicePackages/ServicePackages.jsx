@@ -20,6 +20,11 @@ const packageThemes = {
         gradient: 'gradient-green',
         iconClass: 'green',
         badge: null
+    },
+    'ENTERPRISE': {
+        gradient: 'gradient-red',
+        iconClass: 'red',
+        badge: null
     }
 };
 
@@ -51,9 +56,12 @@ const getThemeForPackage = (pkg, index) => {
         };
     }
 
-    if (packageThemes[pkg.packageName]) {
-        return packageThemes[pkg.packageName];
-    }
+    // if (packageThemes[pkg.packageName]) {
+    //     return packageThemes[pkg.packageName];
+    // }
+    const key = pkg.packageName?.toUpperCase().replace(/ /g, '');
+    const matched = packageThemes[key];
+    if (matched) return matched;
     return getAutoTheme(index);
 };
 

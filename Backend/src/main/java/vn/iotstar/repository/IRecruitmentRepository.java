@@ -81,4 +81,6 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 		);
 
 	 List<RecruitmentNews> findBySkill_skillID(Integer skillID);
+	 
+	 
 }

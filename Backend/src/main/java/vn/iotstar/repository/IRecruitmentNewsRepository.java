@@ -54,4 +54,10 @@ public interface IRecruitmentNewsRepository extends JpaRepository<RecruitmentNew
     @Modifying
     @Query("UPDATE RecruitmentNews r SET  r.isActive = false WHERE r.RNID = :jobId AND r.employer.account.accountID = :employerAccountId")
     int deactivateJob(@Param("jobId") Integer jobId, @Param("employerAccountId") Integer employerAccountId);
+    
+    @Query("SELECT COUNT(r) FROM RecruitmentNews r")
+    Long countTotalRecruitmentNews();
+    
+    @Query("SELECT COUNT(r) FROM RecruitmentNews r WHERE r.status = :status")
+    Long countByStatus(EStatus status);
 }

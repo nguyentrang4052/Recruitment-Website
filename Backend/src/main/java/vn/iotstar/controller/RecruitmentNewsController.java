@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import vn.iotstar.dto.RecruitmentNewsDTO;
 import vn.iotstar.entity.RecruitmentNews;
+import vn.iotstar.repository.IViewLogRepository;
 import vn.iotstar.service.IRecruitmentNewsService;
 
 import java.util.List;
@@ -22,6 +24,9 @@ public class RecruitmentNewsController {
 
     @Autowired
     private IRecruitmentNewsService recruitmentService;
+    
+    @Autowired
+    private IViewLogRepository viewLogRepo;
 
     @GetMapping("/list")
     public ResponseEntity<List<RecruitmentNews>> getAllRecruitmentNews() {
@@ -58,7 +63,6 @@ public class RecruitmentNewsController {
                 "data", created
             ));
         } catch (RuntimeException e) {
-    
             return ResponseEntity.badRequest().body(Map.of(
                 "message", e.getMessage()
             ));
@@ -91,15 +95,25 @@ public class RecruitmentNewsController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Transactional
     public ResponseEntity<?> deleteRecruitment(@PathVariable Integer id) {
         try {
+            // Xóa view logs trước
+            viewLogRepo.deleteByJobId(id);
+            
+            // Flush để đảm bảo view logs đã được xóa
+            viewLogRepo.flush();
+            
+            // Sau đó mới xóa recruitment news
             recruitmentService.delete(id);
+            
             return ResponseEntity.ok(Map.of(
                 "message", "Xóa tin tuyển dụng thành công!"
             ));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "message", "Không thể xóa tin tuyển dụng"
+                "message", "Không thể xóa tin tuyển dụng: " + e.getMessage()
             ));
         }
     }

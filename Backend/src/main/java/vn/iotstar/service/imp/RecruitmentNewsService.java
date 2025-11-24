@@ -15,6 +15,7 @@ import vn.iotstar.entity.Employer;
 import vn.iotstar.entity.EmployerPackageLimit;
 import vn.iotstar.enums.EStatus;
 import vn.iotstar.repository.IRecruitmentNewsRepository;
+import vn.iotstar.repository.IViewLogRepository;
 import vn.iotstar.repository.IEmployerPackageLimitRepository;
 import vn.iotstar.repository.IEmployerRepository;
 import vn.iotstar.service.IRecruitmentNewsService;
@@ -34,6 +35,9 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
     
     @Autowired
     private IEmployerPackageLimitRepository employerLimitRepo;
+    
+    @Autowired
+    private IViewLogRepository viewLogRepo;
 
     @Override
     @Transactional  
@@ -91,6 +95,7 @@ public class RecruitmentNewsService implements IRecruitmentNewsService {
     @Override
     @Transactional  
     public void delete(Integer id) {
+    	viewLogRepo.deleteByJobId(id);
         recruitmentRepo.deleteById(id);
     }
 

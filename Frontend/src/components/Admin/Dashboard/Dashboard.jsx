@@ -18,7 +18,7 @@ import Employers from '../Content/Employer/Employer.jsx';
 import Skills from '../Content/Skill/Skill.jsx';
 import Recruitment from '../Content/Recruitment/Recruitment.jsx';
 import Packages from '../Content/Package/Package.jsx';
-import Reports from '../Content/Report/Report.jsx';
+import Revenue from '../Content/Revenue/Revenue.jsx';
 
 import RecruitmentDetail from '../Content/Recruitment/RecruitmentDetail.jsx';
 import ApplicantDetail from '../Content/Applicant/ApplicantDetail.jsx'
@@ -40,13 +40,13 @@ export default function AdminDashboard() {
         }}
       />
     ),
-    employers: ( 
-      <Employers 
+    employers: (
+      <Employers
         onViewDetail={(employer) => {
           setSelectedEmployer(employer);
           setView('detail');
         }}
-    />
+      />
     ),
     skills: <Skills />,
     jobs: (
@@ -58,13 +58,13 @@ export default function AdminDashboard() {
       />
     ),
     packages: <Packages />,
-    reports: <Reports />,
+    revenue: <Revenue />,
   };
 
   const [active, setActive] = useState('home');
   const [umOpen, setUmOpen] = useState(false);
 
-  const [view, setView] = useState('list');        // 'list' | 'detail'
+  const [view, setView] = useState('list');
   const [selectedJob, setSelectedJob] = useState(null);
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [selectedEmployer, setSelectedEmployer] = useState(null);
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* ---------- Sidebar ---------- */}
+
       <aside className="sidebar">
         <div className="sidebar-logo">
           <div className="logo-content">
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
           <button onClick={() => setActive('skills')} className={`nav-button ${active === 'skills' ? 'active' : ''}`}><FiFileText /> Quản lý kỹ năng</button>
           <button onClick={() => setActive('jobs')} className={`nav-button ${active === 'jobs' ? 'active' : ''}`}><IoBriefcaseOutline /> Quản lý tin tuyển dụng</button>
           <button onClick={() => setActive('packages')} className={`nav-button ${active === 'packages' ? 'active' : ''}`}><VscPackage /> Quản lý gói dịch vụ</button>
-          <button onClick={() => setActive('reports')} className={`nav-button ${active === 'reports' ? 'active' : ''}`}><LuTriangleAlert /> Quản lý báo cáo vi phạm</button>
+          <button onClick={() => setActive('revenue')} className={`nav-button ${active === 'revenue' ? 'active' : ''}`}><LuTriangleAlert /> Doanh thu</button>
           <button className="logout-button" onClick={handleLogoutClick}><MdLogout /> Đăng xuất</button>
         </nav>
       </aside>

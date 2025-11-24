@@ -187,6 +187,7 @@ const JobDetail = ({ jobId, onBack }) => {
         setEditData(job);
     };
 
+
     const handleSaveEdit = async () => {
         if (!window.confirm('Bạn có chắc muốn lưu thay đổi?')) return;
 

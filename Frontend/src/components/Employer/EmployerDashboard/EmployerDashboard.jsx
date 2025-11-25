@@ -28,16 +28,27 @@ function EmployerDashboard() {
     }, []);
 
 
-    const handleLogoutClick = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('email');
-        localStorage.removeItem('roleName');
-        localStorage.removeItem('username');
-        localStorage.removeItem('applicantID');
-        localStorage.removeItem('employerID');
+    const handleLogoutClick = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                await fetch('http://localhost:8080/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            } catch (e) {
+                console.warn('Gọi API logout thất bại, vẫn tiếp tục đăng xuất', e);
+            }
+        }
+
+        ['token', 'email', 'roleName', 'username', 'applicantID', 'employerID']
+            .forEach(k => localStorage.removeItem(k));
 
         navigate('/', { replace: true });
-    }
+    };
 
     const renderContent = () => {
         switch (activeTab) {

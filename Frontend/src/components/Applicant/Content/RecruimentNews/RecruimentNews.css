@@ -1,80 +1,160 @@
 .image-search {
   position: relative;
-  width: 100%; 
+  width: 100%;
   margin-bottom: 30px;
 }
 
 .image-search img {
   width: 100%;
-  height: 76vh;                
+  height: 76vh;
   object-fit: fill;
-  display: block; 
+  display: block;
 }
 
-.search-container {
+/* .search-container {
   position: relative;
   z-index: 2;
   display: flex;
-  margin: 20px auto 0; 
-  gap: 2%;
-  padding: 0 5%;
+  margin: 20px auto 0;
+  gap: 12px;
+  padding: 24px 32px;
   max-width: 1200px;
+  bottom: 40px;
+  left: 50%;
+  width: 90%;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+} */
+
+.search-container {
+  position: relative;
+  margin-top: 60px;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 12px;
+  padding: 24px 32px;
+  max-width: 1200px;
+  width: 90%;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+.search-container.dashboard {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  margin: 20px auto;
 }
 
-.search-container.dashboard {
-  margin: 20px auto 0;
+
+.input-renews-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
 }
 
 .image-search input,
 .image-search select {
-  flex: 1;
-  min-width: 0;
-  height: 45px;
-  padding: 12px 20px;
-  font-size: clamp(14px, 2vw, 16px);
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  font-style: italic;
-  background-color: #fff;      
-  appearance: none;              
+  width: 100%;
+  height: 48px;
+  padding: 12px 36px 12px 16px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 2px solid #e8e8e8;
+  font-style: normal;
+  background-color: #fff;
+  appearance: none;
   cursor: pointer;
-
+  transition: all 0.3s ease;
+  color: #333;
 }
+
+.image-search input:focus,
+.image-search select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+}
+
 .image-search input::placeholder {
-  color: black;        
-  /* opacity: 1; */
+  color: #999;
+  font-style: italic;
 }
 
 .image-search select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8'%3E%3Cpath fill='%23666' d='M7 8L0 0h14z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
-  background-size: 12px;
-  padding-right: 40px; /* chừa chỗ cho mũi tên */
-  /* color: rgb(123, 120, 120); */
+  background-size: 14px;
+  padding-right: 44px;
+  color: #333;
 }
 
-.image-search button {
-  width: 60px;  
-  height: 45px;  
-  font-size: 24px;  
-  background-color: white;
-  color: black;
-  border-radius: 4px;
+.image-search select option:first-child {
+  color: #999;
+  font-style: italic;
+}
+
+.clear-renews-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #f0f0f0;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 11px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.clear-renews-btn:hover {
+  background: #e0e0e0;
+  color: #333;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.search-renews-btn {
+  width: 56px;
+  height: 48px;
+  font-size: 20px;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
 
-.image-search button:hover {
-  background-color: #007bff;
-  color: white;
+.search-renews-btn:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+  box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+  transform: translateY(-2px);
 }
+
+.search-renews-btn:active {
+  transform: translateY(0);
+}
+
 
 .recruimentnews-page {
   width: 90%;
@@ -86,7 +166,7 @@
 /* Hoặc thêm margin cho container */
 .recruimentnews-container {
   margin-top: 30px;
-  margin-left: 30px;  /* Thêm margin trái */
+  margin-left: 30px; /* Thêm margin trái */
   margin-right: 30px; /* Thêm margin phải */
   display: flex;
   flex-direction: column;
@@ -102,12 +182,12 @@
   display: flex;
   flex-direction: row;
   gap: clamp(15px, 3vw, 50px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: clamp(10px, 4vw, 40px);
 }
 
 .recruimentnew-container:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
 
@@ -310,50 +390,50 @@
   .image-search img {
     height: 35vh;
   }
-  
+
   .search-container {
     padding: 0 10px;
     margin-top: 15px;
   }
-  
+
   .recruimentnews-page {
     width: 95%;
   }
-  
+
   .recruimentnew-container {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
+
   .company-logo {
     width: 120px;
     height: 120px;
   }
-  
+
   .recruitment-content {
     align-items: center;
   }
-  
+
   .recruiment-position,
   .recruiment-value-emp {
     text-align: center;
   }
-  
+
   .recruiment-info {
     justify-content: center;
   }
-  
+
   .end-card {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .skills-list {
     justify-content: center;
     min-width: 100%;
   }
-  
+
   .btn {
     width: 100%;
     justify-content: center;
@@ -369,57 +449,57 @@
   .image-search img {
     height: 30vh;
   }
-  
+
   .search-container {
     flex-direction: row;
     gap: 10px;
     padding: 0 15px;
     margin-top: 15px;
   }
-  
+
   .image-search input[type="text"] {
     height: 40px;
   }
-  
+
   .image-search button {
     width: 50px;
     height: 40px;
     font-size: 20px;
   }
-  
+
   .recruimentnews-page {
     width: 100%;
     padding: 0 10px;
   }
-  
+
   .company-logo {
     width: 100px;
     height: 100px;
   }
-  
+
   .recruiment-info {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .recruiment-info p {
     width: 100%;
     justify-content: center;
   }
-  
+
   .btn {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .btn button {
     width: 100%;
   }
-  
+
   .pagination {
     gap: 5px;
   }
-  
+
   .pagination button {
     padding: 6px 12px;
   }
@@ -430,12 +510,12 @@
   .image-search img {
     height: 25vh;
   }
-  
+
   .search-container {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .image-search button {
     width: 100%;
   }

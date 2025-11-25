@@ -50,6 +50,9 @@ public class LoginController {
 				if (account == null) {
 					account = accountService.findByEmail(authen);
 				}
+				if (account.getActive() == 0) {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tài khoản đã bị khoá");
+				}
 				
 				Applicant applicant = applicantService.findByAccount_accountID(account.getAccountID());
 				Map<String, Object> response = new HashMap<>();
@@ -127,6 +130,9 @@ public class LoginController {
 				Account account = accountService.findByUsername(authen);
 				if (account == null) {
 					account = accountService.findByEmail(authen);
+				}
+				if (account.getActive() == 0) {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tài khoản đã bị khoá");
 				}
 				
 //				Applicant applicant = applicantService.findByAccount_accountID(account.getAccountID());

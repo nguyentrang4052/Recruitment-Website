@@ -32,6 +32,7 @@ public class RecruitmentCardDTO {
 	private String benefit;
 	private EFormOfWork formOfWork;
 	private String workingTime;
+	private Integer quantity;
 	private String applyBy;
 	
 	private Integer view = 0;
@@ -39,7 +40,7 @@ public class RecruitmentCardDTO {
 	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
 			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,
 			String experience, String literacy, String level, String requirement, String benefit, EFormOfWork formOfWork,
-			String workingTime, String applyBy, Integer view, boolean active) {
+			String workingTime, Integer quantity, String applyBy, Integer view, boolean active) {
 		this.rnid = rnid;
 		this.position = position;
 		this.employer = employer;
@@ -57,6 +58,7 @@ public class RecruitmentCardDTO {
 		this.benefit = benefit;
 		this.formOfWork = formOfWork;
 		this.workingTime = workingTime;
+		this.quantity = quantity;
 		this.applyBy = applyBy;
 		this.view=view;
 		this.active=active;

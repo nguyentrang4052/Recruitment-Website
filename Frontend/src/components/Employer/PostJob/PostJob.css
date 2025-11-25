@@ -1,3 +1,4 @@
+/* ===== POST JOB CONTAINER ===== */
 .post-job-container {
     padding: 30px 40px;
     background-color: #fff;
@@ -8,6 +9,7 @@
     max-width: 900px;
     text-align: center;
     margin-left: 420px;
+    transition: all 0.3s ease;
 }
 
 .post-job-container h3 {
@@ -18,12 +20,14 @@
     padding-bottom: 15px;
 }
 
+/* ===== POST JOB FORM ===== */
 .post-job-form {
     text-align: left;
     max-width: 700px;
     margin: 0 auto;
 }
 
+/* ===== FORM GROUP ===== */
 .form-group {
     margin-bottom: 20px;
 }
@@ -53,7 +57,7 @@
     border-radius: 6px;
     box-sizing: border-box;
     font-size: 16px;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group input:focus,
@@ -61,8 +65,32 @@
 .form-group select:focus {
     outline: none;
     border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
+.form-group input.input-error,
+.form-group textarea.input-error,
+.form-group select.input-error {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 5px;
+    display: block;
+    font-weight: 500;
+}
+
+.form-text-hint {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+    display: block;
+}
+
+/* ===== BUTTON GROUP ===== */
 .button-group {
     display: flex;
     justify-content: flex-end;
@@ -86,7 +114,7 @@
     color: white;
 }
 
-.save-button:hover {
+.save-button:hover:not(:disabled) {
     background-color: #218838;
     transform: translateY(-2px);
 }
@@ -107,13 +135,7 @@
     transform: translateY(-2px);
 }
 
-.form-text-hint {
-    font-size: 12px;
-    color: #6c757d;
-    margin-top: 5px;
-    display: block;
-}
-
+/* ===== CUSTOM COMBOBOX ===== */
 .custom-combobox {
     position: relative;
     font-size: 16px;
@@ -127,6 +149,7 @@
 .custom-combobox:focus-within {
     border-color: #007bff;
     outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
 .combobox-selected-display {
@@ -151,6 +174,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    font-size: 14px;
 }
 
 .remove-skill {
@@ -217,8 +241,15 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .form-group select[multiple] {
@@ -233,8 +264,8 @@
     font-size: 16px;
     line-height: 1.5;
     padding: 10px 15px;
-    height: auto; 
-    min-height: 180px; 
+    height: auto;
+    min-height: 180px;
     transition: border-color 0.2s, box-shadow 0.2s;
     overflow-y: auto;
 }
@@ -278,10 +309,17 @@
     cursor: pointer;
 }
 
+/* ===== RICH TEXT EDITOR ===== */
 .rich-text-editor {
     border: 1px solid #ddd;
     border-radius: 6px;
     overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.rich-text-editor:focus-within {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
 .editor-toolbar {
@@ -290,6 +328,7 @@
     border-bottom: 1px solid #ddd;
     display: flex;
     gap: 5px;
+    flex-wrap: wrap;
 }
 
 .editor-toolbar button {
@@ -299,6 +338,7 @@
     cursor: pointer;
     border-radius: 3px;
     font-size: 14px;
+    transition: background-color 0.2s;
 }
 
 .editor-toolbar button:hover {
@@ -319,11 +359,332 @@
     font-style: italic;
 }
 
-.editor-content ul, .editor-content ol {
+.editor-content ul,
+.editor-content ol {
     margin-left: 20px;
     margin-bottom: 10px;
 }
 
 .editor-content li {
     margin-bottom: 5px;
+}
+
+/* ===== RESPONSIVE - TABLET (1024px - 1200px) ===== */
+@media (max-width: 1200px) {
+    .post-job-container {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 25px 30px;
+    }
+
+    .post-job-container h3 {
+        font-size: 24px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+    }
+
+    .form-group-inline {
+        gap: 15px;
+    }
+
+    .button-group {
+        gap: 12px;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 10px 25px;
+        font-size: 14px;
+    }
+}
+
+/* ===== RESPONSIVE - TABLET (768px - 1024px) ===== */
+@media (max-width: 1024px) {
+    .post-job-container {
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px 25px;
+    }
+
+    .post-job-container h3 {
+        font-size: 22px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+
+    .post-job-form {
+        max-width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .form-group-inline {
+        gap: 12px;
+    }
+
+    .button-group {
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .editor-toolbar {
+        padding: 6px;
+        gap: 4px;
+    }
+
+    .editor-toolbar button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .editor-content {
+        min-height: 120px;
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .error-message {
+        font-size: 12px;
+    }
+}
+
+/* ===== RESPONSIVE - MOBILE (max 767px) ===== */
+@media (max-width: 767px) {
+    .post-job-container {
+        width: 100%;
+        margin: 20px 0;
+        padding: 20px 15px;
+        margin-left: 0;
+        border-radius: 8px;
+    }
+
+    .post-job-container h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+
+    .post-job-form {
+        max-width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 14px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .form-group-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-group-inline .form-group {
+        flex: none;
+        margin-bottom: 16px;
+    }
+
+    .button-group {
+        flex-direction: column-reverse;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 12px 20px;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .combobox-selected-display {
+        min-height: 44px;
+        padding: 6px 10px;
+    }
+
+    .selected-skill-tag {
+        font-size: 13px;
+        padding: 5px 8px;
+    }
+
+    .editor-toolbar {
+        padding: 6px;
+        gap: 3px;
+    }
+
+    .editor-toolbar button {
+        padding: 4px 8px;
+        font-size: 12px;
+        flex: 1;
+    }
+
+    .editor-content {
+        min-height: 100px;
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .error-message {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .combobox-dropdown {
+        max-height: 200px;
+    }
+
+    .combobox-search-input {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .combobox-item {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* ===== RESPONSIVE - SMALL MOBILE (max 480px) ===== */
+@media (max-width: 480px) {
+    .post-job-container {
+        padding: 15px 12px;
+        margin: 15px 0;
+    }
+
+    .post-job-container h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .button-group {
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+    .editor-toolbar {
+        padding: 5px;
+        gap: 2px;
+    }
+
+    .editor-toolbar button {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    .editor-content {
+        min-height: 80px;
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .combobox-selected-display {
+        min-height: 40px;
+        padding: 4px 8px;
+        gap: 4px;
+    }
+
+    .selected-skill-tag {
+        font-size: 12px;
+        padding: 4px 6px;
+    }
+
+    .error-message {
+        font-size: 11px;
+    }
+}
+
+/* ===== RESPONSIVE - EXTRA SMALL (max 360px) ===== */
+@media (max-width: 360px) {
+    .post-job-container {
+        padding: 12px 10px;
+    }
+
+    .post-job-container h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .form-group label {
+        font-size: 11px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .editor-content {
+        min-height: 60px;
+        font-size: 11px;
+    }
+
+    .error-message {
+        font-size: 10px;
+    }
 }

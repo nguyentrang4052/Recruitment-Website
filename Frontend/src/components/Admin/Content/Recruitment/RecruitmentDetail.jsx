@@ -149,10 +149,10 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                             <div className="info-row">
                                 <p className="info-label">Mô tả yêu cầu</p>
                                 {/* <p className="info-value">{localJob.other}</p> */}
-                                {/* <div
+                                <div
                                     className="section-content"
                                     dangerouslySetInnerHTML={formatDescription(localJob.requirement)}
-                                /> */}
+                                />
                             </div>
                             <div className="info-row">
                                 <p className="info-label">Kinh nghiệm</p>

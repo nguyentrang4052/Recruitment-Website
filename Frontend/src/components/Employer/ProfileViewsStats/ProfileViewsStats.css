@@ -26,10 +26,18 @@
   color: #007bff;
   font-size: 16px;
   cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
 .back-button:hover {
   text-decoration: underline;
+  background-color: rgba(0, 123, 255, 0.05);
 }
 
 .page-title {
@@ -40,9 +48,309 @@
   border-bottom: 2px solid #007bff;
   padding-bottom: 10px;
   display: inline-block;
+  margin: 0;
 }
 
 .chart-wrapper {
   width: 100%;
   height: 400px;
+  margin-top: 20px;
+}
+
+.loading-message,
+.error-message,
+.empty-message {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+}
+
+.loading-message {
+  color: #666;
+}
+
+.error-message {
+  color: #dc3545;
+}
+
+.empty-message {
+  color: #6c757d;
+  margin-top: 20px;
+}
+
+/* ======================== RESPONSIVE STYLES ======================== */
+
+/* Desktop Large (1280px - 1599px) */
+@media screen and (max-width: 1599px) {
+  .profile-views-container {
+    margin-left: 400px;
+    width: calc(100% - 440px);
+    max-width: 1000px;
+  }
+}
+
+/* Desktop Medium (1024px - 1279px) */
+@media screen and (max-width: 1279px) {
+  .profile-views-container {
+    margin-left: 320px;
+    width: calc(100% - 360px);
+    padding: 28px 35px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .chart-wrapper {
+    height: 380px;
+  }
+}
+
+/* Tablet Large (992px - 1023px) */
+@media screen and (max-width: 1023px) {
+  .profile-views-container {
+    margin-left: 0;
+    margin-right: 0;
+    width: calc(100% - 40px);
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 25px 30px;
+  }
+
+  .page-title {
+    font-size: 23px;
+  }
+
+  .chart-wrapper {
+    height: 360px;
+  }
+}
+
+/* Tablet Medium (768px - 991px) */
+@media screen and (max-width: 991px) {
+  .profile-views-container {
+    width: calc(100% - 32px);
+    margin: 25px auto;
+    padding: 22px 28px;
+  }
+
+  .header-row {
+    margin-bottom: 22px;
+  }
+
+  .back-button {
+    font-size: 15px;
+    padding: 7px 10px;
+  }
+
+  .page-title {
+    font-size: 22px;
+    padding-bottom: 8px;
+  }
+
+  .chart-wrapper {
+    height: 340px;
+  }
+}
+
+/* Mobile Large (576px - 767px) */
+@media screen and (max-width: 767px) {
+  .profile-views-container {
+    width: calc(100% - 24px);
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    position: static;
+  }
+
+  .back-button {
+    position: static;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .page-title {
+    font-size: 20px;
+    padding-bottom: 8px;
+    width: 100%;
+    text-align: left;
+    border-bottom-width: 2px;
+  }
+
+  .chart-wrapper {
+    height: 300px;
+    margin-top: 15px;
+  }
+
+  .loading-message,
+  .error-message,
+  .empty-message {
+    padding: 30px 15px;
+    font-size: 15px;
+  }
+}
+
+/* Mobile Medium (480px - 575px) */
+@media screen and (max-width: 575px) {
+  .profile-views-container {
+    width: calc(100% - 20px);
+    margin: 15px auto;
+    padding: 18px;
+  }
+
+  .header-row {
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .back-button {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  .page-title {
+    font-size: 18px;
+    padding-bottom: 6px;
+  }
+
+  .chart-wrapper {
+    height: 280px;
+  }
+
+  /* Tối ưu cho biểu đồ trên mobile */
+  .chart-wrapper .recharts-wrapper {
+    font-size: 12px;
+  }
+
+  .loading-message,
+  .error-message,
+  .empty-message {
+    padding: 25px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile Small (320px - 479px) */
+@media screen and (max-width: 479px) {
+  .profile-views-container {
+    width: calc(100% - 16px);
+    margin: 12px auto;
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .header-row {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .back-button {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  .page-title {
+    font-size: 16px;
+    padding-bottom: 6px;
+    border-bottom-width: 1px;
+    word-break: break-word;
+    line-height: 1.3;
+  }
+
+  .chart-wrapper {
+    height: 260px;
+    margin-top: 12px;
+  }
+
+  /* Tối ưu biểu đồ cho màn hình rất nhỏ */
+  .chart-wrapper .recharts-wrapper {
+    font-size: 10px;
+  }
+
+  .chart-wrapper .recharts-cartesian-axis-tick-value {
+    font-size: 10px;
+  }
+
+  .loading-message,
+  .error-message,
+  .empty-message {
+    padding: 20px 10px;
+    font-size: 13px;
+  }
+}
+
+/* Landscape orientation for mobile devices */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .profile-views-container {
+    margin: 10px auto;
+    padding: 15px;
+  }
+
+  .header-row {
+    margin-bottom: 15px;
+  }
+
+  .page-title {
+    font-size: 18px;
+  }
+
+  .chart-wrapper {
+    height: 220px;
+  }
+
+  .loading-message,
+  .error-message,
+  .empty-message {
+    padding: 20px 15px;
+  }
+}
+
+/* Ultra-wide screens (1920px+) */
+@media screen and (min-width: 1920px) {
+  .profile-views-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .chart-wrapper {
+    height: 450px;
+  }
+}
+
+/* Tablet in portrait mode */
+@media screen and (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+  .profile-views-container {
+    max-width: 700px;
+  }
+
+  .chart-wrapper {
+    height: 320px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .profile-views-container {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    box-shadow: none;
+  }
+
+  .back-button {
+    display: none;
+  }
+
+  .chart-wrapper {
+    height: 400px;
+    page-break-inside: avoid;
+  }
 }

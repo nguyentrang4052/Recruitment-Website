@@ -10,40 +10,7 @@ import dayjs from 'dayjs';
 function CompanyPage() {
   const [companiesPerRow, setCompaniesPerRow] = useState(3);
   const [reviews, setReviews] = useState([]);
-  // const reviews = [
-  //   {
-  //     id: 1,
-  //     company: 'NAVER VIETNAM',
-  //     logo: '🟢',
-  //     rating: 5,
-  //     text: 'Mình rất thích văn hóa làm việc cởi mở, đồng nghiệp thân...',
-  //     time: '5 hours ago'
-  //   },
-  //   {
-  //     id: 2,
-  //     company: 'Rakuten Fintech Vietnam Co., Ltd.',
-  //     logo: '🔴',
-  //     rating: 5,
-  //     text: 'All the colleagues are nice. They support me every time I needed....',
-  //     time: '6 hours ago'
-  //   },
-  //   {
-  //     id: 3,
-  //     company: 'Thoughtworks Vietnam',
-  //     logo: '🔵',
-  //     rating: 4,
-  //     text: 'Great learning environment and opportunities for growth...',
-  //     time: '8 hours ago'
-  //   },
-  //   {
-  //     id: 4,
-  //     company: 'Samsung Vietnam',
-  //     logo: '⚫',
-  //     rating: 5,
-  //     text: 'Excellent benefits and professional work environment...',
-  //     time: '10 hours ago'
-  //   }
-  // ];
+ 
 useEffect(() => {
   const fetchReview = async () => {
     try {

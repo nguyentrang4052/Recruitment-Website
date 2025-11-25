@@ -22,7 +22,9 @@ function Revenue() {
     totalRevenue: 0,
     monthlyGrowth: 0,
     totalOrders: 0,
-    avgOrderValue: 0
+    avgOrderValue: 0,
+    ordersGrowth: 0,
+    avgValueGrowth: 0
   });
 
   useEffect(() => {
@@ -36,16 +38,18 @@ function Revenue() {
         );
         if (!res.ok) throw new Error('Không lấy được doanh thu');
         const data = await res.json();
+
+        console.log('📊 Revenue data:', data);
+
         setStats(data.summary);
         setRevenueData(data.monthly);
         setPackageData(data.byPackage);
       } catch (e) {
-        console.error(e);
+        console.error('❌ Lỗi fetch revenue:', e);
       }
     };
     fetchRevenue();
   }, []);
-
 
   const formatCurrency = (value) =>
     new Intl.NumberFormat('vi-VN', {
@@ -56,32 +60,51 @@ function Revenue() {
   const formatNumber = (value) =>
     new Intl.NumberFormat('vi-VN').format(value);
 
+  // Format phần trăm tăng trưởng với mũi tên
+  const formatGrowth = (value) => {
+    if (!value || value === 0) return '0%';
+    const sign = value > 0 ? '↑' : '↓';
+    return `${sign} ${Math.abs(value).toFixed(1)}%`;
+  };
+
+  // Lấy class CSS dựa trên giá trị tăng/giảm
+  const getGrowthClass = (value) => {
+    if (!value || value === 0) return '';
+    return value > 0 ? 'stat-change-positive' : 'stat-change-negative';
+  };
+
   return (
     <div className="revenue-container">
       <h1 className="revenue-title">Thống kê Doanh thu</h1>
 
-
+      {/* Stats Cards */}
       <div className="stats-grid">
         <div className="stat-card stat-card-purple">
           <div className="stat-label">Tổng doanh thu</div>
           <div className="stat-value">{formatCurrency(stats.totalRevenue)}</div>
-          <div className="stat-change">↑ {stats.monthlyGrowth}% so với tháng trước</div>
+          <div className={`stat-change ${getGrowthClass(stats.monthlyGrowth)}`}>
+            {formatGrowth(stats.monthlyGrowth)} so với tháng trước
+          </div>
         </div>
 
         <div className="stat-card stat-card-pink">
           <div className="stat-label">Tổng đơn hàng</div>
           <div className="stat-value">{formatNumber(stats.totalOrders)}</div>
-          <div className="stat-change">↑ 8.2% so với tháng trước</div>
+          <div className={`stat-change ${getGrowthClass(stats.ordersGrowth)}`}>
+            {formatGrowth(stats.ordersGrowth)} so với tháng trước
+          </div>
         </div>
 
         <div className="stat-card stat-card-blue">
           <div className="stat-label">Giá trị TB/Đơn</div>
           <div className="stat-value">{formatCurrency(stats.avgOrderValue)}</div>
-          <div className="stat-change">↑ 4.1% so với tháng trước</div>
+          <div className={`stat-change ${getGrowthClass(stats.avgValueGrowth)}`}>
+            {formatGrowth(stats.avgValueGrowth)} so với tháng trước
+          </div>
         </div>
       </div>
 
-
+      {/* Chart Section */}
       <div className="chart-section">
         <div className="chart-header">
           <h2 className="chart-title">Biểu đồ Doanh thu</h2>
@@ -144,7 +167,7 @@ function Revenue() {
         </ResponsiveContainer>
       </div>
 
-
+      {/* Package Revenue Section */}
       <div className="package-section">
         <h2 className="package-title">Doanh thu theo Gói dịch vụ</h2>
         <div className="package-grid">
@@ -157,7 +180,7 @@ function Revenue() {
                 </div>
                 <div className="package-revenue-info">
                   <div className="package-revenue">{formatCurrency(pkg.revenue)}</div>
-                  <div className="package-percentage">{pkg.percentage}% tổng DT</div>
+                  <div className="package-percentage">{pkg.percentage.toFixed(1)}% tổng DT</div>
                 </div>
               </div>
               <div className="progress-bar">

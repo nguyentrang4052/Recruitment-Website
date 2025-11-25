@@ -2,8 +2,6 @@
     font-family: 'Inter', 'Segoe UI', sans-serif;
     max-width: 1200px;
     margin-left: 300px;
-    /* margin: 0 auto;
-    padding: 24px; */
     background: #f8f9fa;
 }
 
@@ -409,6 +407,13 @@
     transform: translateY(0);
 }
 
+.complete-payment-btn:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 /* Payment Summary Sidebar */
 .payment-summary-box {
     background: white;
@@ -464,91 +469,6 @@
     margin-right: 8px;
 }
 
-/* Responsive Design */
-@media (max-width: 992px) {
-    .payment-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .payment-summary-box {
-        position: static;
-        order: -1;
-    }
-
-    .qr-payment-section {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .qr-code-box {
-        max-width: 200px;
-        margin: 0 auto;
-    }
-}
-
-@media (max-width: 768px) {
-    .payment-page-container {
-        padding: 16px;
-    }
-
-    .payment-header {
-        font-size: 1.75rem;
-    }
-
-    .payment-subheader {
-        font-size: 1rem;
-        margin-bottom: 24px;
-    }
-
-    .section-card {
-        padding: 20px;
-    }
-
-    .bank-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
-    }
-
-    .bank-item {
-        height: 60px;
-        padding: 12px;
-    }
-
-    .card-info-row {
-        grid-template-columns: 1fr;
-    }
-
-    .qr-info-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .qr-info-label {
-        min-width: auto;
-    }
-}
-
-@media (max-width: 480px) {
-    .payment-header {
-        font-size: 1.5rem;
-    }
-
-    .section-card {
-        padding: 16px;
-    }
-
-    .payment-summary-box {
-        padding: 20px;
-    }
-
-    .bank-grid {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    }
-}
-
-/* Thêm vào file PaymentPage.css */
-
 /* QR Payment Method Option */
 .method-option.qr-payment {
     border: 2px solid #e2e8f0;
@@ -574,82 +494,457 @@
     margin-bottom: 20px;
 }
 
-/* QR Section */
-.qr-payment-section {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 24px;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-}
-
-.qr-code-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
 .qr-code-box canvas {
     max-width: 100% !important;
     height: auto !important;
 }
 
-.qr-info {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+/* ======================== RESPONSIVE STYLES ======================== */
+
+/* Desktop Large (1280px - 1599px) */
+@media screen and (max-width: 1599px) {
+    .payment-page-container {
+        margin-left: 280px;
+        max-width: calc(100% - 320px);
+    }
 }
 
-.qr-info h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 8px;
+/* Desktop Medium (1024px - 1279px) */
+@media screen and (max-width: 1279px) {
+    .payment-page-container {
+        margin-left: 260px;
+        max-width: calc(100% - 300px);
+    }
+
+    .payment-layout {
+        grid-template-columns: 1fr 340px;
+        gap: 20px;
+    }
+
+    .payment-summary-box {
+        padding: 24px;
+    }
 }
 
-.qr-info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 12px;
-    background: white;
-    border-radius: 8px;
-    font-size: 13px;
+/* Tablet Large (992px - 1023px) */
+@media screen and (max-width: 1023px) {
+    .payment-page-container {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .payment-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .payment-summary-box {
+        position: static;
+        order: -1;
+    }
+
+    .qr-payment-section {
+        grid-template-columns: 180px 1fr;
+        gap: 24px;
+        padding: 20px;
+    }
+
+    .qr-code-box {
+        padding: 12px;
+    }
 }
 
-.qr-info-label {
-    color: #64748b;
-    font-weight: 600;
-    min-width: 100px;
+/* Tablet Medium (768px - 991px) */
+@media screen and (max-width: 991px) {
+    .payment-page-container {
+        padding: 16px;
+    }
+
+    .payment-header {
+        font-size: 1.75rem;
+        margin-bottom: 10px;
+    }
+
+    .payment-subheader {
+        font-size: 1rem;
+        margin-bottom: 24px;
+    }
+
+    .section-card {
+        padding: 24px;
+    }
+
+    .section-card h2 {
+        font-size: 1.15rem;
+    }
+
+    .bank-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .bank-item {
+        height: 60px;
+        padding: 12px;
+    }
+
+    .card-info-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .qr-payment-section {
+        grid-template-columns: 160px 1fr;
+        gap: 20px;
+    }
 }
 
-.qr-info-value {
-    color: #0f172a;
-    font-weight: 600;
-    text-align: right;
-}
+/* Mobile Large (576px - 767px) */
+@media screen and (max-width: 767px) {
+    .payment-page-container {
+        padding: 12px;
+    }
 
-.qr-amount {
-    color: #6366f1;
-    font-size: 14px;
-    font-weight: 700;
-}
+    .back-btn {
+        font-size: 13px;
+        padding: 8px 14px;
+        margin-bottom: 16px;
+    }
 
-/* Responsive */
-@media (max-width: 768px) {
+    .payment-header {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .payment-subheader {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .payment-layout {
+        gap: 20px;
+    }
+
+    .section-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .section-card h2 {
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+    }
+
+    .section-card label {
+        font-size: 13px;
+    }
+
+    .summary-item {
+        padding: 10px 0;
+        font-size: 13px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .feature-list-summary li {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .method-option {
+        padding: 14px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .method-option span {
+        font-size: 14px;
+    }
+
+    .method-option svg {
+        font-size: 18px;
+    }
+
     .qr-payment-section {
         grid-template-columns: 1fr;
         gap: 20px;
+        padding: 16px;
     }
-    
+
     .qr-code-box {
         max-width: 200px;
         margin: 0 auto;
+        padding: 12px;
+    }
+
+    .qr-info h3 {
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    .qr-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .qr-info-label {
+        min-width: auto;
+    }
+
+    .qr-info-value {
+        text-align: left;
+    }
+
+    .qr-amount {
+        font-size: 15px;
+    }
+
+    .payment-form input {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .complete-payment-btn {
+        padding: 12px;
+        font-size: 14px;
+        margin-top: 20px;
+    }
+
+    .payment-summary-box {
+        padding: 20px;
+    }
+
+    .payment-summary-box h3 {
+        font-size: 1.1rem;
+    }
+
+    .price-row {
+        font-size: 13px;
+        padding: 10px 0;
+    }
+
+    .total-row {
+        font-size: 1.15rem;
+        padding: 16px 0;
+    }
+
+    .security-note {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .bank-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 8px;
+    }
+
+    .bank-item {
+        height: 55px;
+        padding: 10px;
+    }
+}
+
+/* Mobile Medium (480px - 575px) */
+@media screen and (max-width: 575px) {
+    .payment-page-container {
+        padding: 10px;
+    }
+
+    .payment-header {
+        font-size: 1.35rem;
+    }
+
+    .payment-subheader {
+        font-size: 0.9rem;
+    }
+
+    .section-card {
+        padding: 16px;
+    }
+
+    .section-card h2 {
+        font-size: 1rem;
+    }
+
+    .feature-list-summary li {
+        font-size: 12px;
+    }
+
+    .check-icon {
+        font-size: 14px;
+    }
+
+    .method-option {
+        padding: 12px 14px;
+    }
+
+    .method-option span {
+        font-size: 13px;
+    }
+
+    .qr-code-box {
+        max-width: 180px;
+        padding: 10px;
+    }
+
+    .qr-info-row {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .bank-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+
+    .bank-item {
+        height: 50px;
+        padding: 8px;
+    }
+}
+
+/* Mobile Small (320px - 479px) */
+@media screen and (max-width: 479px) {
+    .payment-page-container {
+        padding: 8px;
+    }
+
+    .back-btn {
+        font-size: 12px;
+        padding: 7px 12px;
+    }
+
+    .payment-header {
+        font-size: 1.25rem;
+        letter-spacing: -0.3px;
+    }
+
+    .payment-subheader {
+        font-size: 0.85rem;
+        margin-bottom: 16px;
+    }
+
+    .section-card {
+        padding: 14px;
+        border-radius: 10px;
+    }
+
+    .section-card h2 {
+        font-size: 0.95rem;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .section-card label {
+        font-size: 12px;
+        margin-top: 12px;
+    }
+
+    .summary-item {
+        font-size: 12px;
+        padding: 8px 0;
+    }
+
+    .feature-list-summary li {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+
+    .method-option {
+        padding: 10px 12px;
+    }
+
+    .method-option span {
+        font-size: 12px;
+    }
+
+    .method-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    .qr-payment-section {
+        padding: 12px;
+    }
+
+    .qr-code-box {
+        max-width: 160px;
+        padding: 8px;
+    }
+
+    .qr-info h3 {
+        font-size: 0.9rem;
+    }
+
+    .qr-info-row {
+        font-size: 11px;
+        padding: 6px 8px;
+    }
+
+    .qr-amount {
+        font-size: 13px;
+    }
+
+    .payment-form input {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .complete-payment-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .payment-summary-box {
+        padding: 16px;
+    }
+
+    .payment-summary-box h3 {
+        font-size: 1rem;
+        margin-bottom: 16px;
+    }
+
+    .price-row {
+        font-size: 12px;
+        padding: 8px 0;
+    }
+
+    .total-row {
+        font-size: 1.05rem;
+        padding: 14px 0;
+    }
+
+    .security-note {
+        font-size: 11px;
+        padding: 8px;
+        margin-top: 16px;
+    }
+
+    .bank-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 6px;
+    }
+
+    .bank-item {
+        height: 45px;
+        padding: 6px;
+    }
+}
+
+/* Ultra-wide screens (1920px+) */
+@media screen and (min-width: 1920px) {
+    .payment-page-container {
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .payment-layout {
+        grid-template-columns: 1fr 420px;
     }
 }

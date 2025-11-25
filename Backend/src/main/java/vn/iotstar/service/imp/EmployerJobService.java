@@ -70,6 +70,7 @@ public class EmployerJobService implements IEmployerJobService {
         recruitment.setApplyBy(updateDTO.getApplyBy());
         recruitment.setDeadline(updateDTO.getDeadline());
         recruitment.setQuantity(updateDTO.getQuantity());
+        recruitment.setRequirement(updateDTO.getRequirement());
       
 
         RecruitmentNews updated = recruitmentRepository.save(recruitment);
@@ -138,6 +139,7 @@ public class EmployerJobService implements IEmployerJobService {
         dto.setDeadline(recruitment.getDeadline());
         dto.setQuantity(recruitment.getQuantity());
         dto.setIsActive(recruitment.getIsActive());
+        dto.setRequirement(recruitment.getRequirement());
         
       
         if (recruitment.getIsActive() != null && !recruitment.getIsActive()) {

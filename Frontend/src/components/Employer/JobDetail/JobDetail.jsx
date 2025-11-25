@@ -31,7 +31,6 @@ const htmlToPlainText = (html) => {
     const temp = document.createElement('div');
     temp.innerHTML = html;
 
-
     const listItems = temp.querySelectorAll('li');
     if (listItems.length > 0) {
         return Array.from(listItems)
@@ -177,6 +176,7 @@ const JobDetail = ({ jobId, onBack }) => {
         setEditData({
             ...job,
             description: htmlToPlainText(job.description),
+            requirement: htmlToPlainText(job.requirement),
             benefit: htmlToPlainText(job.benefit),
             applyBy: htmlToPlainText(job.applyBy)
         });
@@ -186,7 +186,6 @@ const JobDetail = ({ jobId, onBack }) => {
         setIsEditing(false);
         setEditData(job);
     };
-
 
     const handleSaveEdit = async () => {
         if (!window.confirm('Bạn có chắc muốn lưu thay đổi?')) return;
@@ -252,11 +251,9 @@ const JobDetail = ({ jobId, onBack }) => {
             e.preventDefault();
             const { name, value, selectionStart } = e.target;
 
-
             const newValue = value.substring(0, selectionStart) + '\n• ' + value.substring(selectionStart);
 
             setEditData(prev => ({ ...prev, [name]: newValue }));
-
 
             setTimeout(() => {
                 e.target.selectionStart = e.target.selectionEnd = selectionStart + 3;
@@ -358,6 +355,19 @@ const JobDetail = ({ jobId, onBack }) => {
                                     dangerouslySetInnerHTML={{ __html: formatHtmlContent(job.description) }}
                                 />
                             </div>
+
+                            {job.requirement && (
+                                <div className="jd-section">
+                                    <h3 className="jd-section-title">
+                                        <FontAwesomeIcon icon={faFileAlt} />
+                                        Yêu cầu công việc
+                                    </h3>
+                                    <div
+                                        className="jd-section-content formatted-content"
+                                        dangerouslySetInnerHTML={{ __html: formatHtmlContent(job.requirement) }}
+                                    />
+                                </div>
+                            )}
 
                             {job.skills && job.skills.length > 0 && (
                                 <div className="jd-section">
@@ -544,6 +554,18 @@ const JobDetail = ({ jobId, onBack }) => {
                                     rows="6"
                                     required
                                     placeholder="Nhập mô tả công việc (xuống dòng mỗi ý, dùng dấu • hoặc - cho bullet points)"
+                                />
+                            </div>
+
+                            <div className="jd-form-group">
+                                <label>Yêu cầu công việc</label>
+                                <textarea
+                                    name="requirement"
+                                    value={editData.requirement || ''}
+                                    onChange={handleInputChange}
+                                    onKeyDown={handleTextareaKeyDown}
+                                    rows="6"
+                                    placeholder="Nhập yêu cầu công việc (xuống dòng mỗi ý, dùng dấu • hoặc - cho bullet points)"
                                 />
                             </div>
 

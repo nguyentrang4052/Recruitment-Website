@@ -12,6 +12,7 @@ import { formatDate } from '../../../../utils/Format'
 import { useNavigate } from 'react-router-dom';
 import { isTokenExpired } from '../../../../utils/Auth'
 import { formatDescription } from '../../../../utils/formatDescription';
+import { formatRangeShort } from '../../../../utils/formatSalary';
 function RecruitDetail() {
 
     const { rnid } = useParams();
@@ -77,42 +78,6 @@ function RecruitDetail() {
     const [msgType, setMsgType] = useState("");
 
 
-    //     e.preventDefault();
-    //     if (!cvFile) {
-    //         setMsg("Vui lòng chọn CV!");
-    //         setMsgType("error");
-    //         return;
-    //     }
-
-
-    //     const applicantId = localStorage.getItem("applicantID");
-
-    //     const formData = new FormData();
-    //     formData.append("CV", cvFile);
-    //     formData.append("coverLetter", coverLetter);
-    //     formData.append("RNID", rnid);
-    //     formData.append("applicantID", applicantId);
-
-    //     const token = localStorage.getItem("token");
-
-    //     try {
-    //         await axios.post(
-    //             "http://localhost:8080/api/applicant/apply",
-    //             formData,
-    //             {
-    //                 headers: token ? { Authorization: `Bearer ${token}` } : {},
-    //             }
-    //         );
-    //         alert("Ứng tuyển thành công!");
-
-    //         setCoverLetter(null);
-    //         closeForm();
-    //     } catch {
-    //         setCoverLetter(null);
-    //         setMsg("Ứng tuyển thất bại. Vui lòng thử lại. (Chỉ được ứng tuyển 1 lần cho mỗi tin tuyển dụng)");
-    //         setMsgType("error");
-    //     }
-    // };
     const handleApplyJob = async (e) => {
         e.preventDefault();
 
@@ -239,17 +204,16 @@ function RecruitDetail() {
     const fields = [
         { label: 'Yêu cầu công việc', value: recruitmentDetail.requirement },
         { label: 'Quyền lợi', value: recruitmentDetail.benefit },
-        { label: 'Thu nhập', value: recruitmentDetail.salary },
-        { label: 'Hình thức làm việc', value: recruitmentDetail.form_of_work },
+        { label: 'Thu nhập', value: formatRangeShort(recruitmentDetail.salary) },
+        { label: 'Hình thức làm việc', value: recruitmentDetail.formOfWork },
         { label: 'Cấp bậc', value: recruitmentDetail.level },
         { label: 'Học vấn', value: recruitmentDetail.literacy },
         { label: 'Kinh nghiệm', value: recruitmentDetail.experience },
         { label: 'Địa điểm làm việc', value: recruitmentDetail.location },
-        { label: 'Thời gian làm việc', value: recruitmentDetail.working_time },
-        { label: 'Số lượng tuyển', value: recruitmentDetail.numbers_of_records && `${recruitmentDetail.numbers_of_records} người` },
+        { label: 'Thời gian làm việc', value: recruitmentDetail.workingTime },
+        { label: 'Số lượng tuyển', value: recruitmentDetail.quantity },
         { label: 'Hạn nộp hồ sơ', value: formatDate(recruitmentDetail.deadline) },
-
-        { label: 'Email nộp hồ sơ', value: recruitmentDetail.apply_by, isMail: true },
+        { label: 'Cách thức ứng tuyển', value: recruitmentDetail.applyBy },
     ];
     return (
         <>
@@ -266,7 +230,7 @@ function RecruitDetail() {
                                         <strong> Mức lương:</strong><br />
                                     </div>
                                     <div className="info-detail-value">
-                                        <span> {recruitmentDetail.salary}</span>
+                                        <span> {formatRangeShort(recruitmentDetail.salary)}</span>
                                     </div>
                                 </div>
                                 <div className="info-block">
@@ -319,7 +283,7 @@ function RecruitDetail() {
                             </div>
 
                             {fields.map(
-                                ({ label, value, isMail }) => {
+                                ({ label, value}) => {
                                     if (!value) return null;
 
 
@@ -347,9 +311,14 @@ function RecruitDetail() {
                                         );
                                     }
 
-                                    return (
+                                    // return (
+                                    //     <div key={label}>
+                                    //         <strong>{label}:</strong> {isMail ? <a href={`mailto:${value}`}>{value}</a> : value}
+                                    //     </div>
+                                    // );
+                                     return (
                                         <div key={label}>
-                                            <strong>{label}:</strong> {isMail ? <a href={`mailto:${value}`}>{value}</a> : value}
+                                            <strong>{label}:</strong> {value}
                                         </div>
                                     );
                                 })}
@@ -373,7 +342,7 @@ function RecruitDetail() {
                                             </h4>
                                             <p className="related-job-company">{job.employer.name}</p>
                                             <p className="related-job-location"><RiMapPinFill />{" " + job.location}</p>
-                                            <p className="related-job-salary"><TfiMoney />{" " + job.salary}</p>
+                                            <p className="related-job-salary"><TfiMoney />{" " + formatRangeShort(job.salary)}</p>
                                         </div>
                                     </li>
                                 ))}

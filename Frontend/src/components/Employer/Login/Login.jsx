@@ -101,9 +101,12 @@ function Login() {
                 console.warn("Role không xác định, chuyển về login")
                 setError("Tài khoản Google này chưa được đăng ký với vai trò nhà tuyển dụng.")
             }
-        } catch (err) {
-            console.error("Đăng nhập bằng Google thất bại:", err)
-            setError("Đăng nhập bằng Google thất bại. Vui lòng thử lại.")
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                setError(error.response.data)
+            } else {
+                setError("Đăng nhập với google thất bại. Vui lòng thử lại sau.")
+            }
         } finally {
             setLoading(false)
         }

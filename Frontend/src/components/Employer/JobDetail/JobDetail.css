@@ -3,6 +3,7 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     width: 1000px;
     margin-left: 300px;
+    padding: 20px;
 }
 
 .jd-header {
@@ -227,7 +228,6 @@
     color: white;
 }
 
-/* ✅ Thêm style cho trạng thái INACTIVE */
 .jd-status-inactive {
     background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
     color: white;
@@ -388,76 +388,621 @@
     margin-bottom: 0;
 }
 
-@media (max-width: 992px) {
+.loading-spinner,
+.error-message {
+    text-align: center;
+    padding: 50px 20px;
+    font-size: 16px;
+    color: #666;
+}
+
+.error-message button {
+    margin: 10px 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #667eea;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.error-message button:hover {
+    background: #5568d3;
+}
+
+/* ======================== RESPONSIVE STYLES ======================== */
+
+/* Desktop Large (1280px - 1599px) */
+@media screen and (max-width: 1599px) {
+    .jd-container {
+        margin-left: 280px;
+        width: calc(100% - 320px);
+    }
+}
+
+/* Desktop Medium (1024px - 1279px) */
+@media screen and (max-width: 1279px) {
+    .jd-container {
+        margin-left: 260px;
+        width: calc(100% - 300px);
+        padding: 18px;
+    }
+
+    .jd-content {
+        grid-template-columns: 1.5fr 1fr;
+        gap: 18px;
+    }
+
+    .jd-main {
+        padding: 22px;
+    }
+}
+
+/* Tablet Large (992px - 1023px) */
+@media screen and (max-width: 1023px) {
+    .jd-container {
+        margin-left: 0;
+        width: 100%;
+        padding: 16px;
+    }
+
+    .jd-header {
+        padding: 14px 18px;
+    }
+
+    .jd-header h2 {
+        font-size: 18px;
+    }
+
     .jd-content {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
-    
+
     .jd-sidebar {
         position: static;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 15px;
     }
-}
 
-@media (max-width: 768px) {
-    .jd-container {
-        padding: 15px;
-    }
-    
-    .jd-header {
-        padding: 12px 15px;
-    }
-    
-    .jd-header h2 {
-        font-size: 18px;
-    }
-    
-    .jd-btn {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
-    
     .jd-main {
         padding: 20px;
     }
-    
+
     .jd-title {
-        font-size: 20px;
-    }
-    
-    .jd-meta {
-        gap: 10px;
-    }
-    
-    .jd-sidebar {
-        grid-template-columns: 1fr;
-    }
-    
-    .jd-form-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .jd-section-title {
-        font-size: 16px;
+        font-size: 22px;
     }
 }
 
-@media (max-width: 480px) {
+/* Tablet Medium (768px - 991px) */
+@media screen and (max-width: 991px) {
+    .jd-container {
+        padding: 15px;
+    }
+
+    .jd-header {
+        padding: 12px 16px;
+        gap: 12px;
+    }
+
+    .jd-header h2 {
+        font-size: 17px;
+    }
+
+    .jd-btn {
+        font-size: 13px;
+        padding: 6px 12px;
+        gap: 5px;
+    }
+
+    .jd-actions {
+        gap: 8px;
+    }
+
+    .jd-main {
+        padding: 18px;
+    }
+
+    .jd-title {
+        font-size: 20px;
+    }
+
+    .jd-meta {
+        gap: 12px;
+        font-size: 12px;
+    }
+
+    .jd-section-title {
+        font-size: 16px;
+    }
+
+    .jd-section-content {
+        font-size: 13px;
+    }
+
+    .jd-card {
+        padding: 18px;
+    }
+
+    .jd-card h3 {
+        font-size: 16px;
+    }
+
+    .jd-info-row {
+        padding: 9px 0;
+    }
+
+    .jd-label,
+    .jd-value {
+        font-size: 12px;
+    }
+
+    .jd-stat-label {
+        font-size: 12px;
+    }
+
+    .jd-stat-value {
+        font-size: 20px;
+    }
+
+    .jd-form-row {
+        gap: 10px;
+    }
+}
+
+/* Mobile Large (576px - 767px) */
+@media screen and (max-width: 767px) {
+    .jd-container {
+        padding: 12px;
+    }
+
     .jd-header {
         flex-direction: column;
         align-items: flex-start;
+        padding: 12px 14px;
     }
-    
+
+    .jd-header h2 {
+        font-size: 16px;
+        width: 100%;
+    }
+
     .jd-actions {
         width: 100%;
-        justify-content: flex-end;
+        justify-content: flex-start;
+        gap: 6px;
     }
-    
+
+    .jd-btn {
+        font-size: 12px;
+        padding: 7px 11px;
+        flex: 1;
+        justify-content: center;
+        min-width: fit-content;
+    }
+
+    .jd-main {
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .jd-title-section {
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+    }
+
+    .jd-title {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
     .jd-meta {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+        font-size: 11px;
+    }
+
+    .jd-section {
+        margin-bottom: 20px;
+    }
+
+    .jd-section-title {
+        font-size: 15px;
+        gap: 6px;
+        padding-bottom: 6px;
+    }
+
+    .jd-section-content {
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .jd-skills {
+        gap: 6px;
+    }
+
+    .jd-skill {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+
+    .jd-sidebar {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .jd-card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .jd-card h3 {
+        font-size: 15px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .jd-info-row {
+        padding: 8px 0;
+        flex-wrap: wrap;
+    }
+
+    .jd-label,
+    .jd-value {
+        font-size: 11px;
+    }
+
+    .jd-value {
+        text-align: left;
+        word-break: break-word;
+    }
+
+    .jd-status {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+
+    .jd-stat-item {
+        padding: 10px;
+    }
+
+    .jd-stat-label {
+        font-size: 11px;
+        gap: 6px;
+    }
+
+    .jd-stat-value {
+        font-size: 18px;
+    }
+
+    .jd-form {
+        gap: 14px;
+    }
+
+    .jd-form-group label {
+        font-size: 12px;
+    }
+
+    .jd-form-group input,
+    .jd-form-group textarea,
+    .jd-form-group select {
+        padding: 9px;
+        font-size: 13px;
+    }
+
+    .jd-form-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .jd-form-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .jd-form-actions .jd-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .formatted-content p {
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+    .formatted-content ul {
+        padding-left: 20px !important;
+    }
+
+    .formatted-content li {
+        margin-bottom: 6px;
+        font-size: 12px;
+    }
+}
+
+/* Mobile Medium (480px - 575px) */
+@media screen and (max-width: 575px) {
+    .jd-container {
+        padding: 10px;
+    }
+
+    .jd-header {
+        padding: 10px 12px;
+        border-radius: 10px;
+    }
+
+    .jd-header h2 {
+        font-size: 15px;
+    }
+
+    .jd-actions {
+        flex-wrap: wrap;
+    }
+
+    .jd-btn {
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+
+    .jd-main {
+        padding: 14px;
+    }
+
+    .jd-title {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    .jd-meta-item {
+        font-size: 10px;
+    }
+
+    .jd-section-title {
+        font-size: 14px;
+    }
+
+    .jd-section-content {
+        font-size: 11px;
+    }
+
+    .jd-skill {
+        font-size: 10px;
+        padding: 4px 9px;
+    }
+
+    .jd-card {
+        padding: 14px;
+    }
+
+    .jd-card h3 {
+        font-size: 14px;
+    }
+
+    .jd-info-row {
+        padding: 7px 0;
+    }
+
+    .jd-label,
+    .jd-value {
+        font-size: 10px;
+    }
+
+    .jd-stat-label {
+        font-size: 10px;
+    }
+
+    .jd-stat-value {
+        font-size: 16px;
+    }
+
+    .jd-form-group input,
+    .jd-form-group textarea,
+    .jd-form-group select {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .formatted-content p,
+    .formatted-content li {
+        font-size: 11px;
+    }
+}
+
+/* Mobile Small (320px - 479px) */
+@media screen and (max-width: 479px) {
+    .jd-container {
+        padding: 8px;
+    }
+
+    .jd-header {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+
+    .jd-header h2 {
+        font-size: 14px;
+    }
+
+    .jd-actions {
+        gap: 5px;
+    }
+
+    .jd-btn {
+        font-size: 10px;
+        padding: 6px 8px;
+        gap: 4px;
+        border-radius: 5px;
+    }
+
+    .jd-main {
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .jd-title-section {
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+        border-bottom-width: 2px;
+    }
+
+    .jd-title {
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+
+    .jd-meta {
+        gap: 6px;
+    }
+
+    .jd-meta-item {
+        font-size: 9px;
+    }
+
+    .jd-section {
+        margin-bottom: 16px;
+    }
+
+    .jd-section-title {
+        font-size: 13px;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+    }
+
+    .jd-section-content {
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .jd-skills {
+        gap: 5px;
+    }
+
+    .jd-skill {
+        font-size: 9px;
+        padding: 4px 8px;
+        border-radius: 15px;
+    }
+
+    .jd-card {
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .jd-card h3 {
+        font-size: 13px;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+    }
+
+    .jd-info-row {
+        padding: 6px 0;
+    }
+
+    .jd-label,
+    .jd-value {
+        font-size: 9px;
+    }
+
+    .jd-status {
+        font-size: 9px;
+        padding: 3px 8px;
+    }
+
+    .jd-stat-item {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    .jd-stat-label {
+        font-size: 9px;
+        gap: 5px;
+    }
+
+    .jd-stat-value {
+        font-size: 15px;
+    }
+
+    .jd-form {
+        gap: 12px;
+    }
+
+    .jd-form-group label {
+        font-size: 11px;
+    }
+
+    .jd-form-group input,
+    .jd-form-group textarea,
+    .jd-form-group select {
+        padding: 7px;
+        font-size: 11px;
+        border-radius: 6px;
+    }
+
+    .jd-form-actions .jd-btn {
+        padding: 9px;
+        font-size: 11px;
+    }
+
+    .formatted-content p,
+    .formatted-content li {
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .formatted-content ul {
+        padding-left: 18px !important;
+    }
+
+    .loading-spinner,
+    .error-message {
+        padding: 30px 15px;
+        font-size: 13px;
+    }
+
+    .error-message button {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+}
+
+/* Landscape orientation for mobile devices */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .jd-container {
+        padding: 10px;
+    }
+
+    .jd-header {
+        padding: 8px 12px;
+        margin-bottom: 12px;
+    }
+
+    .jd-sidebar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .jd-main {
+        padding: 12px;
+    }
+
+    .jd-section {
+        margin-bottom: 16px;
+    }
+}
+
+/* Ultra-wide screens (1920px+) */
+@media screen and (min-width: 1920px) {
+    .jd-container {
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .jd-content {
+        grid-template-columns: 2.5fr 1fr;
     }
 }

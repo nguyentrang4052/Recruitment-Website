@@ -33,4 +33,5 @@ public class RecruitmentNewsDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate deadline;
     private BigDecimal minSalary;
+    private String requirement;
 }

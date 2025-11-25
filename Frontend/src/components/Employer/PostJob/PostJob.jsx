@@ -70,6 +70,7 @@ const PostJob = () => {
     const initialJobData = {
         position: '',
         description: '',
+        requirement: '',
         requirements: [],
         minSalary: '',
         maxSalary: '',
@@ -133,8 +134,112 @@ const PostJob = () => {
         });
     };
 
+
+    const validateForm = () => {
+
+        if (!jobData.position || jobData.position.trim() === '') {
+            alert('❌ Vui lòng nhập vị trí tuyển dụng!');
+            return false;
+        }
+
+
+        if (!jobData.location || jobData.location.trim() === '') {
+            alert('❌ Vui lòng nhập địa điểm làm việc!');
+            return false;
+        }
+
+
+        const descriptionText = jobData.description.replace(/<[^>]*>/g, '').trim();
+        if (!descriptionText) {
+            alert('❌ Vui lòng nhập mô tả công việc!');
+            return false;
+        }
+
+
+        const requirementText = jobData.requirement.replace(/<[^>]*>/g, '').trim();
+        if (!requirementText) {
+            alert('❌ Vui lòng nhập yêu cầu công việc!');
+            return false;
+        }
+
+
+        if (!jobData.deadline || jobData.deadline.trim() === '') {
+            alert('❌ Vui lòng chọn hạn nộp hồ sơ!');
+            return false;
+        }
+
+        const selectedDate = new Date(jobData.deadline);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selectedDate < today) {
+            alert('❌ Hạn nộp hồ sơ phải lớn hơn ngày hiện tại!');
+            return false;
+        }
+
+        if (!jobData.minSalary || jobData.minSalary.trim() === '') {
+            alert('❌ Vui lòng nhập mức lương tối thiểu!');
+            return false;
+        }
+
+        if (!jobData.maxSalary || jobData.maxSalary.trim() === '') {
+            alert('❌ Vui lòng nhập mức lương tối đa!');
+            return false;
+        }
+
+
+
+
+        if (jobData.minSalary !== '') {
+            const minSal = parseFloat(jobData.minSalary);
+            if (isNaN(minSal) || minSal < 0) {
+                alert('❌ Mức lương tối thiểu không được âm!');
+                return false;
+            }
+        }
+
+
+        if (jobData.maxSalary !== '') {
+            const maxSal = parseFloat(jobData.maxSalary);
+            if (isNaN(maxSal) || maxSal < 0) {
+                alert('❌ Mức lương tối đa không được âm!');
+                return false;
+            }
+        }
+
+
+        if (jobData.minSalary !== '' && jobData.maxSalary !== '') {
+            const minSal = parseFloat(jobData.minSalary);
+            const maxSal = parseFloat(jobData.maxSalary);
+            if (minSal > maxSal) {
+                alert('❌ Mức lương tối thiểu phải nhỏ hơn hoặc bằng mức lương tối đa!');
+                return false;
+            }
+        }
+
+
+        if (!jobData.quantity || jobData.quantity.trim() === '') {
+            alert('❌ Vui lòng nhập số lượng tuyển!');
+            return false;
+        }
+
+        const qty = parseInt(jobData.quantity);
+        if (isNaN(qty) || qty <= 0) {
+            alert('❌ Số lượng tuyển phải lớn hơn 0!');
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+
+        if (!validateForm()) {
+            return;
+        }
+
         setLoading(true);
 
         const token = localStorage.getItem('token');
@@ -222,13 +327,21 @@ const PostJob = () => {
         skill.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
     return (
         <div className="post-job-container">
             <h3>ĐĂNG TIN TUYỂN DỤNG</h3>
             <form onSubmit={handleSubmit} className="post-job-form">
                 <div className="form-group">
                     <label>Vị trí tuyển dụng</label>
-                    <input type="text" name="position" value={jobData.position} onChange={handleInputChange} required />
+                    <input
+                        type="text"
+                        name="position"
+                        value={jobData.position}
+                        onChange={handleInputChange}
+                    />
                 </div>
 
                 <div className="form-group-inline">
@@ -254,18 +367,33 @@ const PostJob = () => {
                 <div className="form-group-inline">
                     <div className="form-group">
                         <label>Mức lương tối thiểu (VND)</label>
-                        <input type="number" name="minSalary" value={jobData.minSalary} onChange={handleInputChange} />
+                        <input
+                            type="number"
+                            name="minSalary"
+                            value={jobData.minSalary}
+                            onChange={handleInputChange}
+                        />
                     </div>
                     <div className="form-group">
                         <label>Mức lương tối đa (VND)</label>
-                        <input type="number" name="maxSalary" value={jobData.maxSalary} onChange={handleInputChange} />
+                        <input
+                            type="number"
+                            name="maxSalary"
+                            value={jobData.maxSalary}
+                            onChange={handleInputChange}
+                        />
                     </div>
                 </div>
 
                 <div className="form-group-inline">
                     <div className="form-group">
                         <label>Địa điểm làm việc</label>
-                        <input type="text" name="location" value={jobData.location} onChange={handleInputChange} required />
+                        <input
+                            type="text"
+                            name="location"
+                            value={jobData.location}
+                            onChange={handleInputChange}
+                        />
                     </div>
                     <div className="form-group">
                         <label>Hình thức làm việc</label>
@@ -289,7 +417,13 @@ const PostJob = () => {
                     </div>
                     <div className="form-group">
                         <label>Hạn nộp hồ sơ</label>
-                        <input type="date" name="deadline" value={jobData.deadline} onChange={handleInputChange} />
+                        <input
+                            type="date"
+                            name="deadline"
+                            value={jobData.deadline}
+                            onChange={handleInputChange}
+                            min={today}
+                        />
                     </div>
                 </div>
 
@@ -301,7 +435,7 @@ const PostJob = () => {
                             name="quantity"
                             value={jobData.quantity}
                             onChange={handleInputChange}
-                            min="1"
+                            min="0"
                             placeholder="Nhập số lượng cần tuyển"
                         />
                     </div>
@@ -310,12 +444,22 @@ const PostJob = () => {
                 </div>
 
                 <div className="form-group">
-                    <label>Mô tả và yêu cầu công việc</label>
+                    <label>Mô tả công việc</label>
                     <RichTextEditor
                         name="description"
                         value={jobData.description}
                         onChange={handleInputChange}
-                        placeholder="Nhập mô tả và yêu cầu công việc..."
+                        placeholder="Nhập mô tả công việc..."
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Yêu cầu công việc</label>
+                    <RichTextEditor
+                        name="requirement"
+                        value={jobData.requirement}
+                        onChange={handleInputChange}
+                        placeholder="Nhập yêu cầu công việc..."
                     />
                 </div>
 
@@ -379,7 +523,9 @@ const PostJob = () => {
                     <button type="submit" className="save-button" disabled={loading || skillsLoading}>
                         {loading ? 'Đang lưu...' : 'Đăng tin'}
                     </button>
-                    <button type="button" className="cancel-button" onClick={() => setJobData(initialJobData)}>
+                    <button type="button" className="cancel-button" onClick={() => {
+                        setJobData(initialJobData);
+                    }}>
                         Làm trống
                     </button>
                 </div>

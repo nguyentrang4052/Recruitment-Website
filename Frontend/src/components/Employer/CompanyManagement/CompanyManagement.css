@@ -1,32 +1,33 @@
+/* ===== COMPANY MANAGEMENT CONTAINER ===== */
 .company-management-container {
-    padding: 30px 40px; 
+    padding: 30px 40px;
     background-color: #fff;
-    border-radius: 12px; 
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); 
-    margin: 30px auto; 
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
     width: 1000px;
-    text-align: left; 
+    text-align: left;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-left: 430px;
+    transition: all 0.3s ease;
 }
-
 
 .company-management-container h3 {
     color: #004080;
-    margin-bottom: 30px; 
-    font-size: 30px; 
+    margin-bottom: 30px;
+    font-size: 30px;
     border-bottom: 2px solid #007bff;
-    padding-bottom: 25px; 
+    padding-bottom: 25px;
 }
 
-
-
+/* ===== COMPANY DETAILS ===== */
 .company-details {
-    text-align: left; 
-    max-width: 700px; 
-    margin: 0 auto; 
+    text-align: left;
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .company-details p {
@@ -53,6 +54,7 @@
     text-decoration: underline;
 }
 
+/* ===== BUTTONS ===== */
 .edit-button {
     background-color: #007bff;
     color: white;
@@ -71,22 +73,18 @@
     transform: translateY(-2px);
 }
 
-
+/* ===== COMPANY EDIT FORM ===== */
 .company-edit-form {
     text-align: center;
     max-width: 700px;
     margin: 0 auto;
     width: 100%;
-
-;
-    
 }
 
 .form-group {
     margin-bottom: 30px;
     text-align: left;
     margin-left: 30px;
-
 }
 
 .form-group label {
@@ -99,7 +97,7 @@
 
 .form-group input,
 .form-group textarea,
-.form-group select { 
+.form-group select {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -114,6 +112,7 @@
 .form-group select:focus {
     outline: none;
     border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
 .button-group {
@@ -154,7 +153,7 @@
     transform: translateY(-2px);
 }
 
-
+/* ===== LOGO UPLOAD SECTION ===== */
 .logo-upload-section {
     margin-bottom: 20px;
     text-align: center;
@@ -168,23 +167,8 @@
     font-size: 16px;
 }
 
-
-.logo-preview-wrapper:hover {
-    border-color: #0056b3;
-}
-
-.logo-preview {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    border-radius: 50%;
-    display: block;
-    margin: 0;
-    padding: 0;
-}
-
 .logo-preview-wrapper {
-     width: 150px;
+    width: 150px;
     height: 150px;
     border-radius: 50%;
     overflow: hidden;
@@ -195,6 +179,22 @@
     background-color: #f0f2f5;
     padding: 0;
     margin: 0 auto 15px;
+    position: relative;
+    transition: border-color 0.3s ease;
+}
+
+.logo-preview-wrapper:hover {
+    border-color: #0056b3;
+}
+
+.logo-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    margin: 0;
+    padding: 0;
 }
 
 .logo-overlay {
@@ -229,81 +229,475 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.logo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #999;
+    font-size: 14px;
+}
+
+/* ===== ERROR MESSAGE ===== */
 .error-message {
-    color: #dc3545; 
+    color: #dc3545;
     font-size: 14px;
     margin-top: 5px;
     display: block;
 }
 
-.company-image-display {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.company-image-preview {
-  width: 300px;
-  max-width: 100%;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 1px solid #ddd;
-}
-
-.company-profile-display {
-  white-space: pre-wrap; 
-  word-break: break-word;
-  font-size: 15px;
-  line-height: 1.6;
-  margin-top: 8px;
-  background: #f9f9f9;
-  padding: 10px;
-  border-radius: 6px;
-}
-
-
+/* ===== IMAGE UPLOAD SECTION ===== */
 .image-upload-section.rectangle {
-  margin-bottom: 25px;
-  text-align: center;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.image-upload-section.rectangle label {
+    font-weight: bold;
+    color: #004080;
+    margin-bottom: 15px;
+    display: block;
+    font-size: 16px;
 }
 
 .image-box {
-  width: 100%;
-  max-width: 500px;          
-  height: 250px;
-  border: 2px dashed #007bff;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  overflow: hidden;
-  background: #fafafa;
-  transition: border-color 0.3s;
-  margin: 0 auto;
+    width: 100%;
+    max-width: 500px;
+    height: 250px;
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    background: #fafafa;
+    transition: border-color 0.3s;
+    margin: 0 auto;
 }
 
 .image-box:hover {
-  border-color: #0056b3;
-  background: #f1f9ff;
+    border-color: #0056b3;
+    background: #f1f9ff;
 }
-
 
 .company-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-
 
 .import-hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #555;
-  font-size: 16px;
-}
-.import-icon {
-  font-size: 48px;
-  margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #555;
+    font-size: 16px;
 }
 
+.import-icon {
+    font-size: 48px;
+    margin-bottom: 8px;
+}
+
+/* ===== COMPANY IMAGE DISPLAY ===== */
+.company-image-display {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.company-image-preview {
+    width: 300px;
+    max-width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+.company-profile-display {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-top: 8px;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    font-family: Arial, sans-serif;
+}
+
+/* ===== RESPONSIVE - TABLET (1024px - 1200px) ===== */
+@media (max-width: 1200px) {
+    .company-management-container {
+        width: 90%;
+        margin-left: auto;
+        padding: 25px 30px;
+    }
+
+    .company-management-container h3 {
+        font-size: 26px;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+    }
+
+    .form-group {
+        margin-left: 0;
+    }
+
+    .company-details {
+        max-width: 100%;
+    }
+
+    .image-box {
+        max-width: 100%;
+        height: 200px;
+    }
+}
+
+/* ===== RESPONSIVE - TABLET (768px - 1024px) ===== */
+@media (max-width: 1024px) {
+    .company-management-container {
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px 25px;
+    }
+
+    .company-management-container h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+
+    .company-details {
+        max-width: 100%;
+    }
+
+    .company-details p {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        margin-left: 0;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .button-group {
+        margin-top: 25px;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 10px 25px;
+        font-size: 14px;
+    }
+
+    .edit-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .logo-preview-wrapper {
+        width: 130px;
+        height: 130px;
+    }
+
+    .company-logo-preview {
+        width: 70px;
+        height: 70px;
+    }
+
+    .image-box {
+        max-width: 100%;
+        height: 200px;
+    }
+
+    .import-icon {
+        font-size: 40px;
+    }
+}
+
+/* ===== RESPONSIVE - MOBILE (max 767px) ===== */
+@media (max-width: 767px) {
+    .company-management-container {
+        width: 100%;
+        margin: 20px 0;
+        padding: 20px 15px;
+        margin-left: 0;
+        border-radius: 8px;
+    }
+
+    .company-management-container h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #007bff;
+    }
+
+    .company-details {
+        max-width: 100%;
+    }
+
+    .company-details p {
+        font-size: 14px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .company-edit-form {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+        margin-left: 0;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 14px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .button-group {
+        flex-direction: column-reverse;
+        margin-top: 20px;
+        gap: 10px;
+        justify-content: stretch;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 12px 20px;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .edit-button {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 14px;
+        margin-top: 15px;
+    }
+
+    .logo-upload-section {
+        margin-bottom: 20px;
+    }
+
+    .logo-upload-section label {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .logo-preview-wrapper {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 15px;
+    }
+
+    .company-logo-display {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .company-logo-preview {
+        width: 60px;
+        height: 60px;
+    }
+
+    .image-upload-section.rectangle {
+        margin-bottom: 20px;
+    }
+
+    .image-upload-section.rectangle label {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .image-box {
+        max-width: 100%;
+        height: 180px;
+        border-radius: 6px;
+    }
+
+    .import-hint {
+        font-size: 14px;
+    }
+
+    .import-icon {
+        font-size: 36px;
+        margin-bottom: 6px;
+    }
+
+    .company-image-preview {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 6px;
+    }
+
+    .company-profile-display {
+        font-size: 13px;
+        margin-top: 8px;
+        padding: 8px;
+        line-height: 1.5;
+    }
+
+    .error-message {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+}
+
+/* ===== RESPONSIVE - SMALL MOBILE (max 480px) ===== */
+@media (max-width: 480px) {
+    .company-management-container {
+        margin: 15px 0;
+        padding: 15px 12px;
+        border-radius: 6px;
+    }
+
+    .company-management-container h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+    }
+
+    .company-details p {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .button-group {
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+    .edit-button {
+        padding: 10px 15px;
+        font-size: 13px;
+        margin-top: 12px;
+    }
+
+    .logo-preview-wrapper {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 12px;
+    }
+
+    .company-logo-preview {
+        width: 50px;
+        height: 50px;
+    }
+
+    .image-box {
+        height: 150px;
+    }
+
+    .import-icon {
+        font-size: 30px;
+        margin-bottom: 4px;
+    }
+
+    .company-profile-display {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .error-message {
+        font-size: 11px;
+    }
+}
+
+/* ===== RESPONSIVE - EXTRA SMALL (max 360px) ===== */
+@media (max-width: 360px) {
+    .company-management-container {
+        padding: 12px 10px;
+    }
+
+    .company-management-container h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+    }
+
+    .company-details p {
+        font-size: 12px;
+    }
+
+    .form-group label {
+        font-size: 11px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .logo-preview-wrapper {
+        width: 90px;
+        height: 90px;
+    }
+
+    .image-box {
+        height: 120px;
+    }
+
+    .import-icon {
+        font-size: 24px;
+    }
+
+    .company-profile-display {
+        font-size: 11px;
+    }
+}

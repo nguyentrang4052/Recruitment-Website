@@ -3,7 +3,7 @@
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    margin: 30px ;
+    margin: 30px;
     max-width: 100000px;
     font-family: Arial, sans-serif;
     margin-left: 340px;
@@ -18,7 +18,6 @@
     border-bottom: 2px solid #007bff;
     padding-bottom: 15px;
 }
-
 
 .search-form {
     display: flex;
@@ -78,7 +77,6 @@
     transform: translateY(-2px);
 }
 
-
 .search-results-container h4 {
     margin-bottom: 25px;
     color: #004080;
@@ -129,7 +127,6 @@
     font-weight: bold;
 }
 
-
 .candidate-title {
     margin: 5px 0 10px 0; 
     color: #6c757d;
@@ -138,7 +135,6 @@
     text-align: left;
     margin-bottom: 20px;
 }
-
 
 .candidate-meta {
     display: flex;
@@ -210,7 +206,6 @@
     font-style: italic;
     margin-top: 30px;
 }
-
 
 .custom-combobox {
     position: relative;
@@ -325,4 +320,294 @@
     color: #333;
     font-size: 0.95em;
     margin-top: 8px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 30px;
+    padding: 20px 0;
+}
+
+.pagination button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.page-indicator {
+    font-size: 16px;
+    color: #004080;
+    font-weight: bold;
+}
+
+.loading-indicator {
+    text-align: center;
+    color: #007bff;
+    font-style: italic;
+    margin-top: 30px;
+}
+
+/* ======================== RESPONSIVE STYLES ======================== */
+
+/* Tablet - Large (1024px - 1279px) */
+@media screen and (max-width: 1279px) {
+    .search-applicant-container {
+        margin-left: 280px;
+        width: calc(100% - 320px);
+        padding: 25px 30px;
+    }
+
+    .search-form {
+        width: 100%;
+    }
+
+    .candidates-list {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+/* Tablet - Medium (768px - 1023px) */
+@media screen and (max-width: 1023px) {
+    .search-applicant-container {
+        margin-left: 0;
+        width: 100%;
+        margin: 20px;
+        padding: 20px 25px;
+    }
+
+    .search-applicant-container h3 {
+        font-size: 24px;
+    }
+
+    .search-form {
+        width: 100%;
+        gap: 15px;
+    }
+
+    .form-group-inline {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .candidates-list {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .candidate-card {
+        padding: 15px;
+    }
+
+    .search-button {
+        font-size: 16px;
+        padding: 12px;
+    }
+}
+
+/* Mobile - Large (480px - 767px) */
+@media screen and (max-width: 767px) {
+    .search-applicant-container {
+        margin: 15px;
+        padding: 15px 20px;
+        border-radius: 8px;
+    }
+
+    .search-applicant-container h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+
+    .search-form {
+        gap: 12px;
+        margin-bottom: 30px;
+    }
+
+    .form-group-inline {
+        gap: 12px;
+    }
+
+    .search-form label {
+        font-size: 14px;
+    }
+
+    .search-form input,
+    .search-form select {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .candidates-list {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .candidate-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .candidate-avatar {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 10px;
+    }
+
+    .candidate-info {
+        text-align: center;
+        width: 100%;
+    }
+
+    .candidate-name {
+        font-size: 1.1em;
+    }
+
+    .candidate-title {
+        text-align: center;
+    }
+
+    .candidate-meta {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .candidate-skills {
+        justify-content: center;
+    }
+
+    .salary-expectation {
+        text-align: center;
+    }
+
+    .view-profile-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .search-button {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .pagination {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pagination button {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .combobox-dropdown {
+        max-height: 200px;
+    }
+
+    .search-results-container h4 {
+        font-size: 18px;
+    }
+}
+
+/* Mobile - Small (320px - 479px) */
+@media screen and (max-width: 479px) {
+    .search-applicant-container {
+        margin: 10px;
+        padding: 12px 15px;
+    }
+
+    .search-applicant-container h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .search-form {
+        gap: 10px;
+    }
+
+    .search-form input,
+    .search-form select {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .candidate-avatar {
+        width: 70px;
+        height: 70px;
+    }
+
+    .candidate-name {
+        font-size: 1em;
+    }
+
+    .candidate-title {
+        font-size: 0.9em;
+    }
+
+    .skill-tag {
+        font-size: 0.8em;
+        padding: 4px 8px;
+    }
+
+    .view-profile-button {
+        font-size: 13px;
+        padding: 8px 15px;
+    }
+
+    .search-button {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .combobox-selected-display {
+        min-height: 44px;
+        padding: 6px 10px;
+    }
+
+    .selected-skill-tag {
+        font-size: 0.85em;
+        padding: 5px 8px;
+    }
+
+    .search-results-container h4 {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .page-indicator {
+        font-size: 14px;
+    }
+}
+
+/* Ultra-wide screens (1920px+) */
+@media screen and (min-width: 1920px) {
+    .search-applicant-container {
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .candidates-list {
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    }
 }

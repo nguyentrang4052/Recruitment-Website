@@ -62,7 +62,7 @@ public class RecruitmentService implements IRecruitmentService {
 	@Override
 	public RecruitmentCardDTO mapToDetail(RecruitmentNews rn) {
 		String salary = (rn.getMinSalary() != null && rn.getMaxSalary() != null)
-				? rn.getMinSalary() + " VND" + " - " + rn.getMaxSalary() + " VND"
+				? rn.getMinSalary() + " - " + rn.getMaxSalary()
 				: "Thỏa thuận";
 
 		EmployerCardDTO emp = new EmployerCardDTO(rn.getEmployer().getEmployerName(), rn.getEmployer().getCompanyLogo(),
@@ -73,14 +73,14 @@ public class RecruitmentService implements IRecruitmentService {
 
 		return new RecruitmentCardDTO(rn.getRNID(), rn.getPosition(), emp, salary, rn.getLocation(), rn.getDeadline(),
 				rn.getPostedAt(), skillNames, rn.getStatus(), rn.getDescription(), rn.getExperience(), rn.getLiteracy(),
-				rn.getLevel(), rn.getRequirement(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(),
+				rn.getLevel(), rn.getRequirement(), rn.getBenefit(), rn.getFormOfWork(), rn.getWorkingTime(), rn.getQuantity(),
 				rn.getApplyBy(), viewRepository.countView(rn.getRNID()), rn.getIsActive());
 	}
 
 	@Override
 	public RecruitmentCardDTO mapToApplication(Applicant applicant, RecruitmentNews rn) {
 		String salary = (rn.getMinSalary() != null && rn.getMaxSalary() != null)
-				? rn.getMinSalary() + " VND" + " - " + rn.getMaxSalary() + " VND"
+				? rn.getMinSalary() +  " - " + rn.getMaxSalary()
 				: "Thỏa thuận";
 
 		EmployerCardDTO emp = new EmployerCardDTO(rn.getEmployer().getEmployerName(), rn.getEmployer().getCompanyLogo(),

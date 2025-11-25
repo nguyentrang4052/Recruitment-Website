@@ -9,6 +9,7 @@ import axios from 'axios'
 import './RecruimentNews.css';
 import { formatDate } from '../../../../utils/Format'
 import locations from '../../../../../data/provinces.json'
+import { formatRangeShort } from '../../../../utils/formatSalary';
 
 
 function ImageWithSearch({
@@ -43,36 +44,111 @@ function ImageWithSearch({
 
     const isDashboard = location.pathname === '/dashboard'
 
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") onSearch();
+    };
+
+
     return (
         <div className="image-search">
             <img src={images[currentImage]} alt={`Slrnide ${currentImage}`} />
             <div className={`search-container ${isDashboard ? 'dashboard' : ''}`}>
-                <input placeholder="-- Vị trí -- " value={position} onChange={e => setPosition(e.target.value)} />
+                {/* <input placeholder="-- Vị trí -- " value={position} onChange={e => setPosition(e.target.value)} /> */}
+                <div className="input-renews-wrapper">
+                    <input
+                        placeholder="-- Vị trí -- "
+                        value={position}
+                        onChange={e => setPosition(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    {position && (
+                        <button className="clear-renews-btn" onClick={() => setPosition("")}>✖</button>
+                    )}
+                </div>
 
-                <select value={level} onChange={e => setLevel(e.target.value)}>
+                {/* <select value={level} onChange={e => setLevel(e.target.value)}>
                     <option value="">-- Chọn cấp bậc --</option>
                     {levels.map((loc, idx) => (
                         <option key={idx} value={loc}>{loc}</option>
                     ))}
-                </select>
+                </select> */}
+                <div className="input-renews-wrapper">
+                    <select
+                        value={level}
+                        onChange={e => setLevel(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    >
+                        <option value="">-- Chọn cấp bậc --</option>
+                        {levels.map((loc, idx) => (
+                            <option key={idx} value={loc}>{loc}</option>
+                        ))}
+                    </select>
+                    {level && (
+                        <button className="clear-renews-btn" onClick={() => setLevel("")}>✖</button>
+                    )}
+                </div>
 
-                <input placeholder="-- Kỹ năng -- " value={skillName} onChange={e => setSkillName(e.target.value)} />
+                {/* <input placeholder="-- Kỹ năng -- " value={skillName} onChange={e => setSkillName(e.target.value)} /> */}
 
-                <select value={salary} onChange={e => setSalary(e.target.value)}>
+                <div className="input-renews-wrapper">
+                    <input
+                        placeholder="-- Kỹ năng -- "
+                        value={skillName}
+                        onChange={e => setSkillName(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    {skillName && (
+                        <button className="clear-renews-btn" onClick={() => setSkillName("")}>✖</button>
+                    )}
+                </div>
+                {/* <select value={salary} onChange={e => setSalary(e.target.value)}>
                     <option value="">-- Chọn mức lương --</option>
                     {listSalary.map((loc, idx) => (
                         <option key={idx} value={loc}>{loc}</option>
                     ))}
-                </select>
+                </select> */}
+
+                <div className="input-renews-wrapper">
+                    <select
+                        value={salary}
+                        onChange={e => setSalary(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    >
+                        <option value="">-- Chọn mức lương --</option>
+                        {listSalary.map((loc, idx) => (
+                            <option key={idx} value={loc}>{loc}</option>
+                        ))}
+                    </select>
+                    {salary && (
+                        <button className="clear-renews-btn" onClick={() => setSalary("")}>✖</button>
+                    )}
+                </div>
 
 
-                <select value={location} onChange={e => setLocation(e.target.value)}>
+                {/* <select value={location} onChange={e => setLocation(e.target.value)}>
                     <option value="">-- Chọn địa điểm --</option>
                     {locations.map((loc, idx) => (
                         <option key={idx} value={loc.name}>{loc.name}</option>
                     ))}
-                </select>
-                <button className="search-btn" onClick={onSearch}>
+                </select> */}
+
+                  <div className="input-renews-wrapper">
+                    <select
+                        value={location}
+                        onChange={e => setLocation(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    >
+                        <option value="">-- Chọn địa điểm --</option>
+                        {locations.map((loc, idx) => (
+                            <option key={idx} value={loc.name}>{loc.name}</option>
+                        ))}
+                    </select>
+                    {location && (
+                        <button className="clear-renews-btn" onClick={() => setLocation("")}>✖</button>
+                    )}
+                </div>
+                <button className="search-renews-btn" onClick={onSearch}>
                     <FaSearch />
                 </button>
             </div>
@@ -238,13 +314,6 @@ function RecruimentNews() {
     })
 
 
-
-
-    // const isFavorite = (rnid) => {
-    //     setSaveJobs(prev =>
-    //         prev.includes(rnid) ? prev.filter(id => id !== rnid) : [...prev, rnid]
-    //     );
-    // }
     const isFavorite = (rnid) => { return favoriteJobs.includes(rnid); }
 
 
@@ -279,7 +348,7 @@ function RecruimentNews() {
                                     <p><strong>Ngày đăng tin:</strong><span className="recruiment-value"> {formatDate(recruiment.postedAt)}</span></p>
                                 </div>
                                 <div className="recruiment-info">
-                                    <p><MdAttachMoney /><span className="recruiment-value"> {recruiment.salary}</span></p>
+                                    <p><MdAttachMoney /><span className="recruiment-value"> {formatRangeShort(recruiment.salary)}</span></p>
                                     <p><strong>Hạn nộp hồ sơ:</strong><span className="recruiment-value"> {formatDate(recruiment.deadline)}</span></p>
                                 </div>
                                 <div className="end-card">

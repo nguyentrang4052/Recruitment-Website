@@ -7,6 +7,7 @@ import { StarRating } from '../StartRating';
 import { formatDate } from '../../../../../utils/Format'
 import { BsCalendarDate } from "react-icons/bs";
 import companyImage from '../../../../../assets/company-image.jpg'
+import { formatRangeShort } from '../../../../../utils/formatSalary';
 
 // Hàm làm sạch HTML
 const sanitizeHtml = (html) => {
@@ -165,7 +166,7 @@ function CompanyDetail() {
                                         </div>
                                         <div className="job-salary">
                                             <span className="salary-icon">💰</span>
-                                            <p className="salary">{job.salary}</p>
+                                            <p className="salary">{formatRangeShort(job.salary)}</p>
                                         </div>
                                         <div className="job-meta">
                                             <div className="job-benefit-text">

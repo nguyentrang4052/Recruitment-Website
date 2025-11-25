@@ -41,7 +41,7 @@ function Login() {
             }
             else if (roleName == "employer") {
                 navigate('/employer-dashboard')
-            }else {
+            } else {
                 navigate('/admin')
             }
         }
@@ -84,8 +84,13 @@ function Login() {
                 navigate('/login');
             }
 
-        } catch {
-            alert("Đăng nhập bằng Google thất bại. Vui lòng thử lại.");
+        } catch (error) {
+            // alert("Đăng nhập bằng Google thất bại. Vui lòng thử lại.");
+            if (error.response && error.response.status === 401) {
+                setError(error.response.data)
+            } else {
+                setError("Đăng nhập với google thất bại. Vui lòng thử lại sau.")
+            }
         }
     };
 

@@ -25,5 +25,5 @@ public class JobDetailDTO extends ActiveJobDTO {
     private List<SkillDTO> skills; 
     private Integer quantity;
     private Boolean isActive;
-
+    private String requirement;
 }

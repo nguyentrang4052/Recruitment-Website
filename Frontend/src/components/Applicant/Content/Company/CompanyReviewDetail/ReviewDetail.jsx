@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { formatDate, formatDateTime } from '../../../../../utils/Format';
 import { BsCalendarDate } from "react-icons/bs";
 import companyImage from '../../../../../assets/company-image.jpg'
+import { formatRangeShort } from '../../../../../utils/formatSalary';
 
 function CompanyReviews() {
 
@@ -242,7 +243,7 @@ function CompanyReviews() {
                       </div>
                       <div className="job-salary">
                         <span className="salary-icon">💰</span>
-                        <p className="salary">{job.salary}</p>
+                        <p className="salary">{formatRangeShort(job.salary)}</p>
                       </div>
                       <div className="job-meta">
                         <div className="job-benefit-text">

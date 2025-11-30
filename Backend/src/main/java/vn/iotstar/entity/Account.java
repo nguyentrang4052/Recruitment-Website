@@ -49,12 +49,14 @@ public class Account implements Serializable {
 	private Role role;
 
 	@OneToOne(mappedBy = "account", cascade = CascadeType.PERSIST)
+	@EqualsAndHashCode.Exclude
 	private Applicant applicant;
 	
 //	@JsonManagedReference
 
 	@OneToOne(mappedBy = "account")
 	@JsonManagedReference
+	 @EqualsAndHashCode.Exclude
 	private Employer employer;
 	
 	

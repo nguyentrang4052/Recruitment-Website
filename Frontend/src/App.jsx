@@ -28,6 +28,7 @@ import PrivateRoute from './components/PrivateRoute.jsx'
 import RoleBasedRedirect from './components/RoleBasedRedirect.jsx';
 import AlreadyAuth from './components/AlreadyAuth.jsx';
 import AboutPage from './components/Applicant/Footer/AboutPage.jsx';
+import ErrorPage from './components/ErrorPage/ErrorPage.jsx';
 
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -37,26 +38,23 @@ function App() {
     <GoogleOAuthProvider clientId={clientId}>
       <Router>
         <Routes>
-          {/* "/" luôn đá về dashboard đúng role nếu đã đăng nhập */}
           <Route path="/" element={<RoleBasedRedirect />} />
 
-          {/* Các route dành cho khách (chưa đăng nhập) */}
           <Route element={<AlreadyAuth />}>
-          <Route element={<LayoutWithHomePage />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/applicant-login" element={<ApplicantLogin />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/verify-otp" element={<Verify />} />
-            <Route path="/forgot-password" element={<ForgotPass />} />
-            <Route path="/employer-link" element={<EmployerLink />} />
-            <Route path="/about" element={<AboutPage />} />
-            
+            <Route element={<LayoutWithHomePage />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/applicant-login" element={<ApplicantLogin />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/verify-otp" element={<Verify />} />
+              <Route path="/forgot-password" element={<ForgotPass />} />
+              <Route path="/employer-link" element={<EmployerLink />} />
+              <Route path="/about" element={<AboutPage />} />
+
             </Route>
           </Route>
 
-          {/* Các route public không cần đăng nhập */}
           <Route element={<LayoutWithHomePage />}>
-          <Route path="/dashboard" element={<RecruimentNews />} />
+            <Route path="/dashboard" element={<RecruimentNews />} />
             <Route path="/recruitment/:rnid" element={<RecruitmentDetail />} />
             <Route path="/companies" element={<CompanyIntro />} />
             <Route path="/companies/:employerId" element={<CompanyDetail />} />
@@ -64,10 +62,8 @@ function App() {
             <Route path="/companies/reviews" element={<CompanyReview />} />
             <Route path="/cv-templates" element={<CV />} />
             <Route path="/about" element={<AboutPage />} />
-             {/* <Route path="/admin" element={<AdminDashboard />} /> */}
           </Route>
 
-          {/* Applicant area */}
           <Route element={<PrivateRoute allowedRoles={['applicant']} />}>
             <Route element={<LayoutWithHeader />}>
               <Route path="/dashboard" element={<RecruimentNews />} />
@@ -76,24 +72,21 @@ function App() {
               <Route path="/apply-jobs" element={<ApplyJob />} />
               <Route path="/notifications" element={<Notice />} />
               <Route path="/settings" element={<Setting />} />
-              
+
             </Route>
           </Route>
 
-          {/* Employer area */}
           <Route element={<PrivateRoute allowedRoles={['employer']} />}>
             <Route path="/employer-dashboard" element={<EmployerDashboard />} />
             <Route path="/employer-signup" element={<EmployerRegistration />} />
             <Route path="/employer/applicant/:id" element={<ApplicantDetail />} />
           </Route>
 
-          {/* Admin area */}
           <Route element={<PrivateRoute allowedRoles={['admin']} />}>
             <Route path="/admin" element={<AdminDashboard />} />
           </Route>
 
-          {/* 404 fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

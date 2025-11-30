@@ -13,6 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import { isTokenExpired } from '../../../../utils/Auth'
 import { formatDescription } from '../../../../utils/formatDescription';
 import { formatRangeShort } from '../../../../utils/formatSalary';
+import useToast from '../../../../utils/useToast.js'
+import Toast from '../../../Toast/Toast.jsx'
 function RecruitDetail() {
 
     const { rnid } = useParams();
@@ -21,6 +23,7 @@ function RecruitDetail() {
     const [relatedJobs, setRelatedJobs] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [favoriteJobs, setFavoriteJobs] = useState([]);
+    const { toast, showSuccess, showError, hideToast } = useToast();
 
 
     useEffect(() => {
@@ -29,8 +32,7 @@ function RecruitDetail() {
                 const response = await axios.get("http://localhost:8080/api/detail", { params: { id: rnid } });
                 setRecruitmentDetail(response.data);
             }
-            catch (error) {
-                console.error("Lỗi khi tải chi tiết tin tuyển dụng", error);
+            catch {
                 setRecruitmentDetail(null);
             }
         };
@@ -43,8 +45,7 @@ function RecruitDetail() {
                 const response = await axios.get("http://localhost:8080/api/applicant/relate-jobs", { params: { id: rnid } });
                 setRelatedJobs(response.data);
             }
-            catch (error) {
-                console.error("Lỗi khi tải việc làm liên quan", error);
+            catch {
                 setRelatedJobs(null);
             }
         };
@@ -74,16 +75,12 @@ function RecruitDetail() {
 
     const [cvFile, setCvFile] = useState(null);
     const [coverLetter, setCoverLetter] = useState("");
-    const [msg, setMsg] = useState("");
-    const [msgType, setMsgType] = useState("");
-
 
     const handleApplyJob = async (e) => {
         e.preventDefault();
 
         if (!cvFile) {
-            setMsg("Vui lòng chọn CV!");
-            setMsgType("error");
+            showError("Vui lòng chọn CV!");
             return;
         }
 
@@ -109,19 +106,14 @@ function RecruitDetail() {
                 }
             );
 
-            alert("Ứng tuyển thành công!");
+            showSuccess("Ứng tuyển thành công!");
             setCoverLetter("");
             closeForm();
 
-        } catch (error) {
+        } catch {
             setCoverLetter("");
 
-            console.log("❌ BACKEND ERROR:", error);
-
-            let errorMessage = "Ứng tuyển thất bại. Vui lòng thử lại.";
-
-            setMsg(errorMessage);
-            setMsgType("error");
+            showError("Ứng tuyển thất bại. Vui lòng thử lại sau.");
         }
     };
 
@@ -142,29 +134,23 @@ function RecruitDetail() {
             return;
         }
 
-        try {
-            const res = await axios.post(
+            await axios.post(
                 "http://localhost:8080/api/applicant/toggle", null,
                 {
                     params: { applicantID, rnid },
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
-            console.log(res.data);
 
             setFavoriteJobs(prev =>
                 prev.includes(rnid) ? prev.filter(id => id !== rnid) : [...prev, rnid]
             );
-        } catch (err) {
-            console.error("Lỗi khi lưu yêu thích:", err);
-        }
     };
 
 
     const applicantID = localStorage.getItem('applicantID')
     useEffect(() => {
         const fetchSaveJob = async () => {
-            try {
                 const res = await axios.get(
                     "http://localhost:8080/api/applicant/favourite-job",
                     {
@@ -176,9 +162,6 @@ function RecruitDetail() {
                 );
                 const savedIds = res.data.map(job => job.rnid);
                 setFavoriteJobs(savedIds);
-            } catch {
-                console.log('Loi khi tai tin yeu thich')
-            }
         };
         if (token && applicantID) {
             fetchSaveJob();
@@ -283,7 +266,7 @@ function RecruitDetail() {
                             </div>
 
                             {fields.map(
-                                ({ label, value}) => {
+                                ({ label, value }) => {
                                     if (!value) return null;
 
 
@@ -298,7 +281,7 @@ function RecruitDetail() {
                                             </div>
                                         );
                                     }
-                                    
+
                                     if (label == 'Yêu cầu công việc') {
                                         return (
                                             <div key={label}>
@@ -310,13 +293,7 @@ function RecruitDetail() {
                                             </div>
                                         );
                                     }
-
-                                    // return (
-                                    //     <div key={label}>
-                                    //         <strong>{label}:</strong> {isMail ? <a href={`mailto:${value}`}>{value}</a> : value}
-                                    //     </div>
-                                    // );
-                                     return (
+                                    return (
                                         <div key={label}>
                                             <strong>{label}:</strong> {value}
                                         </div>
@@ -356,15 +333,6 @@ function RecruitDetail() {
                     <div className="detail-popup-form">
                         <div className="popup-detail-message">
                             <h3>Ứng tuyển công việc</h3>
-                            {msg && (
-                                <div className={`msg-line ${msgType}`}>
-                                    <span>{msg}</span>
-                                    <button className="msg-close" onClick={() => setMsg("")}>
-                                        ×
-                                    </button>
-                                </div>
-                            )}
-
                             <form>
                                 <div>
                                     <label>Chọn CV</label>
@@ -375,7 +343,7 @@ function RecruitDetail() {
                                         onChange={(e) => {
                                             const f = e.target.files[0];
                                             if (f && f.type !== "application/pdf") {
-                                                alert("Chỉ được upload file PDF");
+                                                showError("Chỉ được upload file PDF");
                                                 e.target.value = "";
                                                 return;
                                             }
@@ -411,6 +379,14 @@ function RecruitDetail() {
                             </form>
                         </div>
                     </div>
+                )}
+                {toast && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        duration={toast.duration}
+                        onClose={hideToast}
+                    />
                 )}
             </div>
         </>

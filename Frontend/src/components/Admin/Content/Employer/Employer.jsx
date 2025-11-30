@@ -2,45 +2,59 @@
 import './Employer.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import useToast from '../../../../utils/useToast'
+import Toast from '../../../Toast/Toast';
 
 export default function Employers({ onViewDetail }) {
   const [employers, setEmployers] = useState([]);
-   const token = localStorage.getItem("token");
-   console.log(token);
-   useEffect(() => {
- 
-     axios.get('http://localhost:8080/api/admin/employer', {
-       headers: { Authorization: `Bearer ${token}` }
-     })
-       .then(res => setEmployers(res.data))
-       .catch(err => console.error(err));
-   }, []);
- 
-   const deleteEmployer = async (id) => {
-     try {
-       const res = await axios.post(`http://localhost:8080/api/admin/employer/delete`, null, {
-         headers: { Authorization: `Bearer ${token}` },
-         params: { id }
-       });
-      alert(res.data);
+  const token = localStorage.getItem("token");
+  const { toast, showSuccess, showError, showWarning, hideToast } = useToast();
 
-      // update trạng thái trong state
-      setEmployers(prev => prev.map(a =>
-        a.employerId === id ? { ...a, active: 'Bị khóa' } : a
-      ));
-     } catch (err) {
-       console.error(err);
-       alert("Xóa thất bại");
-     }
-   };
+
+const fectchEmployers = async () => {
+  const res = await  axios.get('http://localhost:8080/api/admin/employer', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setEmployers(res.data);
+}
+
+  useEffect(() => {
+    fectchEmployers();
+  }, []);
+   
+
+
+  const confirmDelete = (id) => {
+    showWarning(
+      "Bạn chắc chắn muốn khoá tài khoản này?",
+      () => {
+        deleteEmployer(id);
+        hideToast();
+      },
+      () => hideToast()
+    )
+
+  };
+
+
+  const deleteEmployer = async (id) => {
+    try {
+      const res = await axios.post(`http://localhost:8080/api/admin/employer/delete`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { id }
+      });
+      showSuccess(res.data);
+
+     await fectchEmployers();
+    } catch {
+      showError("Khoá tài khoản thất bại");
+    }
+  };
 
   return (
     <div className="employers-wrapper">
       <h1 className="content-title">Quản lý Nhà tuyển dụng</h1>
       <div className="card">
-        {/* <div className="table-toolbar">
-          <input type="text" placeholder="Tìm kiếm nhà tuyển dụng..." className="table-search" />
-        </div> */}
 
         <table className="data-table">
           <thead>
@@ -50,6 +64,7 @@ export default function Employers({ onViewDetail }) {
               <th>Người đại diện</th>
               <th>Số điện thoại</th>
               <th>Website công ty</th>
+              <th>Trạng thái</th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -61,7 +76,6 @@ export default function Employers({ onViewDetail }) {
                 <td>{emp.representative}</td>
                 <td>{emp.phone}</td>
                 <td><a href={emp.companyWebsite} target="_blank" rel="noopener noreferrer">{emp.companyWebsite}</a></td>
-                {/* <td><span className="status-badge active">{emp.active}</span></td> */}
                 <td>
                   <span className={`status-badge ${emp.active ? 'Hoạt động' : 'Bị khóa'}`}>
                     {emp.active}
@@ -75,8 +89,8 @@ export default function Employers({ onViewDetail }) {
                     >
                       Xem
                     </button>
-                     {emp.active !== 'Bị khoá' && (
-                    <button className="btn-delete" onClick={() => deleteEmployer(emp.employerId)}>Xóa</button>)}
+                    {emp.active !== 'Bị khoá' && (
+                      <button className="btn-delete" onClick={() => confirmDelete(emp.employerId)}>Khoá</button>)}
                   </div>
                 </td>
               </tr>
@@ -84,6 +98,18 @@ export default function Employers({ onViewDetail }) {
           </tbody>
         </table>
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+          onConfirm={toast.onConfirm}
+          onCancel={toast.onCancel}
+          confirmText={toast.confirmText}
+          cancelText={toast.cancelText}
+        />
+      )}
     </div>
   );
 }

@@ -54,7 +54,7 @@ public class ApplicationService implements IApplicationService {
 			String email = username;
 			account = accountRepository.findByEmail(email);
 		}
-		;
+		
 
 		Applicant a = applicantService.findByAccount_accountID(account.getAccountID());
 		if (a == null)
@@ -130,7 +130,7 @@ public class ApplicationService implements IApplicationService {
 	    Long activeCount = apRepository.countActiveApplicants(recruitmentNewsId);
 	    RecruitmentNews rn = recruitmentRepo.findById(recruitmentNewsId)
 	            .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy tin ID: " + recruitmentNewsId));
-	    rn.setNumbersOfRecords(activeCount.intValue());
+//	    rn.setNumbersOfRecords(activeCount.intValue());
 	    recruitmentRepo.save(rn);
 	}
 
@@ -143,7 +143,7 @@ public class ApplicationService implements IApplicationService {
         Long activeCount = apRepository.countActiveApplicants(recruitmentNewsId);
         RecruitmentNews rn = recruitmentRepo.findById(recruitmentNewsId)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy tin ID: " + recruitmentNewsId));
-        rn.setNumbersOfRecords(activeCount.intValue());
+//        rn.setNumbersOfRecords(activeCount.intValue());
         recruitmentRepo.save(rn);
     }
 

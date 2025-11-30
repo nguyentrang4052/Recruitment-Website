@@ -27,7 +27,7 @@ public class ForgotPassController {
 	}
 
 	@PostMapping("/forgot-password")
-	public ResponseEntity<ForgotPassResponeDTO> registerUser(@RequestBody ForgotPassRequestDTO req) {
+	public ResponseEntity<ForgotPassResponeDTO> forgotPass(@RequestBody ForgotPassRequestDTO req) {
 
 		boolean isSent = securityUtil.sendOtp(req.getEmail());
 		if (isSent) {

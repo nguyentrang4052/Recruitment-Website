@@ -80,8 +80,8 @@ public class RecruitmentNews implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private EStatus status;
 
-	@Column(name = "numbersOfViews", nullable = true)
-	private Integer numbersOfViews;
+//	@Column(name = "numbersOfViews", nullable = true)
+//	private Integer numbersOfViews;
 	
 	@Column(name = "isActive", nullable = true)
     private Boolean isActive = true;
@@ -89,8 +89,8 @@ public class RecruitmentNews implements Serializable {
 	@Column(name = "quantity", nullable = true)
 	private Integer quantity;
 
-	@Column(name = "numbersOfRecords", nullable = true)
-	private Integer numbersOfRecords;
+//	@Column(name = "numbersOfRecords", nullable = true)
+//	private Integer numbersOfRecords;
 
 	@ManyToOne
 	@JoinColumn(name = "employerID")

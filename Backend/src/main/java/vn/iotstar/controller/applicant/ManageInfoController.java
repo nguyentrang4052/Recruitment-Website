@@ -24,20 +24,19 @@ import vn.iotstar.service.IEmployerSettingService;
 @RequestMapping("/api/applicant")
 public class ManageInfoController {
 
-
 	@Autowired
 	private IApplicantService applicantService;
 
 	@Autowired
 	private IAccountService accountService;
-	
+
 	@Autowired
-	 private IEmployerSettingService service;
+	private IEmployerSettingService service;
 
 	@GetMapping("/profile/info")
 	public ProfileDTO getInfo(@RequestParam String email) {
 		Applicant applicant = applicantService.findByAccount_email(email);
-		
+
 		return applicantService.mapToDetail(applicant);
 	}
 
@@ -97,26 +96,31 @@ public class ManageInfoController {
 
 		return ResponseEntity.ok("Xóa ảnh thành công");
 	}
-	
-	    @GetMapping("/settings/info")
-	    public ResponseEntity<Map<String, String>> getInfo(@AuthenticationPrincipal CustomUserDetail user) {
-	        String email = service.getCurrentEmail(user.getAccount().getAccountID());
-	        return ResponseEntity.ok(Map.of("email", email));
-	    }
 
-	    @PatchMapping(value = "/settings/password", consumes = MediaType.APPLICATION_JSON_VALUE)
-	    public ResponseEntity<Map<String, Object>> updatePassword(
-	            @AuthenticationPrincipal CustomUserDetail user,
-	            @org.springframework.web.bind.annotation.RequestBody Map<String, String> req) {
-	        service.updatePassword(user.getAccount().getAccountID(), req.get("newPassword"));
-	        return ResponseEntity.ok(Map.of("success", true, "message", "Mật khẩu đã được cập nhật"));
-	    }
+	@GetMapping("/settings/info")
+	public ResponseEntity<Map<String, String>> getInfo(@AuthenticationPrincipal CustomUserDetail user) {
+		String email = service.getCurrentEmail(user.getAccount().getAccountID());
+		return ResponseEntity.ok(Map.of("email", email));
+	}
 
-	    @PatchMapping(value = "/settings/email", consumes = MediaType.APPLICATION_JSON_VALUE)
-	    public ResponseEntity<Map<String, Object>> updateEmail(
-	            @AuthenticationPrincipal CustomUserDetail user,
-	            @org.springframework.web.bind.annotation.RequestBody Map<String, String> req) {
-	        service.updateEmail(user.getAccount().getAccountID(), req.get("newEmail"));
-	        return ResponseEntity.ok(Map.of("success", true, "message", "Email đã được cập nhật"));
-	    }
+	@PatchMapping(value = "/settings/password", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, Object>> updatePassword(@AuthenticationPrincipal CustomUserDetail user,
+			@org.springframework.web.bind.annotation.RequestBody Map<String, String> req) {
+		try {
+			service.updatePassword(user.getAccount().getAccountID(), req.get("oldPassword"), req.get("newPassword"));
+			return ResponseEntity.ok(Map.of("success", true, "message", "Mật khẩu đã được cập nhật"));
+		} catch (IllegalArgumentException ex) {
+			return ResponseEntity.badRequest().body(Map.of("success", false, "message", ex.getMessage()));
+		} catch (Exception ex) {
+			return ResponseEntity.status(500).body(Map.of("success", false, "message", "Cập nhật mật khẩu thất bại"));
+		}
+
+	}
+
+	@PatchMapping(value = "/settings/email", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, Object>> updateEmail(@AuthenticationPrincipal CustomUserDetail user,
+			@org.springframework.web.bind.annotation.RequestBody Map<String, String> req) {
+		service.updateEmail(user.getAccount().getAccountID(), req.get("newEmail"));
+		return ResponseEntity.ok(Map.of("success", true, "message", "Email đã được cập nhật"));
+	}
 }

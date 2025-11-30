@@ -2,35 +2,48 @@
 import './Applicant.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import useToast from '../../../../utils/useToast'
+import Toast from '../../../Toast/Toast';
 
 export default function Applicant({ onViewDetail }) {
 
   const [applicants, setApplicants] = useState([]);
   const token = localStorage.getItem("token");
-  useEffect(() => {
 
-    axios.get('http://localhost:8080/api/admin/applicant', {
+  const { toast, showSuccess, showError, showWarning, hideToast } = useToast();
+
+  const fetchApplicants = async () => {
+    const res = await axios.get('http://localhost:8080/api/admin/applicant', {
       headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => setApplicants(res.data))
-      .catch(err => console.error(err));
+    });
+    setApplicants(res.data);
+  }
+  useEffect(() => {
+    fetchApplicants();
   }, []);
 
+  const confirmDelete = (id) => {
+    showWarning(
+      "Bạn chắc chắn muốn khoá tài khoản này?",
+      () => {
+        deleteApplicant(id);
+        hideToast();
+      },
+      () => hideToast()
+    )
+
+  };
+
   const deleteApplicant = async (id) => {
-    try { 
+    try {
       const res = await axios.post(`http://localhost:8080/api/admin/applicant/delete`, null, {
         headers: { Authorization: `Bearer ${token}` },
         params: { id }
       });
-      alert(res.data);
-
-      // update trạng thái trong state
-      setApplicants(prev => prev.map(a =>
-        a.applicantID === id ? { ...a, active: 'Bị khóa' } : a
-      ));
-    } catch (err) {
-      console.error(err);
-      alert("Xóa thất bại");
+      showSuccess(res.data);
+      await fetchApplicants();
+    } catch {
+      showError("Khoá tài khoản thất bại");
     }
   };
 
@@ -38,9 +51,6 @@ export default function Applicant({ onViewDetail }) {
     <div className="applicant-wrapper">
       <h1 className="content-title">Quản lý Ứng viên</h1>
       <div className="card">
-        {/* <div className="table-toolbar">
-          <input type="text" placeholder="Tìm kiếm ứng viên..." className="table-search" />
-        </div> */}
 
         <table className="data-table">
           <thead>
@@ -60,7 +70,6 @@ export default function Applicant({ onViewDetail }) {
                 <td>{applicant.applicantName}</td>
                 <td>{applicant.gender}</td>
                 <td>{applicant.phone}</td>
-                {/* <td><span className="status-badge active">{applicant.active}</span></td> */}
                 <td>
                   <span className={`status-badge ${applicant.active ? 'Hoạt động' : 'Bị khóa'}`}>
                     {applicant.active}
@@ -76,7 +85,7 @@ export default function Applicant({ onViewDetail }) {
                       Xem
                     </button>
                     {applicant.active !== 'Bị khoá' && (
-                      <button className="btn-delete" onClick={() => deleteApplicant(applicant.applicantID)}>Xóa</button>)}
+                      <button className="btn-delete" onClick={() => confirmDelete(applicant.applicantID)}>Khoá</button>)}
                   </div>
                 </td>
               </tr>
@@ -84,6 +93,18 @@ export default function Applicant({ onViewDetail }) {
           </tbody>
         </table>
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+          onConfirm={toast.onConfirm}
+          onCancel={toast.onCancel}
+          confirmText={toast.confirmText}
+          cancelText={toast.cancelText}
+        />
+      )}
     </div>
   );
 }

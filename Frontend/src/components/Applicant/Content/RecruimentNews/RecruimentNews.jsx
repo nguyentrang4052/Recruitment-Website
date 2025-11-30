@@ -54,7 +54,6 @@ function ImageWithSearch({
         <div className="image-search">
             <img src={images[currentImage]} alt={`Slrnide ${currentImage}`} />
             <div className={`search-container ${isDashboard ? 'dashboard' : ''}`}>
-                {/* <input placeholder="-- Vị trí -- " value={position} onChange={e => setPosition(e.target.value)} /> */}
                 <div className="input-renews-wrapper">
                     <input
                         placeholder="-- Vị trí -- "
@@ -67,12 +66,6 @@ function ImageWithSearch({
                     )}
                 </div>
 
-                {/* <select value={level} onChange={e => setLevel(e.target.value)}>
-                    <option value="">-- Chọn cấp bậc --</option>
-                    {levels.map((loc, idx) => (
-                        <option key={idx} value={loc}>{loc}</option>
-                    ))}
-                </select> */}
                 <div className="input-renews-wrapper">
                     <select
                         value={level}
@@ -89,8 +82,6 @@ function ImageWithSearch({
                     )}
                 </div>
 
-                {/* <input placeholder="-- Kỹ năng -- " value={skillName} onChange={e => setSkillName(e.target.value)} /> */}
-
                 <div className="input-renews-wrapper">
                     <input
                         placeholder="-- Kỹ năng -- "
@@ -102,12 +93,6 @@ function ImageWithSearch({
                         <button className="clear-renews-btn" onClick={() => setSkillName("")}>✖</button>
                     )}
                 </div>
-                {/* <select value={salary} onChange={e => setSalary(e.target.value)}>
-                    <option value="">-- Chọn mức lương --</option>
-                    {listSalary.map((loc, idx) => (
-                        <option key={idx} value={loc}>{loc}</option>
-                    ))}
-                </select> */}
 
                 <div className="input-renews-wrapper">
                     <select
@@ -125,13 +110,6 @@ function ImageWithSearch({
                     )}
                 </div>
 
-
-                {/* <select value={location} onChange={e => setLocation(e.target.value)}>
-                    <option value="">-- Chọn địa điểm --</option>
-                    {locations.map((loc, idx) => (
-                        <option key={idx} value={loc.name}>{loc.name}</option>
-                    ))}
-                </select> */}
 
                   <div className="input-renews-wrapper">
                     <select

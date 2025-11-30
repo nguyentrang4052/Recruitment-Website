@@ -32,6 +32,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if (account == null) {
 			account = accountService.findByEmail(username);
 		}
+		 if (account == null) {
+		        throw new UsernameNotFoundException("Tên đăng nhập không tồn tại");
+		    }
 		return new CustomUserDetail(account);
 
 

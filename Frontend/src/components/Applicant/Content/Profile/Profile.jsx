@@ -5,6 +5,9 @@ import { formatDate } from '../../../../utils/Format';
 import { MdModeEdit } from "react-icons/md";
 import { useRef } from 'react';
 import locations from '../../../../../data/provinces.json'
+import { formatCurrencyShort } from '../../../../utils/formatSalary';
+import Toast from '../../../Toast/Toast.jsx'
+import useToast from '../../../../utils/useToast.js'
 
 function Profile() {
     const level = ['Tất cả', 'Fresher', 'Junior', 'Mid-level', 'Senior', 'Manager'];
@@ -23,35 +26,32 @@ function Profile() {
     const fileInputRef = useRef(null);
     const [skillList, setSkillList] = useState([])
 
+    const { toast, showSuccess, showError, hideToast } = useToast();
+
+    const fetchApplicant = async () => {
+        const email = localStorage.getItem('email');
+        const res = await axios.get('http://localhost:8080/api/applicant/profile/info', {
+            params: { email },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        setApplicant(res.data);
+
+    };
+
     useEffect(() => {
-        const fetchApplicant = async () => {
-            try {
-                const email = localStorage.getItem('email');
-                const res = await axios.get('http://localhost:8080/api/applicant/profile/info', {
-                    params: { email },
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-                });
-                setApplicant(res.data);
-            } catch (err) {
-                console.error('Lỗi lấy profile:', err);
-            }
-        };
         fetchApplicant();
     }, []);
 
     useEffect(() => {
         const fetchSkill = async () => {
-            try {
-                const res = await axios.get('http://localhost:8080/api/skills/list')
-                setSkillList(res.data)
-            } catch (err) {
-                console.error("Lỗi khi tải kỹ năng:", err);
-            }
+            const res = await axios.get('http://localhost:8080/api/skills/list')
+            setSkillList(res.data)
+
 
         };
-        fetchSkill()
+        fetchSkill();
 
-    })
+    }, [])
 
     const uploadImage = async file => {
         const formData = new FormData();
@@ -122,8 +122,6 @@ function Profile() {
             formOfWork: applicant.formOfWork || '',
             location: applicant.location || '',
         });
-        // setEditingSection('personal');
-        // setLevelForm(applicant.desireLevel || '');
         setEditingSection('career-info');
     };
 
@@ -136,10 +134,25 @@ function Profile() {
         );
     };
 
+
     const handleSave = async () => {
+        if (editingSection === 'personal') {
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(formData.phone)) {
+                showError('Số điện thoại không hợp lệ!');
+                return;
+            }
+        }
+
+        if (editingSection === 'career-info') {
+            const salary = parseFloat(careerInfoForm.desireSalary);
+            if (isNaN(salary) || salary <= 0) {
+                showError('Mức lương phải là số dương!');
+                return;
+            }
+        }
         try {
             const applicantID = localStorage.getItem('applicantID');
-            // if (!applicantID) return alert('Không tìm thấy applicantID');
             let payload = {};
             if (editingSection === 'personal') {
                 payload = {
@@ -150,8 +163,6 @@ function Profile() {
                     gender: formData.gender,
                     photo: applicant.photo,
                 };
-                // } else if (editingSection === 'title') {
-                //     payload = { title: titleForm.title };
             } else if (editingSection === 'goal') {
                 payload = { goal: goalForm.goal };
             } else if (editingSection === 'exp') {
@@ -178,12 +189,11 @@ function Profile() {
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
             setApplicant(prev => ({ ...prev, ...res.data }));
+            await fetchApplicant();
             setEditingSection(null);
-            alert('Cập nhật thành công!');
-            window.location.reload();
-        } catch (err) {
-            console.error('Lỗi khi lưu:', err);
-            alert('Cập nhật thất bại!');
+            showSuccess('Cập nhật thành công!');
+        } catch {
+            showError('Cập nhật thất bại!');
         }
     };
 
@@ -198,9 +208,8 @@ function Profile() {
             });
             setApplicant(prev => ({ ...prev, photo: null }));
             setPreview(null);
-        } catch (err) {
-            console.error('Lỗi khi xóa ảnh:', err);
-            alert('Xóa ảnh thất bại!');
+        } catch {
+            showError('Xóa ảnh thất bại!');
         }
     };
 
@@ -316,33 +325,6 @@ function Profile() {
                     </div>
                 </div>
 
-                {/* <div className="profile-section">
-                    <h3>Vị trí muốn ứng tuyển</h3>
-                    {editingSection === 'title' ? (
-                        <>
-                            <div className="form-group-pr">
-                                <textarea
-                                    placeholder="Nhập vị trí muốn ứng tuyển"
-                                    value={titleForm.title || ''}
-                                    onChange={e => setTitleForm({ ...titleForm, title: e.target.value })}
-                                />
-                            </div>
-                            <button onClick={handleSave}>Lưu</button>
-                            <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>
-                                Hủy
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <div className="form-group-pr">
-                                <p>{applicant.title || 'Chưa có'}</p>
-                            </div>
-                            <button className="edit-goal" onClick={handleEditTitle}>
-                                <MdModeEdit /> Chỉnh sửa
-                            </button>
-                        </>
-                    )}
-                </div> */}
 
                 <div className="profile-section">
                     <h3>Mục tiêu nghề nghiệp</h3>
@@ -444,24 +426,6 @@ function Profile() {
                     )}
                 </div>
 
-                {/* <div className="profile-section">
-                    <h3>Cấp bậc</h3>
-                    {editingSection === 'level' ? (
-                        <>
-                            <select value={levelForm} onChange={e => setLevelForm(e.target.value)}>
-                                <option value="">Chọn cấp bậc</option>
-                                {level.map(l => <option key={l} value={l}>{l}</option>)}
-                            </select>
-                            <button onClick={handleSave}>Lưu</button>
-                            <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>Hủy</button>
-                        </>
-                    ) : (
-                        <>
-                            <p>{applicant.desireLevel || 'Chưa chọn'}</p>
-                            <button className="edit-goal" onClick={handleEditLevel}><MdModeEdit /> Chỉnh sửa</button>
-                        </>
-                    )}
-                </div> */}
                 <div className="profile-section">
                     <h3>Thông tin nghề nghiệp</h3>
                     {editingSection === 'career-info' ? (
@@ -494,7 +458,6 @@ function Profile() {
                                         setCareerInfoForm({ ...careerInfoForm, desireSalary: e.target.value })
                                     }
                                 />
-
                             </div>
                             <div className="form-group-pr">
                                 <label>Hình thức làm việc</label>
@@ -535,7 +498,7 @@ function Profile() {
                                     <p><strong>- Cấp bậc mong muốn:</strong> {applicant.desireLevel || 'Chưa cập nhật'}</p>
                                 </div>
                                 <div className="form-group-pr">
-                                    <p><strong>- Mức lương mong muốn:</strong> {applicant.desireSalary || 'Chưa cập nhật'}</p>
+                                    <p><strong>- Mức lương mong muốn:</strong> {formatCurrencyShort(applicant.desireSalary) || 'Chưa cập nhật'}</p>
                                 </div>
                                 <div className="form-group-pr">
                                     <p><strong>- Hình thức làm việc:</strong> {applicant.formOfWork || 'Chưa cập nhật'}</p>
@@ -551,9 +514,15 @@ function Profile() {
                     )}
                 </div>
             </div>
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    duration={toast.duration}
+                    onClose={hideToast}
+                />
+            )}
         </div>
-
     );
 }
-
 export default Profile;

@@ -29,7 +29,7 @@ import vn.iotstar.enums.EStatus;
 import vn.iotstar.service.IAccountService;
 import vn.iotstar.service.IApplicantService;
 import vn.iotstar.service.IApplicationService;
-import vn.iotstar.service.IFavouriteJobService;
+import vn.iotstar.service.ISaveJobService;
 import vn.iotstar.service.IRecruitmentService;
 import vn.iotstar.service.imp.EmailService;
 
@@ -44,7 +44,7 @@ public class RecruitmentController {
 	private IRecruitmentService rService;
 
 	@Autowired
-	private IFavouriteJobService fService;
+	private ISaveJobService fService;
 	
 	@Autowired
 	private IApplicantService applicantService;
@@ -54,19 +54,6 @@ public class RecruitmentController {
 	
 	@Autowired
 	private IAccountService accountService;
-
-//	@PostMapping("/apply")
-//	public ResponseEntity<?> apply(@RequestPart("CV") MultipartFile cvFile, @ModelAttribute ApplyRequestDTO dto,
-//			Authentication authentication) {
-//		if (authentication == null || !authentication.isAuthenticated()) {
-//			return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Unauthorized");
-//		}
-//
-//		String username = authentication.getName();
-//		Application application = aService.apply(cvFile, dto, username);
-//
-//		return ResponseEntity.ok(Map.of("message", "Nộp hồ sơ thành công"));
-//	}
 	
 	@PostMapping("/apply")
 	public ResponseEntity<?> apply(@RequestPart("CV") MultipartFile cvFile, @ModelAttribute ApplyRequestDTO dto,

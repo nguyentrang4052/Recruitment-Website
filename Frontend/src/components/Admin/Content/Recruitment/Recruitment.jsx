@@ -4,6 +4,7 @@ import './Recruitment.css';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { formatDate } from '../../../../utils/Format';
+import { formatRangeShort } from '../../../../utils/formatSalary';
 
 const JOBS_PER_PAGE = 5;
 
@@ -93,7 +94,7 @@ export default function Recruitment({ onViewDetail }) {
                   <h3 className="job-title">{job.position}</h3>
                   <p className="job-company">{job.employer.name} - {job.location}</p>
                   <div className="job-meta">
-                    <span>💰 {job.salary}</span>
+                    <span>💰 {formatRangeShort(job.salary)}</span>
                     <span>📅 Ngày đăng: {formatDate(job.postedAt)}</span>
                     <span>👁️ {job.view} lượt xem</span>
                   </div>

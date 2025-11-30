@@ -3,8 +3,10 @@ package vn.iotstar.controller.applicant;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +36,10 @@ public class HomeController {
 
 	@Autowired
 	private ISkillService skillService;
-	
+
 	@Autowired
 	private IViewLogRepository viewRepository;
-	
+
 	@GetMapping("/")
 	@ResponseBody
 	public List<RecruitmentCardDTO> getAllRecruitments() {
@@ -60,19 +62,29 @@ public class HomeController {
 			@RequestParam(required = false) String location, @RequestParam(required = false) BigDecimal minSalary,
 			@RequestParam(required = false) BigDecimal maxSalary) {
 
-		if (skillName != null) {
-			return rService.findBySkill_SkillName(skillName).stream().map(rService::mapToDetail).toList();
-		} else if (position != null) {
-			return rService.findByPosition(position).stream().map(rService::mapToDetail).toList();
-		} else if (level != null) {
-			return rService.findByLevel(level).stream().map(rService::mapToDetail).toList();
-		} else if (location != null) {
-			return rService.findByLocation(location).stream().map(rService::mapToDetail).toList();
-		} else if (minSalary != null && maxSalary != null) {
+		Set<RecruitmentNews> result = new HashSet<>(rService.findAllNews());
 
-			return rService.findBySalary(minSalary, maxSalary).stream().map(rService::mapToDetail).toList();
+		if (skillName != null && !skillName.isEmpty()) {
+			result.retainAll(rService.findBySkill_SkillName(skillName));
 		}
-		return rService.findAllNews().stream().map(rService::mapToDetail).toList();
+
+		if (position != null && !position.isEmpty()) {
+			result.retainAll(rService.findByPosition(position));
+		}
+
+		if (level != null && !level.isEmpty()) {
+			result.retainAll(rService.findByLevel(level));
+		}
+
+		if (location != null && !location.isEmpty()) {
+			result.retainAll(rService.findByLocation(location));
+		}
+
+		if (minSalary != null && maxSalary != null) {
+			result.retainAll(rService.findBySalary(minSalary, maxSalary));
+		}
+
+		return result.stream().map(rService::mapToDetail).toList();
 	}
 
 }

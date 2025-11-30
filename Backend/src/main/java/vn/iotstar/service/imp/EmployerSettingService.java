@@ -23,9 +23,15 @@ public class EmployerSettingService implements IEmployerSettingService {
 
     @Override
     @Transactional
-    public void updatePassword(Integer accountId, String newPassword) {
+    public void updatePassword(Integer accountId, String oldPass, String newPassword) {
         Account acc = accountRepo.findById(accountId).orElseThrow();
+        if (!passwordEncoder.matches(oldPass, acc.getPassword())) {
+            throw new RuntimeException("Mật khẩu cũ không đúng!");
+        }
+
+        	
         acc.setPassword(passwordEncoder.encode(newPassword));
+        accountRepo.save(acc);
     }
 
     @Override

@@ -89,38 +89,33 @@ public class AccountService implements IAccountService {
 
 	@Override
 	public SignupResponseDTO registerUser(SignupRequestDTO signupRequestDTO) {
-		try {
 
-			if (accountRepository.existsByEmail(signupRequestDTO.getEmail())) {
-				throw new RuntimeException("Email đã tồn tại");
-			}
-
-			if (accountRepository.existsByUsername(signupRequestDTO.getUsername())) {
-				throw new RuntimeException("Tên đăng nhập đã tồn tại");
-			}
-
-			if (!signupRequestDTO.getPassword().equals(signupRequestDTO.getConfirmPassword())) {
-				throw new RuntimeException("Mật khẩu không khớp");
-			}
-
-			String hashedPassword = new BCryptPasswordEncoder().encode(signupRequestDTO.getPassword());
-
-			signupRequestDTO.setPassword(hashedPassword);
-			signupRequestDTO.setConfirmPassword(hashedPassword);
-
-			if (securityUtil.sendOtp(signupRequestDTO.getEmail())) {
-
-				securityUtil.saveSignupRequestToRedis(signupRequestDTO.getEmail(), (Object) signupRequestDTO);
-
-				return new SignupResponseDTO("Đăng ký thành công! Vui lòng kiểm tra email để xác nhận OTP.", true);
-			} else {
-				return new SignupResponseDTO("Không thể gửi OTP. Vui lòng thử lại.", false);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new SignupResponseDTO("Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.", false);
+		if (accountRepository.existsByEmail(signupRequestDTO.getEmail())) {
+			throw new RuntimeException("Email đã tồn tại");
 		}
+
+		if (accountRepository.existsByUsername(signupRequestDTO.getUsername())) {
+			throw new RuntimeException("Tên đăng nhập đã tồn tại");
+		}
+
+		if (!signupRequestDTO.getPassword().equals(signupRequestDTO.getConfirmPassword())) {
+			throw new RuntimeException("Mật khẩu không khớp");
+		}
+
+		String hashedPassword = new BCryptPasswordEncoder().encode(signupRequestDTO.getPassword());
+
+		signupRequestDTO.setPassword(hashedPassword);
+		signupRequestDTO.setConfirmPassword(hashedPassword);
+
+		if (securityUtil.sendOtp(signupRequestDTO.getEmail())) {
+
+			securityUtil.saveSignupRequestToRedis(signupRequestDTO.getEmail(), (Object) signupRequestDTO);
+
+			return new SignupResponseDTO("Đăng ký thành công! Vui lòng kiểm tra email để xác nhận OTP.", true);
+		} else {
+			return new SignupResponseDTO("Không thể gửi OTP. Vui lòng thử lại.", false);
+		}
+
 	}
 
 	@Override

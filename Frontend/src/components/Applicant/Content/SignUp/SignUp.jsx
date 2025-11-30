@@ -1,10 +1,13 @@
-import {Link, useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-// import { useNavigate } from 'react-router-dom'
 import axios from "axios"
 import './SignUp.css'
 import Footer from './../../Footer/Footer.jsx'
+import Toast from '../../../Toast/Toast.jsx'
+import useToast from '../../../../utils/useToast.js'
+
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+const usernameRegex = /^[a-z0-9]+$/
 
 function validatePassword(password) {
     if (!passwordRegex.test(password)) {
@@ -13,7 +16,6 @@ function validatePassword(password) {
     return null
 }
 
-const usernameRegex = /^[a-z0-9]+$/
 function validateUsername(username) {
     if (!usernameRegex.test(username)) {
         return "Tên đăng nhập chỉ được chứa chữ thường và số, không có khoảng trắng hoặc ký tự đặc biệt."
@@ -21,12 +23,8 @@ function validateUsername(username) {
     return null
 }
 
-
 function SignUp() {
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState(null)
-    const navigate = useNavigate()
-
     const [formData, setFormData] = useState({
         applicantName: '',
         email: '',
@@ -34,6 +32,8 @@ function SignUp() {
         password: '',
         confirmPassword: ''
     })
+    const navigate = useNavigate()
+    const { toast, showError, hideToast } = useToast()
 
     const handleChange = (e) => {
         setFormData({
@@ -42,72 +42,82 @@ function SignUp() {
         })
     }
 
-
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        hideToast()
+
         if (formData.password !== formData.confirmPassword) {
-            setError("Mật khẩu và xác nhận mật khẩu không khớp")
+            showError("Mật khẩu và xác nhận mật khẩu không khớp")
             return
         }
-        
+
         const usernameErr = validateUsername(formData.username)
-        if (usernameErr)
-        {
-            setError(usernameErr)
+        if (usernameErr) {
+            showError(usernameErr)
             return
         }
-        
+
         const passwordErr = validatePassword(formData.password)
-        if (passwordErr)
-        {
-            setError(passwordErr)
+        if (passwordErr) {
+            showError(passwordErr)
             return
         }
 
         setIsLoading(true)
-        setError(null)
+
         try {
             const response = await axios.post('http://localhost:8080/api/auth/signup', formData)
-            
-            setError(response.data.message)
+            setIsLoading(false)
+
+            if (!response.data.success) {
+                showError(response.data.message || "Đăng ký thất bại")
+                return
+            }
+
+            // showSuccess(response.data.message || "Đăng ký thành công!")
             localStorage.setItem("signupEmail", formData.email)
             navigate("/verify-otp")
-            setIsLoading(false)
 
         } catch (err) {
             setIsLoading(false)
 
-            if (err.response && err.response.data && err.response.data.message) {
-                setError(err.response.data.message)
+            if (err.response && err.response.data) {
+                showError(err.response.data.message || "Lỗi không xác định.")
             } else {
-                setError("Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.")
+                showError("Lỗi không xác định.")
             }
         }
     }
 
-   
-    return(
+    return (
         <>
-        <div className="signup-form">
-            <h2>Đăng ký</h2>    
-            <form onSubmit={handleSubmit} >
-            <input type="text" placeholder="Họ và tên" name="applicantName" value={formData.applicantName} onChange={handleChange} required/>    
-            <input type="email" placeholder="Email" name="email" value={formData.email} onChange={handleChange} required/>
-            <input type="text" placeholder="Tên đăng nhập" name="username" value={formData.username} onChange={handleChange} autoComplete="new-username" required/>
-            <input type="password" placeholder="Mật khẩu" name="password" value={formData.password} onChange={handleChange} autoComplete="new-password" required/>
-            <input type="password" placeholder="Xác nhận mật khẩu" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required/>
-            <button className="signup-btn" type="submit" disabled={isLoading}>
-                    {isLoading ? 'Đang đăng ký...' : 'Đăng ký'}
-                </button>
-             {isLoading && <div className="loading-spinner">Đang tải...</div>}
-             {error && <div className="error-message">{error}</div>}
-            <p>Đã có tài khoản? <Link to = "/applicant-login">Đăng nhập</Link></p>
-
-            </form>       
-        </div>
-        <Footer />
+            <div className="signup-form">
+                <h2>Đăng ký</h2>
+                <form onSubmit={handleSubmit} >
+                    <input type="text" placeholder="Họ và tên" name="applicantName" value={formData.applicantName} onChange={handleChange} required />
+                    <input type="email" placeholder="Email" name="email" value={formData.email} onChange={handleChange} required />
+                    <input type="text" placeholder="Tên đăng nhập" name="username" value={formData.username} onChange={handleChange} autoComplete="new-username" required />
+                    <input type="password" placeholder="Mật khẩu" name="password" value={formData.password} onChange={handleChange} autoComplete="new-password" required />
+                    <input type="password" placeholder="Xác nhận mật khẩu" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                    <button className="signup-btn" type="submit" disabled={isLoading}>
+                        {isLoading ? 'Đang đăng ký...' : 'Đăng ký'}
+                    </button>
+                    {isLoading && <div className="loading-spinner">Đang tải...</div>}
+                    <p>Đã có tài khoản? <Link to="/applicant-login">Đăng nhập</Link></p>
+                </form>
+            </div>
+            <Footer />
+            {toast && (
+                <Toast 
+                    message={toast.message || "Thông báo"} 
+                    type={toast.type} 
+                    duration={toast.duration}
+                    onClose={hideToast} 
+                />
+            )}
         </>
     )
- }
+}
 
- export default SignUp
+export default SignUp

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Notice.css";
 import province from "../../../../../data/provinces.json";
 import axios from "axios";
+import Toast from '../../../Toast/Toast.jsx'
+import useToast from '../../../../utils/useToast.js'
 
 const NoticeTable = () => {
   const [noticeData, setNoticeData] = useState([]);
@@ -10,6 +12,8 @@ const NoticeTable = () => {
 
   const token = localStorage.getItem("token");
   const applicantID = localStorage.getItem("applicantID");
+
+  const { toast, showSuccess, showError, showWarning, hideToast } = useToast();
 
   const [formData, setFormData] = useState({
     jobTitle: "",
@@ -23,21 +27,17 @@ const NoticeTable = () => {
     if (!token || !applicantID) return;
 
     const fetchNotice = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:8080/api/applicant/notice",
-          {
-            params: { id: applicantID },
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json"
-            },
-          }
-        );
-        setNoticeData(res.data);
-      } catch (err) {
-        console.error("Lỗi tải danh sách notice:", err);
-      }
+      const res = await axios.get(
+        "http://localhost:8080/api/applicant/notice",
+        {
+          params: { id: applicantID },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+        }
+      );
+      setNoticeData(res.data);
     };
 
     fetchNotice();
@@ -69,17 +69,29 @@ const NoticeTable = () => {
     setShowPopup(true);
   };
 
-  const handleDelete = (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa thông báo này?")) return;
+  const confirmDelete = (id) => {
+    showWarning(
+      "Bạn chắc chắn muốn xoá thông báo này?",
+      () => {
+        handleDelete(id);
+        hideToast();
+      },
+      () => hideToast()
+    )
 
-    axios
-      .delete(`http://localhost:8080/api/applicant/notice/delete/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(() => {
-        setNoticeData(noticeData.filter((n) => n.id !== id));
-      })
-      .catch((err) => console.error("Lỗi khi xóa:", err));
+  };
+  const handleDelete = async (id) => {
+    try {
+       await axios.delete(`http://localhost:8080/api/applicant/notice/delete/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setNoticeData(noticeData.filter((n) => n.id !== id));
+    showSuccess("Xóa thông báo thành công");
+    } catch {
+      showError("Xóa thông báo thất bại")
+    }
+
   };
 
 
@@ -100,17 +112,15 @@ const NoticeTable = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         )
         .then((res) => {
-          // const updatedNotice = {
-          //   ...res.data.jobNoticeDTO,
-          //   title: res.data.jobNoticeDTO.jobTitle,
-          // };
+
           const updatedList = noticeData.map((n) =>
             n.id === editingNotice.id ? res.data.jobNoticeDTO : n
           );
           setNoticeData(updatedList);
           setShowPopup(false);
         })
-        .catch((err) => console.error("Lỗi update:", err));
+      showSuccess("Cập nhật thông báo thành công")
+      // .catch((err) => console.error("Lỗi update:", err));
     }
     else {
       axios
@@ -120,14 +130,11 @@ const NoticeTable = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         )
         .then((res) => {
-          // const newNotice = {
-          //   ...res.data.jobNoticeDTO,
-          //   title: res.data.jobNoticeDTO.jobTitle, 
-          // };
           setNoticeData([...noticeData, res.data.jobNoticeDTO]);
           setShowPopup(false);
         })
-        .catch((err) => console.error("Lỗi create:", err));
+      showSuccess("Tạo thông báo thành công")
+      // .catch((err) => console.error("Lỗi create:", err));
     }
   };
 
@@ -159,9 +166,6 @@ const NoticeTable = () => {
                       item.frequency}
               </td>
 
-              {/* <td>
-                <input type="checkbox" checked={item.emailNotice} readOnly />
-              </td> */}
               <td>
                 <div className="action-buttons">
                   <button className="btn-edit" onClick={() => handleEdit(item)}>
@@ -169,7 +173,7 @@ const NoticeTable = () => {
                   </button>
                   <button
                     className="btn-delete"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => confirmDelete(item.id)}
                   >
                     Xóa
                   </button>
@@ -197,7 +201,7 @@ const NoticeTable = () => {
 
             <div className="popup-form">
               <div className="form-group">
-                <label>Chức danh</label>
+                <label>Vị trí ứng tuyển</label>
                 <input
                   type="text"
                   name="jobTitle"
@@ -289,6 +293,19 @@ const NoticeTable = () => {
           </div>
         </div>
       )}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+          onConfirm={toast.onConfirm}
+          onCancel={toast.onCancel}
+          confirmText={toast.confirmText}
+          cancelText={toast.cancelText}
+        />
+      )}
+
     </div>
   );
 };

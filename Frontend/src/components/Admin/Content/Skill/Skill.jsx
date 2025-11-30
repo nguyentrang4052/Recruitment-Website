@@ -4,89 +4,95 @@ import { useState } from 'react';
 import { MdDelete } from 'react-icons/md';
 import { useEffect } from 'react';
 import axios from 'axios';
+import useToast from '../../../../utils/useToast'
+import Toast from '../../../Toast/Toast';
 
 export default function Skills() {
   const [skills, setSkills] = useState([]);
   const token = localStorage.getItem("token");
-   const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-  axios.get("http://localhost:8080/api/admin/skill", {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-  .then(res => setSkills(res.data))
-  .catch(err => console.error(err));
-}, []);
+    axios.get("http://localhost:8080/api/admin/skill", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => setSkills(res.data))
+  }, []);
 
 
   const [isAdding, setIsAdding] = useState(false);
   const [newSkill, setNewSkill] = useState({ name: '', description: '' });
+  const { toast, showSuccess, showError, showWarning, hideToast } = useToast();
 
+  const confirmDelete = (id) => {
+    showWarning(
+      "Bạn chắc chắn muốn xoá kỹ năng này?",
+      () => {
+        handleDeleteSkill(id);
+        hideToast();
+      },
+      () => hideToast()
+    )
 
- const handleDeleteSkill = async (id) => {
-  try {
-    const res = await axios.delete(`http://localhost:8080/api/admin/skill/delete/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  };
 
-    // setSkills(skills.filter(skill => skill.id !== id));
-    alert(res.data);
-     setSkills(prevSkills => prevSkills.filter(skill => skill.skillID !== id));
-  } catch (err) {
-   if (err.response && err.response.data) {
-        alert(err.response.data); 
+  const handleDeleteSkill = async (id) => {
+    try {
+      const res = await axios.delete(`http://localhost:8080/api/admin/skill/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      showSuccess(res.data);
+      setSkills(prevSkills => prevSkills.filter(skill => skill.skillID !== id));
+    } catch (err) {
+      if (err.response && err.response.data) {
+        showError(err.response.data);
       } else {
-        alert("Xoá kỹ năng thất bại");
+        showError("Xoá kỹ năng thất bại");
       }
-  }
-};
+    }
+  };
 
 
   const handleAddSkill = async () => {
     if (!newSkill.name.trim()) {
-    alert("Tên kỹ năng không được để trống!");
-    return; 
-  }
+      showError("Tên kỹ năng không được để trống!");
+      return;
+    }
 
-  // if (!newSkill.description.trim()) {
-  //   alert("Mô tả kỹ năng không được để trống!");
-  //   return;
-  // }
+
     try {
       const res = await axios.post(
         "http://localhost:8080/api/admin/skill/create",
         { skillName: newSkill.name, description: newSkill.description },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      showSuccess("Thêm kỹ năng thành công");
       setSkills([...skills, res.data]);
       setNewSkill({ name: '', description: '' });
       setIsAdding(false);
-    } catch(err) {
+    } catch (err) {
       if (err.response && err.response.data) {
-        alert(err.response.data); 
+        showError(err.response.data);
       } else {
-        alert("Thêm kỹ năng thất bại");
+        showError("Thêm kỹ năng thất bại");
       }
     }
-  
-};
 
-const handleSearch = async (e) => {
+  };
+
+  const handleSearch = async (e) => {
     if (e.key === 'Enter') {
-      try {
-        const res = await axios.get('http://localhost:8080/api/admin/skill/search', {
-          params: { skillName: searchTerm }, // Gửi từ khóa tìm kiếm
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setSkills(res.data); // Cập nhật danh sách kỹ năng với kết quả tìm kiếm
-      } catch (err) {
-        console.error("Tìm kiếm thất bại", err);
-      }
+      const res = await axios.get('http://localhost:8080/api/admin/skill/search', {
+        params: { skillName: searchTerm },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSkills(res.data);
     }
   };
 
-   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value); 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
 
@@ -96,13 +102,13 @@ const handleSearch = async (e) => {
       <div className="card">
         <div className="table-toolbar">
           {/* <input type="text" placeholder="Tìm kiếm kỹ năng..." className="table-search" /> */}
-           <input
+          <input
             type="text"
             placeholder="Tìm kiếm kỹ năng..."
             className="table-search"
             value={searchTerm}
             onChange={handleSearchChange}
-            onKeyDown={handleSearch} 
+            onKeyDown={handleSearch}
           />
           <button className="btn-primary-employer" onClick={() => setIsAdding(true)}>Thêm kỹ năng mới</button>
         </div>
@@ -137,7 +143,7 @@ const handleSearch = async (e) => {
                 <div className="skill-actions">
                   <button
                     className="icon-button red"
-                    onClick={() => handleDeleteSkill(s.skillID)}
+                    onClick={() => confirmDelete(s.skillID)}
                   >
                     <MdDelete size={20} />
                   </button>
@@ -147,6 +153,18 @@ const handleSearch = async (e) => {
           ))}
         </div>
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+          onConfirm={toast.onConfirm}
+          onCancel={toast.onCancel}
+          confirmText={toast.confirmText}
+          cancelText={toast.cancelText}
+        />
+      )}
     </div>
   );
 }

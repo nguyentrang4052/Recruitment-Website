@@ -8,19 +8,19 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import vn.iotstar.entity.Applicant;
-import vn.iotstar.entity.FavouriteJob;
+import vn.iotstar.entity.SaveJob;
 import vn.iotstar.entity.RecruitmentNews;
 import vn.iotstar.repository.IApplicantRepository;
-import vn.iotstar.repository.IFavouriteJobRepository;
+import vn.iotstar.repository.ISaveJobRepository;
 import vn.iotstar.service.IApplicantService;
-import vn.iotstar.service.IFavouriteJobService;
+import vn.iotstar.service.ISaveJobService;
 import vn.iotstar.service.IRecruitmentService;
 
 @Service
-public class FavouriteJobService implements IFavouriteJobService{
+public class SaveJobService implements ISaveJobService{
 	
 	@Autowired
-	private IFavouriteJobRepository fRepository;
+	private ISaveJobRepository fRepository;
 	
 	@Autowired
 	private IApplicantService applicantService;
@@ -39,7 +39,7 @@ public class FavouriteJobService implements IFavouriteJobService{
 	}
 
 	@Override
-	public List<FavouriteJob> findByApplicant_ApplicantID(Integer applicantID) {
+	public List<SaveJob> findByApplicant_ApplicantID(Integer applicantID) {
 		return fRepository.findByApplicant_ApplicantID(applicantID);
 	}
 	
@@ -55,7 +55,7 @@ public class FavouriteJobService implements IFavouriteJobService{
             RecruitmentNews recruitment = rService.findById(rnid)
                     .orElseThrow(() -> new RuntimeException("Recruitment not found"));
 
-            FavouriteJob favorite = new FavouriteJob();
+            SaveJob favorite = new SaveJob();
             favorite.setApplicant(applicant);
             favorite.setRecruitmentNews(recruitment);
             fRepository.save(favorite);
@@ -67,9 +67,9 @@ public class FavouriteJobService implements IFavouriteJobService{
 	
 	 @Override
 	public List<RecruitmentNews> getFavorites(Integer applicantID) {
-	        List<FavouriteJob> favorites = fRepository.findByApplicant_ApplicantID(applicantID);
+	        List<SaveJob> favorites = fRepository.findByApplicant_ApplicantID(applicantID);
 	        return favorites.stream()
-	                .map(FavouriteJob::getRecruitmentNews)
+	                .map(SaveJob::getRecruitmentNews)
 	                .collect(Collectors.toList());
 	    }
 

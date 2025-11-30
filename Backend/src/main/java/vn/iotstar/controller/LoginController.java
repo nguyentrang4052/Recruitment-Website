@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +54,7 @@ public class LoginController {
 				if (account.getActive() == 0) {
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tài khoản đã bị khoá");
 				}
-				
+
 				Applicant applicant = applicantService.findByAccount_accountID(account.getAccountID());
 				Map<String, Object> response = new HashMap<>();
 				response.put("token", token);
@@ -81,10 +82,10 @@ public class LoginController {
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-			CustomUserDetail userDetails = (CustomUserDetail) uService.loadUserByUsername(loginRequest.getUsername());
-			
+			CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+
 			Account account = userDetails.getAccount();
-			
+
 			if (account.getActive() == 0) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tài khoản đã bị khoá");
 			}
@@ -115,10 +116,10 @@ public class LoginController {
 			return ResponseEntity.ok(response);
 
 		} catch (BadCredentialsException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tên người dùng hoặc mật khẩu không đúng");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Thông tin đăng nhập không đúng.");
 		}
 	}
-	
+
 	@PostMapping("/employer/google")
 	public ResponseEntity<?> authenticateWithGoogleEmp(@RequestBody LoginGGRequestDTO req) throws Exception {
 		String idTokenString = req.getIdToken();
@@ -126,7 +127,7 @@ public class LoginController {
 			String token = accountService.loginByGoogle(idTokenString);
 			if (token != null) {
 				String authen = jwtUtil.extractUsername(token);
-				
+
 				Account account = accountService.findByUsername(authen);
 				if (account == null) {
 					account = accountService.findByEmail(authen);
@@ -134,14 +135,12 @@ public class LoginController {
 				if (account.getActive() == 0) {
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tài khoản đã bị khoá");
 				}
-				
-//				Applicant applicant = applicantService.findByAccount_accountID(account.getAccountID());
+
 				Employer emp = employerService.findByAccount_accountID(account.getAccountID());
 				Map<String, Object> response = new HashMap<>();
 				response.put("token", token);
 				response.put("email", account.getEmail());
 				response.put("roleName", account.getRole().getRoleName());
-//				response.put("applicantID", applicant.getApplicantID());
 				response.put("employerID", emp.getEmployerID());
 				response.put("username", emp.getAccount().getUsername());
 

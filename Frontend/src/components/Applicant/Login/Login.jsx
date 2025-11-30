@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import './Login.css'
 import { Link, useNavigate } from 'react-router-dom'
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-//import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import { GoogleLogin } from "@react-oauth/google";
 import { isTokenExpired } from '../../../utils/Auth'
+import Toast from '../../Toast/Toast.jsx'
+import useToast from '../../../utils/useToast.js'
 
 
 function Login() {
@@ -16,6 +16,9 @@ function Login() {
 
     const token = localStorage.getItem('token')
     const roleName = localStorage.getItem('roleName')
+
+     const { toast, showError, hideToast } = useToast();
+
     if (token && !isTokenExpired(token) && roleName == "applicant") {
         navigate('/dashboard')
     }
@@ -29,9 +32,6 @@ function Login() {
             const response = await axios.post('http://localhost:8080/api/auth/login', { username, password })
 
             const { token, email, roleName, applicantID } = response.data;
-            // const token = response.data.token
-            // const roleName = response.data.roleName
-            // localStorage.setItem('email', response.data.email)
             localStorage.setItem('email', email)
             localStorage.setItem('token', token)
             localStorage.setItem('roleName', roleName)
@@ -47,20 +47,15 @@ function Login() {
         }
         catch (error) {
             if (error.response && error.response.status === 401) {
-                setError(error.response.data)
+               showError(error.response.data)
             } else {
-                setError("Có lỗi xảy ra. Vui lòng thử lại sau.")
+                showError("Có lỗi xảy ra. Vui lòng thử lại sau.")
             }
         }
     }
 
     const handleGoogleLogin = async (response) => {
         const idToken = response.credential;
-        if (!idToken) {
-            console.error("Không nhận được idToken từ Google");
-            return;
-        }
-
         try {
             const res = await axios.post('http://localhost:8080/api/auth/google', { idToken });
 
@@ -80,16 +75,14 @@ function Login() {
             } else if (roleName === "employer") {
                 navigate('/employer-dashboard');
             } else {
-                console.warn("Role không xác định, chuyển về login");
                 navigate('/login');
             }
 
         } catch (error) {
-            // alert("Đăng nhập bằng Google thất bại. Vui lòng thử lại.");
             if (error.response && error.response.status === 401) {
-                setError(error.response.data)
+                showError(error.response.data)
             } else {
-                setError("Đăng nhập với google thất bại. Vui lòng thử lại sau.")
+                showError("Đăng nhập với google thất bại. Vui lòng thử lại sau.")
             }
         }
     };
@@ -101,7 +94,7 @@ function Login() {
                 <h2>Đăng nhập</h2>
                 <form onSubmit={handleLogin}>
                     <div className="form-groups">
-                        <label htmlFor="username">Tên người dùng</label>
+                        <label htmlFor="username">Tên đăng nhập</label>
                         <input
                             type="text"
                             id="username"
@@ -140,6 +133,14 @@ function Login() {
                     Bạn chưa có tài khoản? <Link to="/signup">Đăng ký</Link>
                 </div>
             </div>
+            {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+        />
+      )}
         </div>
     )
 }

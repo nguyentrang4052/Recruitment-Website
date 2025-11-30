@@ -3,6 +3,8 @@ import "./Setting.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import axios from "axios";
 import { useEffect } from "react";
+import Toast from '../../../Toast/Toast';
+import useToast from '../../../../utils/useToast';
 
 const api = axios.create({
   baseURL: 'http://localhost:8080',
@@ -22,15 +24,14 @@ export default function Setting() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newEmail, setNewEmail] = useState("");
-  // const [message, setMessage] = useState("");
-  // const [showMessage, setShowMessage] = useState(false);
+
   const [currentEmail, setCurrentEmail] = useState("");
 
-  const [errors, setErrors] = useState({
-    password: "",
-    confirmPassword: "",
-    email: ""
-  });
+  // const [errors, setErrors] = useState({
+  //   password: "",
+  //   confirmPassword: "",
+  //   email: ""
+  // });
 
   const [showPassword, setShowPassword] = useState({
     old: false,
@@ -41,6 +42,8 @@ export default function Setting() {
   const toggleShow = (field) =>
     setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
 
+  const { toast, showSuccess, showError, hideToast } = useToast();
+
   useEffect(() => {
     (async () => {
       try {
@@ -48,7 +51,7 @@ export default function Setting() {
         console.log(data);
         setCurrentEmail(data.email);
       } catch {
-        alert("Không thể lấy thông tin email");
+        showError("Không thể lấy thông tin email");
       }
     })();
   }, []);
@@ -59,54 +62,46 @@ export default function Setting() {
   const validateEmail = (e) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
-  // const handlePasswordUpdate = () => {
-  //   setMessage("Mật khẩu đã được câp nhật!");
-  //   setShowMessage(true);
-  // };
-
-  // const handleEmailUpdate = () => {
-  //   setMessage("Email đã được câp nhật!");
-  //   setShowMessage(true);
-  // };
   const handlePasswordUpdate = async () => {
     const err = { password: "", confirmPassword: "", email: "" };
-    if (!validatePassword(newPassword))
-      err.password = "Mật khẩu ≥ 8 ký tự, có ít nhất 1 chữ hoa và 1 ký tự đặc biệt.";
-    if (newPassword !== confirmPassword)
-      err.confirmPassword = "Mật khẩu xác nhận không khớp.";
-    setErrors(err);
+    if (!validatePassword(newPassword)){
+      showError("Mật khẩu ≥ 8 ký tự, có ít nhất 1 chữ hoa và 1 ký tự đặc biệt.");
+      return;
+    }
+      // err.password = "Mật khẩu ≥ 8 ký tự, có ít nhất 1 chữ hoa và 1 ký tự đặc biệt.";
+    
+    if (newPassword !== confirmPassword){
+      showError("Mật khẩu xác nhận không khớp.");
+      return;
+    }
+      
 
     if (!err.password && !err.confirmPassword) {
       try {
-        await api.patch("/api/applicant/settings/password", { newPassword });
-        alert("✅ Cập nhật mật khẩu thành công!");
+        const res = await api.patch("/api/applicant/settings/password",  { oldPassword, newPassword });
+        showSuccess(res?.data?.message );
         setOldPassword(""); setNewPassword(""); setConfirmPassword("");
       } catch (e) {
-        alert("❌ " + (e.response?.data?.message || "Cập nhật mật khẩu thất bại"));
+       
+          showError(e.response?.data?.message);
       }
     }
   };
 
   const handleEmailUpdate = async () => {
-    const err = { ...errors, email: "" };
     if (!validateEmail(newEmail))
-      err.email = "Email không hợp lệ. Vui lòng nhập đúng định dạng!";
-    setErrors(err);
-
-    if (!err.email) {
+    {
+      showError( "Email không hợp lệ. Vui lòng nhập đúng định dạng!");
+      return;
+    }  
       try {
         await api.patch("/api/applicant/settings/email", { newEmail });
-        alert("✅ Cập nhật email thành công!");
+        showSuccess("Cập nhật email thành công!");
         setCurrentEmail(newEmail); setNewEmail("");
       } catch (e) {
-        alert("❌ " + (e.response?.data?.message || "Cập nhật email thất bại"));
+        showError(e.response?.data?.message || "Cập nhật email thất bại");
       }
-    }
   };
-
-  // const closeMessage = () => {
-  //   setShowMessage(false);
-  // }
 
   return (
     <div className="main-layout" >
@@ -130,7 +125,6 @@ export default function Setting() {
               <span onClick={() => toggleShow("new")}>
                 <i className={`fa ${showPassword.new ? "fa-eye" : "fa-eye-slash"}`} />
               </span>
-              {errors.password && <p className="error-message">{errors.password}</p>}
             </div>
 
             <div className="form-group-setting">
@@ -143,7 +137,7 @@ export default function Setting() {
               <span onClick={() => toggleShow("confirm")}>
                 <i className={`fa ${showPassword.confirm ? "fa-eye" : "fa-eye-slash"}`} />
               </span>
-              {errors.password && <p className="error-message">{errors.password}</p>}
+              {/* {errors.password && <p className="error-message">{errors.password}</p>} */}
             </div>
 
             <div className="button-group">
@@ -170,13 +164,15 @@ export default function Setting() {
 
           </div>
         </div>
-        {/* {showMessage && (
-          <div className="popup-message">
-            <p>{message}</p>
-            <button onClick={closeMessage} className="btn-close">Đóng</button>
-          </div>
-        )} */}
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+        />
+      )}
     </div>
   );
 }

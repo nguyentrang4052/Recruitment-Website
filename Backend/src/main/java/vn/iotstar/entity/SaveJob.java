@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "favoriteJob")
-public class FavouriteJob {
+@Table(name = "SaveJob")
+public class SaveJob {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -54,8 +54,8 @@ public class Employer implements Serializable {
 	private Integer companySize;
 
 
-	@Column(name = "taxCode", nullable = true, length = 255)
-	private String taxCode;
+//	@Column(name = "taxCode", nullable = true, length = 255)
+//	private String taxCode;
 
 	@Column(name = "companyLogo", nullable = true, length = 255)
 	private String companyLogo;
@@ -77,6 +77,7 @@ public class Employer implements Serializable {
 
 	@OneToOne
 	@JoinColumn(name = "accountID", referencedColumnName = "accountID")
+	 @EqualsAndHashCode.Exclude
 	private Account account;
 
 	

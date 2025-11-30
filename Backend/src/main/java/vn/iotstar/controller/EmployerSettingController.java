@@ -34,7 +34,7 @@ public class EmployerSettingController {
     public ResponseEntity<Map<String, Object>> updatePassword(
             @AuthenticationPrincipal CustomUserDetail user,
             @org.springframework.web.bind.annotation.RequestBody Map<String, String> req) {
-        service.updatePassword(user.getAccount().getAccountID(), req.get("newPassword"));
+        service.updatePassword(user.getAccount().getAccountID(), req.get("oldPassword"), req.get("newPassword"));
         return ResponseEntity.ok(Map.of("success", true, "message", "Mật khẩu đã được cập nhật"));
     }
 

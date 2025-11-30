@@ -12,22 +12,6 @@ function OtpVerifyPage() {
   const navigate = useNavigate()
 
 
-
-  //   const handleResend = async () => {
-  //     if (!email) {
-  //       setMessage('Vui lòng nhập email để gửi lại mã');
-  //       return;
-  //     }
-
-  //     try {
-  //       await axios.post('http://localhost:8080/api/auth/resend-otp', { email });
-  //       setMessage('Mã OTP đã được gửi lại.');
-  //     } catch {
-  //       setMessage('Gửi lại OTP thất bại.');
-  //     }
-  //   };
-
-
   const handleVerify = async (e) => {
 
     e.preventDefault();
@@ -46,7 +30,7 @@ function OtpVerifyPage() {
 
       const success = res.data.success;
       if (success) {
-        navigate('/login')
+        navigate('/applicant-login')
         setLoading(true)
         window.location.reload(); 
       }
@@ -71,15 +55,6 @@ function OtpVerifyPage() {
       <h2>Xác minh OTP</h2>
 
       <form onSubmit={handleVerify} className="otp-form">
-        {/* <input
-          type="email"
-          placeholder="Nhập email của bạn"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="otp-input"
-        /> */}
-
         <OtpInput
           value={otp}
           onChange={setOtp}
@@ -94,12 +69,6 @@ function OtpVerifyPage() {
           {loading ? 'Đang xác minh...' : 'Xác minh'}
         </button>
       </form>
-
-      {/* <div className="otp-resend-section">    
-          <button onClick={handleResend} className="otp-resend-button">
-            Gửi lại mã OTP
-          </button>
-      </div> */}
 
       {message && <p className="otp-message">{message}</p>}
       {error && <p className="otp-message">{error}</p>}

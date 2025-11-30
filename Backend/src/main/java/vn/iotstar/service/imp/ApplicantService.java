@@ -344,17 +344,6 @@ public class ApplicantService implements IApplicantService {
 		return applicantRepository.findById(id);
 	}
 
-//	@Override
-//	public ProfileDTO mapToDetail(Applicant applicant) {
-//
-//		List<Skill> skill = applicant.getSkill();
-//
-//		return new ProfileDTO(applicant.getApplicantID(),applicant.getAccount().getPhoto(), applicant.getAccount().getEmail(), applicant.getApplicantName(), applicant.getPhone(),
-//				applicant.getAddress(), applicant.getBirthday(), applicant.getGoal(), applicant.getExperience(),
-//				applicant.getLiteracy(), skill, applicant.getCareerInformation().getTitle(),
-//				applicant.getCareerInformation().getDesireLevel(), applicant.getCareerInformation().getDesireSalary(),
-//				applicant.getCareerInformation().getFormOfWork(), applicant.getCareerInformation().getLocation());
-//	}
 	@Override
 	public ProfileDTO mapToDetail(Applicant applicant) {
 

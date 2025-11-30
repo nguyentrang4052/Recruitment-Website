@@ -2,12 +2,12 @@ package vn.iotstar.service;
 
 import java.util.List;
 
-import vn.iotstar.entity.FavouriteJob;
+import vn.iotstar.entity.SaveJob;
 import vn.iotstar.entity.RecruitmentNews;
 
-public interface IFavouriteJobService {
+public interface ISaveJobService {
 
-	List<FavouriteJob> findByApplicant_ApplicantID(Integer applicantID);
+	List<SaveJob> findByApplicant_ApplicantID(Integer applicantID);
 
 	void deleteByApplicant_ApplicantIDAndRecruitmentNews_RNID(Integer applicantID, Integer RNID);
 

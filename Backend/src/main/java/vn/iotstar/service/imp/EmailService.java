@@ -21,13 +21,12 @@ public class EmailService {
 
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
 	@Value("${app.base-url}")
 	private String baseUrl;
-	
+
 	@Value("${app.backend-url}")
 	private String backendUrl;
-
 
 	public void sendVerificationEmail(String toEmail, String token) {
 		String link = "http://localhost:8080/api/employer/register/verify?token=" + token;
@@ -42,20 +41,6 @@ public class EmailService {
 
 		mailSender.send(message);
 	}
-
-//	public void sendVerificationApply(String toEmail, RecruitmentNews rn) {
-//		String subject = "Xác nhận ứng tuyển " + rn.getPosition();
-//		String content = "Chào bạn, \n" + "Bạn vừa ứng tuyển vào vị trí: " + rn.getPosition() + "\n" + "Công ty: "
-//				+ rn.getEmployer().getEmployerName() + "\n" + "Trân trọng!!";
-//
-//		SimpleMailMessage message = new SimpleMailMessage();
-//		message.setFrom("gzconnect.team@gmail.com");
-//		message.setTo(toEmail);
-//		message.setSubject(subject);
-//		message.setText(content);
-//
-//		mailSender.send(message);
-//	}
 
 	@Autowired
 	private TemplateEngine templateEngine;
@@ -84,7 +69,6 @@ public class EmailService {
 		}
 	}
 
-
 	public void sendJobNotificationEmail(String to, EmailData data) {
 		try {
 			MimeMessage message = mailSender.createMimeMessage();
@@ -94,15 +78,15 @@ public class EmailService {
 
 			helper.setTo(to);
 			helper.setSubject("Có " + data.getJobCount() + " việc làm mới phù hợp với bạn");
-			
-			 data.getJobs().forEach(job -> {
-		            if (job.getEmployer() != null && job.getEmployer().getLogo() != null) {
-		                String logo = job.getEmployer().getLogo();
-		                logo = UrlUtil.replaceLocalhost(logo, backendUrl);
-		                job.getEmployer().setLogo(logo);
-		            }
-		        });
 
+			data.getJobs().forEach(job -> {
+
+				if (job.getEmployer() != null && job.getEmployer().getLogo() != null) {
+					String logo = job.getEmployer().getLogo();
+					logo = UrlUtil.replaceLocalhost(logo, backendUrl);
+					job.getEmployer().setLogo(logo);
+				}
+			});
 
 			Context context = new Context();
 			context.setVariable("candidateName", data.getApplicantName());
@@ -120,16 +104,16 @@ public class EmailService {
 		} catch (MessagingException e) {
 			throw new RuntimeException("Failed to send email", e);
 		}
-	
-}
-    
-    public void sendSimpleEmail(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("gzconnect.team@gmail.com");
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        mailSender.send(message);
-    }
+
+	}
+
+	public void sendSimpleEmail(String to, String subject, String text) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom("gzconnect.team@gmail.com");
+		message.setTo(to);
+		message.setSubject(subject);
+		message.setText(text);
+		mailSender.send(message);
+	}
 
 }

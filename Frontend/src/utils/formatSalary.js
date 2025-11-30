@@ -19,7 +19,6 @@ function formatCurrencyShort(value) {
 }
 
 
-// Hàm format chuỗi dạng "0.00 VND - 10000000.00 VND"
 function formatRangeShort(str) {
     const numRegex = /[\d.]+/g;
     const numbers = str.match(numRegex);

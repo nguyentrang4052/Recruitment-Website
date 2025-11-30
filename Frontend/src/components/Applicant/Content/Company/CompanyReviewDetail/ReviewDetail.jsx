@@ -8,6 +8,8 @@ import { formatDate, formatDateTime } from '../../../../../utils/Format';
 import { BsCalendarDate } from "react-icons/bs";
 import companyImage from '../../../../../assets/company-image.jpg'
 import { formatRangeShort } from '../../../../../utils/formatSalary';
+import useToast from '../../../../../utils/useToast.js';
+import Toast from '../../../../Toast/Toast.jsx';
 
 function CompanyReviews() {
 
@@ -22,31 +24,59 @@ function CompanyReviews() {
   const [loading, setLoading] = useState(false);
   const applicantID = localStorage.getItem('applicantID');
 
+  const { toast, showSuccess, showError, showWarning, hideToast } = useToast();
+
   const submit = async () => {
 
-    if (!score || !content.trim()) return alert('Vui lòng chọn sao và nhập nội dung!');
+    hideToast();
+
+    if (!score || !content.trim()) {
+      showError('Vui lòng chọn sao và nhập nội dung!');
+      return
+    }
+
     setLoading(true);
+
     try {
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:8080/api/applicant/companies/review",
-        { employerID: employerId, score, content }, // This should be in the body
+        { employerID: employerId, score, content },
         {
-          params: { applicantId: applicantID }, // Query parameter
+          params: { applicantId: applicantID },
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         }
       );
+      setCompanies(prev => ({
+        ...prev,
+        rating: [res.data, ...prev.rating],
+        reviews: prev.reviews + 1
+      }));
+
       setScore(0);
       setContent('');
-      alert('Gửi đánh giá thành công!');
-      window.location.reload();
+      showSuccess('Gửi đánh giá thành công!');
+
     } catch {
-      alert('Bạn đã đánh giá công ty này rồi');
+      showError('Bạn đã đánh giá công ty này rồi');
     } finally {
       setLoading(false);
     }
   };
-  const deleteReview = async () => {
-    if (!window.confirm('Bạn có chắc muốn xoá đánh giá này?')) return;
+
+  const confirmDeleteReview = (reviewId) => {
+    showWarning(
+      "Bạn chắc chắn muốn xoá đánh giá này?",
+      () => {
+        deleteReview(reviewId); 
+        hideToast();
+      },
+      () => hideToast() 
+    )
+
+  };
+
+
+  const deleteReview = async (reviewId) => {
     try {
       await axios.delete(
         `http://localhost:8080/api/applicant/companies/review/delete`,
@@ -58,12 +88,15 @@ function CompanyReviews() {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
+      setCompanies(prev => ({
+        ...prev,
+        rating: prev.rating.filter(r => r.id !== reviewId),
+        reviews: prev.reviews - 1
+      }));
 
-
-      alert('Xoá đánh giá thành công!');
-      window.location.reload();
+      showSuccess('Xoá đánh giá thành công!');
     } catch {
-      alert('Không thể xoá đánh giá');
+      showError('Không thể xoá đánh giá');
     }
   };
 
@@ -78,8 +111,8 @@ function CompanyReviews() {
         setCompanies(res.data);
         setJobListings(jobRes.data);
 
-      } catch (thrown) {
-        console.error("Chi tiết lỗi:", thrown);
+      } catch {
+        showError('Lỗi khi tải dữ liệu công ty');
       } finally {
         setLoading(false);
       }
@@ -104,7 +137,7 @@ function CompanyReviews() {
 
   return (
     <div className="company-reviews-page">
-      {/* Header Banner */}
+
       <div className="company-banner">
         <div className="banner-image">
           {
@@ -124,9 +157,7 @@ function CompanyReviews() {
                 <div className="company-quick-info">
                   <MapPin size={16} />
                   <span>{company.address}</span>
-                  {/* <span className="separator">•</span>
-                  <Briefcase size={16} />
-                  <span>{company.jobs} việc làm đang tuyển</span> */}
+
                 </div>
                 <div className="company-actions">
                   <button className="btn-write-review" onClick={scrollToReview}>Viết đánh giá</button>
@@ -171,7 +202,7 @@ function CompanyReviews() {
                     </div>
                     {token && review.applicantID == applicantID && (
                       <div className="review-actions">
-                        <button className="btn-delete" onClick={() => deleteReview(review.id)}>
+                        <button className="btn-delete" onClick={() => confirmDeleteReview(review.id)}>
                           Xoá đánh giá
                         </button>
                       </div>
@@ -189,12 +220,12 @@ function CompanyReviews() {
               }
             </div>
 
-            {/* Write Review Form */}
-            {token && ( <div id="review-anchor">
+
+            {token && (<div id="review-anchor">
               <div className="write-review-mini">
                 <h4>Viết đánh giá</h4>
 
-                {/* Chọn sao */}
+
                 <div className="stars-wrapper">
                   {[1, 2, 3, 4, 5].map((s) => (
                     <span
@@ -207,7 +238,7 @@ function CompanyReviews() {
                   ))}
                 </div>
 
-                {/* Nhập nội dung */}
+
                 <textarea
                   className="review-textarea"
                   rows={4}
@@ -221,10 +252,10 @@ function CompanyReviews() {
                 </button>
               </div>
             </div>)}
-           
+
           </div>
 
-          {/* Right Column - Job Listings */}
+
           <div className="right-column">
             {jobListings && jobListings.length > 0 && (
               <div className="jobs-card">
@@ -265,6 +296,19 @@ function CompanyReviews() {
           </div>
         </div>
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+          onConfirm={toast.onConfirm}
+          onCancel={toast.onCancel}
+          confirmText={toast.confirmText}
+          cancelText={toast.cancelText}
+        />
+      )}
+
     </div>
   );
 }

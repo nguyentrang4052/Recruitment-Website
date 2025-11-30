@@ -3,6 +3,9 @@ import { ChevronLeft } from 'lucide-react';
 import './RecruitmentDetail.css';
 import axios from 'axios';
 import { formatDescription } from '../../../../utils/formatDescription';
+import { formatRangeShort } from '../../../../utils/formatSalary';
+import useToast from '../../../../utils/useToast';
+import Toast from '../../../Toast/Toast';
 export default function RecruitmentDetail({ job, onBack, onUpdate }) {
 
     const API = "http://localhost:8080/api/admin/recruitment";
@@ -15,6 +18,8 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
     const [reason, setReason] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const { toast, showSuccess, showError, hideToast } = useToast();
+
     const handleApprove = () => {
         setActionType('approve');
         setShowApprovalModal(true);
@@ -25,13 +30,6 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
         setShowApprovalModal(true);
     };
 
-    // const handleConfirm = () => {
-    //     const newStatus = actionType === 'approve' ? 'APPROVED' : 'REJECTED';
-    //     setLocalJob({ ...localJob, status: newStatus });
-    //     setShowApprovalModal(false);
-    //     setReason('');
-    //     alert(`Tin tuyển dụng đã được ${actionType === 'approve' ? 'phê duyệt' : 'từ chối'}`);
-    // };
 
     const handleConfirm = async () => {
         setLoading(true);
@@ -51,13 +49,12 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                 });
                 setLocalJob({ ...localJob, status: 'REJECTED', rejectReason: reason });
             }
-            alert(`Tin tuyển dụng đã được ${actionType === 'approve' ? 'phê duyệt' : 'từ chối'}`);
+            showSuccess(`Tin tuyển dụng đã được ${actionType === 'approve' ? 'phê duyệt' : 'từ chối'}`);
 
             if (onUpdate) onUpdate(localJob.id, actionType === 'approve' ? 'APPROVED' : 'REJECTED');
 
-        } catch (err) {
-            console.error(err);
-            alert("Lỗi khi cập nhật trạng thái tin tuyển dụng");
+        } catch {
+            showError("Lỗi khi cập nhật trạng thái tin tuyển dụng");
         } finally {
             setShowApprovalModal(false);
             setReason('');
@@ -91,7 +88,7 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
     return (
         <div className="job-detail-wrapper">
             <div className="job-detail-container">
-                {/* Header */}
+\
                 <div className="job-detail-header">
                     <button className="back-recruitmentbutton" onClick={onBack}>
                         <ChevronLeft size={24} />
@@ -116,7 +113,7 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                     <div className="basic-info-grid">
                         <div>
                             <p className="info-label">💰 Mức lương</p>
-                            <p className="info-value">{localJob.salary}</p>
+                            <p className="info-value">{formatRangeShort(localJob.salary)}</p>
                         </div>
                         <div>
                             <p className="info-label">📍 Địa điểm</p>
@@ -132,27 +129,27 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                         </div>
                     </div>
 
-                    {/* Description */}
                     <div className="section border-b">
                         <h3 className="section-title">Mô tả công việc</h3>
-                        {/* <p className="section-content">dangerouslySetInnerHTML= {formatDescription(localJob.description)}</p> */}
+
                         <div
                             className="section-content"
                             dangerouslySetInnerHTML={formatDescription(localJob.description)}
                         />
                     </div>
-
-                    {/* Requirements & Job Info */}
                     <div className="two-col-section border-b">
                         <div>
                             <h3 className="section-title">Yêu cầu công việc</h3>
                             <div className="info-row">
                                 <p className="info-label">Mô tả yêu cầu</p>
-                                {/* <p className="info-value">{localJob.other}</p> */}
-                                <div
-                                    className="section-content"
-                                    dangerouslySetInnerHTML={formatDescription(localJob.requirement)}
-                                />
+
+                                {localJob.requirement && (
+                                    <div
+                                        className="section-content"
+                                        dangerouslySetInnerHTML={{ __html: formatDescription(localJob.requirement) }}
+                                    />
+                                )}
+
                             </div>
                             <div className="info-row">
                                 <p className="info-label">Kinh nghiệm</p>
@@ -195,7 +192,6 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                         />
                     </div>
 
-                    {/* Skills */}
                     <div className="section">
                         <h3 className="section-title">Kỹ năng cần thiết</h3>
                         <div className="skill-tags">
@@ -204,24 +200,6 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                             ))}
                         </div>
                     </div>
-
-                    {/* Action Buttons */}
-                    {/* <div className="action-buttons">
-                        <button
-                            onClick={handleApprove}
-                            disabled={localJob.status === 'APPROVED' || localJob.status === 'REJECTED'}
-                            className="btn-approve"
-                        >
-                            ✓ Phê duyệt
-                        </button>
-                        <button
-                            onClick={handleReject}
-                            disabled={localJob.status === 'APPROVED' || localJob.status === 'REJECTED'}
-                            className="btn-reject"
-                        >
-                            ✕ Từ chối
-                        </button>
-                    </div> */}
                     <div className="action-buttons">
                         <button
                             onClick={handleApprove}
@@ -241,8 +219,6 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
 
                 </div>
             </div>
-
-            {/* Approval Modal */}
             {showApprovalModal && (
                 <div className="modal-overlay">
                     <div className="modal-box">
@@ -278,12 +254,19 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                             <button onClick={handleConfirm} className={`btn-confirm ${actionType}`} disabled={loading}
                             >
                                 {loading ? "Đang xử lý..." : "Xác nhận"}
-                                {/* Xác nhận */}
                             </button>
                         </div>
                     </div>
                 </div>
             )}
+            {toast && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        duration={toast.duration}
+                        onClose={hideToast}
+                    />
+                )}
         </div>
     );
 }

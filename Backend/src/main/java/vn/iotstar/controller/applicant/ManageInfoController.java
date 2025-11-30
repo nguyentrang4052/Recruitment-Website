@@ -110,7 +110,7 @@ public class ManageInfoController {
 			service.updatePassword(user.getAccount().getAccountID(), req.get("oldPassword"), req.get("newPassword"));
 			return ResponseEntity.ok(Map.of("success", true, "message", "Mật khẩu đã được cập nhật"));
 		} catch (IllegalArgumentException ex) {
-			return ResponseEntity.badRequest().body(Map.of("success", false, "message", ex.getMessage()));
+			return ResponseEntity.badRequest().body(Map.of("success", false, "message", ex.getMessage()));	
 		} catch (Exception ex) {
 			return ResponseEntity.status(500).body(Map.of("success", false, "message", "Cập nhật mật khẩu thất bại"));
 		}

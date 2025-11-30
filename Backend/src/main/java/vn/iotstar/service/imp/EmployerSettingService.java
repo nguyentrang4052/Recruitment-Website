@@ -27,9 +27,7 @@ public class EmployerSettingService implements IEmployerSettingService {
         Account acc = accountRepo.findById(accountId).orElseThrow();
         if (!passwordEncoder.matches(oldPass, acc.getPassword())) {
             throw new RuntimeException("Mật khẩu cũ không đúng!");
-        }
-
-        	
+        }      	
         acc.setPassword(passwordEncoder.encode(newPassword));
         accountRepo.save(acc);
     }

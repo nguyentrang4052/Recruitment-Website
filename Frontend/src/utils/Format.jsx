@@ -5,14 +5,23 @@ const formatDate = (iso) => {
 };
 
 const formatDateTime = (date) => {
- 
   const validDate = new Date(date);
-  if (isNaN(validDate)) {
-    console.error("Đối tượng Date không hợp lệ.");
+
+  if (isNaN(validDate.getTime())) {
+    console.error("Đối tượng Date không hợp lệ:", date);
+    return "";
   }
 
-  return validDate.toLocaleDateString('vi-VN');
+  const day = String(validDate.getDate()).padStart(2, "0");
+  const month = String(validDate.getMonth() + 1).padStart(2, "0");
+  const year = validDate.getFullYear();
+
+  const hours = String(validDate.getHours()).padStart(2, "0");
+  const minutes = String(validDate.getMinutes()).padStart(2, "0");
+
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
+
 
 
 

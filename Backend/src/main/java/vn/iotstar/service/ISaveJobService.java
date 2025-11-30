@@ -3,6 +3,7 @@ package vn.iotstar.service;
 import java.util.List;
 
 import vn.iotstar.entity.SaveJob;
+import vn.iotstar.dto.applicant.RecruitmentCardDTO;
 import vn.iotstar.entity.RecruitmentNews;
 
 public interface ISaveJobService {
@@ -13,7 +14,7 @@ public interface ISaveJobService {
 
 	boolean existsByApplicant_ApplicantIDAndRecruitmentNews_RNID(Integer applicantID, Integer RNID);
 
-	List<RecruitmentNews> getFavorites(Integer applicantID);
+	List<RecruitmentCardDTO> getFavorites(Integer applicantID);
 
 	String toggleFavorite(Integer applicantID, Integer rnid);
 

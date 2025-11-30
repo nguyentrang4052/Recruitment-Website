@@ -5,7 +5,7 @@ import { FaHeart } from "react-icons/fa";
 import './SaveJob.css'
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
-import { formatDate } from '../../../../../utils/Format'
+import { formatDate, formatDateTime } from '../../../../../utils/Format'
 
 const SavedJobs = () => {
   const [savedJobs, setSaveJobs] = useState([])
@@ -13,31 +13,25 @@ const SavedJobs = () => {
   const token = localStorage.getItem('token')
   useEffect(() => {
     const fetchSaveJob = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:8080/api/applicant/favourite-job",
-          {
-            params: { id: applicantID },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
+      const res = await axios.get(
+        "http://localhost:8080/api/applicant/favourite-job",
+        {
+          params: { id: applicantID },
+          headers: {
+            Authorization: `Bearer ${token}`,
           }
-        );
+        }
+      );
 
-        setSaveJobs(res.data)
-        const savedIds = res.data.map(job => job.rnid);
-        setFavoriteJobs(savedIds);
-      } catch {
-        console.log('Loi khi tai tin yeu thich')
-      }
-
-
+      setSaveJobs(res.data)
+      const savedIds = res.data.map(job => job.rnid);
+      setFavoriteJobs(savedIds);
     }
     fetchSaveJob([applicantID, token])
   })
+
   const [favoriteJobs, setFavoriteJobs] = useState([]);
   const toggleFavorite = async (rnid) => {
-    try {
       await axios.post(
         "http://localhost:8080/api/applicant/toggle",
         null,
@@ -50,9 +44,7 @@ const SavedJobs = () => {
       setFavoriteJobs(prev =>
         prev.includes(rnid) ? prev.filter(id => id !== rnid) : [...prev, rnid]
       );
-    } catch (err) {
-      console.error("Lỗi khi lưu yêu thích:", err);
-    }
+
   };
 
   const navigate = useNavigate();
@@ -116,6 +108,7 @@ const SavedJobs = () => {
                     <div className="job-info-item">
                       <h3 className="job-title" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
                       <p className="job-company">{job.employer.name}</p>
+                      <span className="save-text">Lưu vào: {formatDateTime(job.saveJob)}</span>
                     </div>
                   </div>
 

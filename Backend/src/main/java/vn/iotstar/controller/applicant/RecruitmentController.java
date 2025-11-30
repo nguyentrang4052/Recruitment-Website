@@ -1,5 +1,6 @@
 package vn.iotstar.controller.applicant;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -96,7 +97,11 @@ public class RecruitmentController {
 
 	@GetMapping("/favourite-job")
 	public List<RecruitmentCardDTO> getFavouriteJob(@RequestParam Integer id) {
-		return fService.getFavorites(id).stream().map(rService::mapToDetail).toList();
+		 List<RecruitmentCardDTO> list = fService.getFavorites(id);
+
+		    list.sort(Comparator.comparing(RecruitmentCardDTO::getSaveJob).reversed());
+
+		    return list;
 	}
 
 }

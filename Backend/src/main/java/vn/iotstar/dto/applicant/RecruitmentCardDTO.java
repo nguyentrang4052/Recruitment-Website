@@ -37,6 +37,7 @@ public class RecruitmentCardDTO {
 	
 	private Integer view = 0;
 	private boolean active;
+	private LocalDateTime saveJob;
 	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
 			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,
 			String experience, String literacy, String level, String requirement, String benefit, EFormOfWork formOfWork,
@@ -68,8 +69,6 @@ public class RecruitmentCardDTO {
 	
 	private Application application;
 	private String appStatus;
-	
-	
 	
 	public RecruitmentCardDTO(Integer rnid, String position, EmployerCardDTO employer, String salary, String location,
 			LocalDate deadline, LocalDate postedAt, List<String> skill, EStatus status, String description,

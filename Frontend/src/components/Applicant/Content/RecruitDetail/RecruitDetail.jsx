@@ -133,7 +133,7 @@ function RecruitDetail() {
             closeForm();
 
         } catch {
-            setCoverLetter("");
+            // setCoverLetter("");
 
             showError("Ứng tuyển thất bại. Vui lòng thử lại sau.");
         }

@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import vn.iotstar.dto.EmployerRegisterDTO;
 import vn.iotstar.service.IEmployerRegisterService;
 
@@ -22,8 +24,12 @@ public class EmployerRegisterController {
         try {
             String msg = employerRegisterService.registerEmployer(dto);
             return ResponseEntity.ok(Map.of("message", msg));
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity.status(ex.getStatusCode())
+                                 .body(Map.of("message", ex.getReason()));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("message", "Đăng ký thất bại: " + e.getMessage()));
+            return ResponseEntity.status(500)
+                                 .body(Map.of("message", "Lỗi hệ thống: " + e.getMessage()));
         }
     }
 

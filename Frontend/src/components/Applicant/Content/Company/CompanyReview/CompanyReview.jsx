@@ -15,7 +15,7 @@ function CompanyPage() {
 useEffect(() => {
   const fetchReview = async () => {
     try {
-      const res = await axios.get(`${API_URL}http://localhost:8080/api/applicant/rating`);
+      const res = await axios.get(`${API_URL}/api/applicant/rating`);
       setReviews(res.data); 
     } catch (error) {
       console.error("Failed to fetch reviews:", error);
@@ -188,10 +188,6 @@ useEffect(() => {
                   </div>
                 ))}
               </div>
-
-              {/* <button className="view-all-button">
-                View All Reviews →
-              </button> */}
             </div>
           </div>
         </div>

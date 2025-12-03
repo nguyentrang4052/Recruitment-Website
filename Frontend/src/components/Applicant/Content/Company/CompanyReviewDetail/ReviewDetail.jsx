@@ -12,7 +12,7 @@ import useToast from '../../../../../utils/useToast.js';
 import Toast from '../../../../Toast/Toast.jsx';
 
 function CompanyReviews() {
-  const API_URL = import.meta.env.VITE_API_URL; 
+  const API_URL = import.meta.env.VITE_API_URL;
   const { employerId } = useParams();
 
   const [company, setCompanies] = useState(null);
@@ -33,6 +33,11 @@ function CompanyReviews() {
     if (!score || !content.trim()) {
       showError('Vui lòng chọn sao và nhập nội dung!');
       return
+    }
+
+    if (content.length > 1000) {
+      showError("Nội dung đánh giá không được vượt quá 1000 ký tự");
+      return;
     }
 
     setLoading(true);
@@ -56,8 +61,8 @@ function CompanyReviews() {
       setContent('');
       showSuccess('Gửi đánh giá thành công!');
 
-    } catch {
-      showError('Bạn đã đánh giá công ty này rồi');
+    } catch (error) {
+      showError(error.response?.data?.message || 'Bạn đã đánh giá công ty này rồi!');
     } finally {
       setLoading(false);
     }

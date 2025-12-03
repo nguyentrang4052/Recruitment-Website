@@ -104,9 +104,26 @@ const CompanyManagement = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
         setErrors(prev => ({ ...prev, [name]: '' }));
-        setCompanyInfo(prev => ({ ...prev, [name]: value }));
+
+        setCompanyInfo(prev => ({
+            ...prev,
+            [name]: name === "companySize" ? (value === '' ? '' : Number(value)) : value
+        }));
+
+        setErrors(prev => ({ ...prev, [name]: '' }));
+        if (name === "phone") {
+            if (value === '') {
+                setErrors(prev => ({ ...prev, phone: 'Số điện thoại không được để trống.' }));
+            } else if (!validatePhoneNumber(value)) {
+                setErrors(prev => ({ ...prev, phone: 'Số điện thoại phải gồm 10 chữ số. Ví dụ: 0xxxxxxxxx' }));
+            } else {
+                setErrors(prev => ({ ...prev, phone: '' }));
+            }
+        }
     };
+
 
     const handleTextareaKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -168,14 +185,36 @@ const CompanyManagement = () => {
     const validatePhoneNumber = (phone) => /^(0)[0-9]{9}$/.test(phone);
 
     const handleSave = async () => {
-        const newErrors = {};
-        if (!validatePhoneNumber(companyInfo.phone)) newErrors.phone = 'Số điện thoại không hợp lệ.';
-        if (!companyInfo.employerName) newErrors.employerName = 'Tên công ty không được để trống.';
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
-            alert('Vui lòng kiểm tra lại các trường thông tin.');
+        const requiredFields = [
+            "employerName",
+            "fullName",
+            "representative",
+            "phone",
+            "companyWebsite",
+            "companyProfile",
+            "registeredProvince",
+            "registeredWard",
+            "detailedAddress",
+            "companySize"
+        ];
+
+        const missingFields = requiredFields.filter(field => {
+            const value = companyInfo[field];
+            return value === null || value === undefined || value === "";
+        });
+
+        if (missingFields.length > 0) {
+            alert("Vui lòng nhập đủ các trường thông tin để cập nhật.");
             return;
         }
+        const newErrors = {};
+        if (!validatePhoneNumber(companyInfo.phone)) newErrors.phone = 'Số điện thoại không hợp lệ.';
+        // if (!companyInfo.employerName) newErrors.employerName = 'Tên công ty không được để trống.';
+        // if (Object.keys(newErrors).length > 0) {
+        //     setErrors(newErrors);
+        //     alert('Vui lòng kiểm tra lại các trường thông tin.');
+        //     return;
+        // }
 
         let logoUrl = companyInfo.logoPreview;
         let imageUrl = companyInfo.companyImagePreview;
@@ -296,7 +335,7 @@ const CompanyManagement = () => {
                         {errors.employerName && <span className="error-message">{errors.employerName}</span>}
                     </div>
 
-                     <div className="form-group">
+                    <div className="form-group">
                         <label>Tên đầy đủ</label>
                         <input type="text" name="fullName" value={companyInfo.fullName} onChange={handleInputChange} />
                         {errors.fullName && <span className="error-message">{errors.fullName}</span>}
@@ -333,7 +372,7 @@ const CompanyManagement = () => {
                         <input
                             type="number"
                             name="companySize"
-                            value={companyInfo.companySize || ''}
+                            value={companyInfo.companySize ?? ''}
                             onChange={handleInputChange}
                             min="1"
                             placeholder="VD: 120"
@@ -393,7 +432,10 @@ const CompanyManagement = () => {
                     <p><strong>Địa chỉ:</strong> {`${companyInfo.detailedAddress || ''}${companyInfo.registeredWard ? ', ' + companyInfo.registeredWard : ''}${companyInfo.registeredProvince ? ', ' + companyInfo.registeredProvince : ''}` || 'Chưa cập nhật'}</p>
                     <p>
                         <strong>Số lượng nhân sự:</strong>{' '}
-                        {companyInfo.companySize ? `${companyInfo.companySize} người` : 'Chưa cập nhật'}
+                        {companyInfo.companySize !== null && companyInfo.companySize !== undefined
+                            ? `${companyInfo.companySize} người`
+                            : 'Chưa cập nhật'}
+
                     </p>
                     <p><strong>Điện thoại:</strong> {companyInfo.phone}</p>
                     <p><strong>Website:</strong> <a href={companyInfo.companyWebsite} target="_blank" rel="noopener noreferrer">{companyInfo.companyWebsite}</a></p>

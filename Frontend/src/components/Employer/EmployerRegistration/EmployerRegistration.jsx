@@ -119,8 +119,9 @@ const EmployerRegistration = () => {
                 setAgreedToTerms(false);
             } else {
                 // handleLinkClick('Lỗi', data.message || 'Đăng ký thất bại');
-                const errorText = await response.text();
-                handleLinkClick('Lỗi', errorText || 'Đăng ký thất bại');
+                // const errorText = await response.text();
+                const data = await response.json();
+                handleLinkClick('Lỗi', data.message || 'Đăng ký thất bại');
             }
         } catch (error) {
             handleLinkClick('Lỗi', 'Không thể kết nối server. Vui lòng thử lại sau.');

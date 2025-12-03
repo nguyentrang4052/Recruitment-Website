@@ -55,24 +55,22 @@ public class EmployerRegisterService implements IEmployerRegisterService {
 
     @Override
     public String registerEmployer(EmployerRegisterDTO dto) {
-        
-        if (accountRepository.findByUsername(dto.getEmail()) != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email đã tồn tại");
+//        if (accountRepository.findByUsername(dto.getUsername()) != null) {
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tên đăng nhập đã tồn tại");
+//        }
+        if (accountRepository.findByEmail(dto.getEmail()) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email đã được đăng ký");
         }
-        
-       
+
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         dto.setPassword(encodedPassword);
 
         String token = UUID.randomUUID().toString();
-        
         LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(EXPIRY_MINUTES);
         verificationTokens.put(token, new RegistrationAttempt(dto, expiryTime));
-       
+
         emailService.sendVerificationEmail(dto.getEmail(), token);
-        
-        
-        return "Đăng ký thành công, vui lòng kiểm tra email để xác thực. Dữ liệu sẽ được lưu sau khi xác thực.";
+        return "Đăng ký thành công, vui lòng kiểm tra email để xác thực.";
     }
 
     @Override
@@ -113,7 +111,7 @@ public class EmployerRegisterService implements IEmployerRegisterService {
 
            
             Employer employer = new Employer();
-            employer.setEmployerName(dto.getCompanyName());
+            employer.setFullName(dto.getCompanyName());
             employer.setRepresentative(dto.getContactPerson());
             employer.setPhone(dto.getPhoneNumber());
             employer.setAccount(savedAccount); 

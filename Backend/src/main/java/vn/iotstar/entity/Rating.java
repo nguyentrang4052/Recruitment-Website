@@ -34,7 +34,7 @@ public class Rating implements Serializable {
 	@Column(name = "score", nullable = true, precision = 10, scale = 2)
 	private BigDecimal score;
 
-	@Column(name = "content", nullable = true, length = 255)
+	@Column(name = "content", nullable = true, length = 1000)
 	private String content;
 
 	@Column(name = "date", nullable = true)

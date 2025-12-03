@@ -83,12 +83,12 @@ const NoticeTable = () => {
   };
   const handleDelete = async (id) => {
     try {
-       await axios.delete(`${API_URL}/api/applicant/notice/delete/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      await axios.delete(`${API_URL}/api/applicant/notice/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setNoticeData(noticeData.filter((n) => n.id !== id));
-    showSuccess("Xóa thông báo thành công");
+      setNoticeData(noticeData.filter((n) => n.id !== id));
+      showSuccess("Xóa thông báo thành công");
     } catch {
       showError("Xóa thông báo thất bại")
     }
@@ -96,7 +96,7 @@ const NoticeTable = () => {
   };
 
 
-  const handleSaveNotice = () => {
+  const handleSaveNotice = async () => {
     const request = {
       jobTitle: formData.jobTitle,
       location: formData.location,
@@ -106,36 +106,41 @@ const NoticeTable = () => {
     };
 
     if (editingNotice) {
-      axios
-        .put(
+      try {
+        const res = await axios.put(
           `${API_URL}/api/applicant/notice/update/${editingNotice.id}`,
           request,
           { headers: { Authorization: `Bearer ${token}` } }
-        )
-        .then((res) => {
+        );
 
-          const updatedList = noticeData.map((n) =>
-            n.id === editingNotice.id ? res.data.jobNoticeDTO : n
-          );
-          setNoticeData(updatedList);
-          setShowPopup(false);
-        })
-      showSuccess("Cập nhật thông báo thành công")
-      // .catch((err) => console.error("Lỗi update:", err));
+        const updatedList = noticeData.map((n) =>
+          n.id === editingNotice.id ? res.data.jobNoticeDTO : n
+        );
+        setNoticeData(updatedList);
+        setShowPopup(false);
+        showSuccess("Cập nhật thông báo thành công");
+      }
+
+      catch {       
+        showError("Cập nhật thất bại. Vui lòng thử lại sau.");
+      }
     }
     else {
-      axios
-        .post(
-          `${API_URL}/api/applicant/notice/create?applicantID=${applicantID}`,
-          request,
-          { headers: { Authorization: `Bearer ${token}` } }
-        )
-        .then((res) => {
-          setNoticeData([...noticeData, res.data.jobNoticeDTO]);
-          setShowPopup(false);
-        })
-      showSuccess("Tạo thông báo thành công")
-      // .catch((err) => console.error("Lỗi create:", err));
+      try {
+        const response = await axios
+          .post(
+            `${API_URL}/api/applicant/notice/create?applicantID=${applicantID}`,
+            request,
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+        setNoticeData([...noticeData, response.data.jobNoticeDTO]);
+        setShowPopup(false);
+        showSuccess("Tạo thông báo thành công");
+
+      }
+      catch {
+        showError("Tạo thất bại. Vui lòng thử lại sau.");
+      }
     }
   };
 
@@ -212,6 +217,7 @@ const NoticeTable = () => {
                   }
                   className="form-input"
                 />
+                <p className="require">Chỉ chứa tối đa 255 kí tự</p>
               </div>
 
               <div className="form-group">

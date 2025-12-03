@@ -6,6 +6,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedCard, setExpandedCard] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     fetchDashboardStats();
@@ -16,7 +17,7 @@ export default function Home() {
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8080/api/admin/dashboard/stats', {
+      const response = await fetch(`${API_URL}/api/admin/dashboard/stats`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

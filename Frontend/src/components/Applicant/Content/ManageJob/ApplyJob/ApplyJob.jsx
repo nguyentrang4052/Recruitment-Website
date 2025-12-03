@@ -6,7 +6,7 @@ import axios from "axios"
 import { formatDate } from '../../../../../utils/Format'
 
 const AppliedJobs = () => {
-  // const [hasJobs, setHasJobs] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
   const [appliedJobs, setAppliedJobs] = useState([])
 
   const token = localStorage.getItem('token')
@@ -14,7 +14,7 @@ const AppliedJobs = () => {
   useEffect(() => {
     const fetchAppliedJob = async () => {
       const res = await axios.get(
-        "http://localhost:8080/api/applicant/applied-job",
+        `${API_URL}/api/applicant/applied-job`,
         {
           params: { id: applicantID },
           headers: {
@@ -43,13 +43,6 @@ const AppliedJobs = () => {
         <h1 className="applied-jobs-title">
           Việc đã ứng tuyển ({appliedJobs.length})
         </h1>
-        {/* Nút toggle để test - xóa khi deploy production */}
-        {/* <button
-          className="toggle-btn"
-          onClick={() => setHasJobs(!hasJobs)}
-        >
-          {hasJobs ? 'Xem trạng thái rỗng' : 'Xem có việc'}
-        </button> */}
       </div>
 
       {!hasJobs ? (
@@ -83,7 +76,7 @@ const AppliedJobs = () => {
                     <h3 className="job-title" onClick={() => viewDetail(job.rnid)}>{job.position}</h3>
                     <p className="job-company">{job.employer.name}</p>
                   </div>
-                  <a href={`http://localhost:8080/uploads/cv/${job.application.cv}`}> <button className="view-cv-btn">CV đã nộp</button></a>
+                  <a href={`${API_URL}/uploads/cv/${job.application.cv}`}> <button className="view-cv-btn">CV đã nộp</button></a>
                 </div>
                 <div className="applied-below">
 
@@ -91,12 +84,12 @@ const AppliedJobs = () => {
                     <span className="deadline-text">Ngày nộp: {formatDate(job.application.date)}</span>
                   </div>
 
-                    <div className="job-status">
-                      <span className="status-text">{job.appStatus}</span>
-                    </div>
+                  <div className="job-status">
+                    <span className="status-text">{job.appStatus}</span>
+                  </div>
 
                 </div>
-                {/* <a href={`http://localhost:8080/uploads/cv/${job.application.cv}`}> <button className="view-cv-btn">Xem CV</button></a> */}
+
               </div>
             ))}
           </div>

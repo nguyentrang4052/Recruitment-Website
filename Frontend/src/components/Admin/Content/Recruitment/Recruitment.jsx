@@ -7,7 +7,7 @@ import { formatDate } from '../../../../utils/Format';
 import { formatRangeShort } from '../../../../utils/formatSalary';
 
 const JOBS_PER_PAGE = 5;
-
+const API_URL = import.meta.env.VITE_API_URL;
 export default function Recruitment({ onViewDetail }) {
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,7 +24,7 @@ export default function Recruitment({ onViewDetail }) {
     { key: "rejected", label: "Đã từ chối" }
   ];
 
-  const API = "http://localhost:8080/api/admin/recruitment";
+  const API = `${API_URL}/api/admin/recruitment`;
 
   useEffect(() => {
     if (activeTab === "all") {

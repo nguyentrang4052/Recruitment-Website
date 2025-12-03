@@ -185,6 +185,31 @@ body {
   background: #218838;
 }
 
+.applied-notice-container{
+  margin-top: 15px;
+  text-align: left;
+  display: flex;
+  gap: 30px;
+}
+
+.applied-notice
+{
+  margin: 0;            
+  font-size: 1rem;
+  color: black;
+  font-style: italic;    
+}
+
+.applied-link {
+  margin: 0;            
+  font-size: 1rem;
+  color: black;
+  text-decoration: underline;
+  cursor: pointer;
+  font-style: italic;
+  text-align: right;
+}
+
 .right-col h3 {
   margin-bottom: 15px;
   font-size: 1.2rem;

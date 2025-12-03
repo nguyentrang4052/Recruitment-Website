@@ -135,6 +135,7 @@ function ImageWithSearch({
 }
 
 function RecruimentNews() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const [currentPage, setCurrentPage] = useState(1);
     const [searchText, setSearchText] = useState('');
     const navigate = useNavigate();
@@ -147,13 +148,11 @@ function RecruimentNews() {
 
     const recruimentPerPage = 10;
 
-
-
     const [recruitments, setRecruitments] = useState([]);
     useEffect(() => {
         const fetchRecruitments = async () => {
             try {
-                const res = await axios.get("http://localhost:8080/api/");
+                const res = await axios.get(`${API_URL}/api/`);
                 setRecruitments(JSON.parse(typeof res.data === 'string' ? res.data : JSON.stringify(res.data)));
             } catch (thrown) {
                 console.error("Chi tiết lỗi:", thrown);
@@ -217,7 +216,7 @@ function RecruimentNews() {
         }
 
         try {
-            const res = await axios.get('http://localhost:8080/api/job/search', { params });
+            const res = await axios.get(`${API_URL}/api/job/search`, { params });
             setRecruitments(res.data);
             setCurrentPage(1);
         } catch {
@@ -248,7 +247,7 @@ function RecruimentNews() {
 
         try {
             const res = await axios.post(
-                "http://localhost:8080/api/applicant/toggle", null,
+                `${API_URL}/api/applicant/toggle`, null,
                 {
                     params: { applicantID, rnid },
                     headers: { Authorization: `Bearer ${token}` }
@@ -272,7 +271,7 @@ function RecruimentNews() {
         const fetchSaveJob = async () => {
             try {
                 const res = await axios.get(
-                    "http://localhost:8080/api/applicant/favourite-job",
+                    `${API_URL}/api/applicant/favourite-job`,
                     {
                         params: { id: applicantID },
                         headers: {

@@ -6,6 +6,7 @@ import Footer from './../../Footer/Footer.jsx'
 import Toast from '../../../Toast/Toast.jsx'
 import useToast from '../../../../utils/useToast.js'
 
+const API_URL = import.meta.env.VITE_API_URL;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 const usernameRegex = /^[a-z0-9]+$/
 
@@ -67,7 +68,7 @@ function SignUp() {
         setIsLoading(true)
 
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/signup', formData)
+            const response = await axios.post(`${API_URL}/api/auth/signup`, formData)
             setIsLoading(false)
 
             if (!response.data.success) {
@@ -75,7 +76,6 @@ function SignUp() {
                 return
             }
 
-            // showSuccess(response.data.message || "Đăng ký thành công!")
             localStorage.setItem("signupEmail", formData.email)
             navigate("/verify-otp")
 

@@ -15,9 +15,11 @@ import { formatDescription } from '../../../../utils/formatDescription';
 import { formatRangeShort } from '../../../../utils/formatSalary';
 import useToast from '../../../../utils/useToast.js'
 import Toast from '../../../Toast/Toast.jsx'
-function RecruitDetail() {
 
+function RecruitDetail() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const { rnid } = useParams();
+    const applicantID = localStorage.getItem('applicantID')
     const token = localStorage.getItem('token');
     const [recruitmentDetail, setRecruitmentDetail] = useState(null);
     const [relatedJobs, setRelatedJobs] = useState([]);
@@ -29,7 +31,7 @@ function RecruitDetail() {
     useEffect(() => {
         const fetchDetail = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/api/detail", { params: { id: rnid } });
+                const response = await axios.get(`${API_URL}/api/detail`, { params: { id: rnid } });
                 setRecruitmentDetail(response.data);
             }
             catch {
@@ -42,7 +44,7 @@ function RecruitDetail() {
     useEffect(() => {
         const fetchRelateJob = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/api/applicant/relate-jobs", { params: { id: rnid } });
+                const response = await axios.get(`${API_URL}/api/applicant/relate-jobs`, { params: { id: rnid } });
                 setRelatedJobs(response.data);
             }
             catch {
@@ -51,6 +53,26 @@ function RecruitDetail() {
         };
         if (rnid) fetchRelateJob();
     }, [rnid]);
+
+    const [appliedJobs, setAppliedJobs] = useState([]);
+    useEffect(() => {
+        if (!token || !applicantID) return;
+
+        const fetchAppliedJob = async () => {
+            const res = await axios.get(
+                `${API_URL}/api/applicant/applied-job`,
+                {
+                    params: { id: applicantID },
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            setAppliedJobs(res.data);
+        };
+
+        fetchAppliedJob();
+    }, [applicantID, token]);
+
+    const appliedJob = appliedJobs.find(job => job.rnid === Number(rnid));
 
 
     const calculateRemainingDays = (deadline) => {
@@ -95,8 +117,8 @@ function RecruitDetail() {
         const token = localStorage.getItem("token");
 
         try {
-            await axios.post(
-                "http://localhost:8080/api/applicant/apply",
+            const res = await axios.post(
+                `${API_URL}/api/applicant/apply`,
                 formData,
                 {
                     headers: {
@@ -106,7 +128,7 @@ function RecruitDetail() {
                 }
             );
 
-            showSuccess("Ứng tuyển thành công!");
+            showSuccess(res.data.message || "Ứng tuyển thành công!");
             setCoverLetter("");
             closeForm();
 
@@ -134,34 +156,32 @@ function RecruitDetail() {
             return;
         }
 
-            await axios.post(
-                "http://localhost:8080/api/applicant/toggle", null,
-                {
-                    params: { applicantID, rnid },
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            );
+        await axios.post(
+            `${API_URL}/api/applicant/toggle`, null,
+            {
+                params: { applicantID, rnid },
+                headers: { Authorization: `Bearer ${token}` }
+            }
+        );
 
-            setFavoriteJobs(prev =>
-                prev.includes(rnid) ? prev.filter(id => id !== rnid) : [...prev, rnid]
-            );
+        setFavoriteJobs(prev =>
+            prev.includes(rnid) ? prev.filter(id => id !== rnid) : [...prev, rnid]
+        );
     };
 
-
-    const applicantID = localStorage.getItem('applicantID')
     useEffect(() => {
         const fetchSaveJob = async () => {
-                const res = await axios.get(
-                    "http://localhost:8080/api/applicant/favourite-job",
-                    {
-                        params: { id: applicantID },
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        }
+            const res = await axios.get(
+                `${API_URL}/api/applicant/favourite-job`,
+                {
+                    params: { id: applicantID },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
                     }
-                );
-                const savedIds = res.data.map(job => job.rnid);
-                setFavoriteJobs(savedIds);
+                }
+            );
+            const savedIds = res.data.map(job => job.rnid);
+            setFavoriteJobs(savedIds);
         };
         if (token && applicantID) {
             fetchSaveJob();
@@ -243,7 +263,10 @@ function RecruitDetail() {
                                 </p>
                             </div>
                             <div className="detail-btn">
-                                <button className="detail-apply-btn" onClick={handleApplyClick}>Ứng tuyển ngay</button>
+                                <button className="detail-apply-btn" onClick={handleApplyClick}>
+                                    {appliedJob ? "Ứng tuyển lại" : "Ứng tuyển ngay"}
+                                </button>
+
                                 <button
                                     className={`favorite-btn ${isFavorite(recruitmentDetail.rnid) ? 'active' : ''}`}
                                     onClick={() => toggleFavorite(recruitmentDetail.rnid)}
@@ -251,6 +274,16 @@ function RecruitDetail() {
                                     {isFavorite(recruitmentDetail.rnid) ? <FaHeart /> : <LuHeart />}
                                 </button>
                             </div>
+                            {appliedJob && (
+                                <div className="applied-notice-container">
+                                    <p className="applied-notice">
+                                        Bạn đã ứng tuyển công việc này vào ngày: <strong>{formatDate(appliedJob.application.date)}</strong>
+                                    </p>
+                                    <a href={`${API_URL}/uploads/cv/${appliedJob.application.cv}`} className='applied-link'> Xem CV đã nộp</a>
+                                </div>
+
+                            )}
+
 
                         </div>
 
@@ -301,7 +334,7 @@ function RecruitDetail() {
                                 })}
                         </div>
 
-                        <button className="apply-button" onClick={handleApplyClick}>Ứng tuyển ngay</button>
+                        <button className="apply-button" onClick={handleApplyClick}>Ứng tuyển</button>
                     </div>
                     <div className="right-col">
                         <div>
@@ -327,7 +360,7 @@ function RecruitDetail() {
 
                         </div>
                     </div>
-                </div>
+                </div >
 
                 {showForm && (
                     <div className="detail-popup-form">
@@ -358,6 +391,7 @@ function RecruitDetail() {
                                         onChange={(e) => setCoverLetter(e.target.value)}
                                         placeholder="Thư giới thiệu..."
                                     />
+                                    <p className="require">Lưu ý: Chỉ chứa tối đa 1000 kí tự</p>
                                 </div>
 
                                 <div className="note-container">
@@ -379,16 +413,19 @@ function RecruitDetail() {
                             </form>
                         </div>
                     </div>
-                )}
-                {toast && (
-                    <Toast
-                        message={toast.message}
-                        type={toast.type}
-                        duration={toast.duration}
-                        onClose={hideToast}
-                    />
-                )}
-            </div>
+                )
+                }
+                {
+                    toast && (
+                        <Toast
+                            message={toast.message}
+                            type={toast.type}
+                            duration={toast.duration}
+                            onClose={hideToast}
+                        />
+                    )
+                }
+            </div >
         </>
     );
 };

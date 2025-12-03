@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import useToast from '../../../../utils/useToast'
 import Toast from '../../../Toast/Toast';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Skills() {
   const [skills, setSkills] = useState([]);
@@ -13,7 +14,7 @@ export default function Skills() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/admin/skill", {
+    axios.get(`${API_URL}/api/admin/skill`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => setSkills(res.data))
@@ -38,7 +39,7 @@ export default function Skills() {
 
   const handleDeleteSkill = async (id) => {
     try {
-      const res = await axios.delete(`http://localhost:8080/api/admin/skill/delete/${id}`, {
+      const res = await axios.delete(`${API_URL}/api/admin/skill/delete/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -63,7 +64,7 @@ export default function Skills() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/admin/skill/create",
+        `${API_URL}/api/admin/skill/create`,
         { skillName: newSkill.name, description: newSkill.description },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -83,7 +84,7 @@ export default function Skills() {
 
   const handleSearch = async (e) => {
     if (e.key === 'Enter') {
-      const res = await axios.get('http://localhost:8080/api/admin/skill/search', {
+      const res = await axios.get(`${API_URL}/api/admin/skill/search`, {
         params: { skillName: searchTerm },
         headers: { Authorization: `Bearer ${token}` }
       });

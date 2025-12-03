@@ -30,6 +30,7 @@ const sanitizeHtml = (html) => {
 
 
 function CompanyDetail() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const { employerId } = useParams();
     const [companyDetail, setCompanyDetail] = useState(null);
     const [jobListings, setJobListings] = useState(null);
@@ -40,8 +41,8 @@ function CompanyDetail() {
         const fetchAll = async () => {
             try {
                 const [detailRes, jobRes] = await Promise.all([
-                    axios.get("http://localhost:8080/api/applicant/companies/detail", { params: { id: employerId } }),
-                    axios.get("http://localhost:8080/api/applicant/companies/job", { params: { id: employerId } })
+                    axios.get(`${API_URL}/api/applicant/companies/detail`, { params: { id: employerId } }),
+                    axios.get(`${API_URL}/api/applicant/companies/job`, { params: { id: employerId } })
                 ]);
                 setCompanyDetail(detailRes.data);
                 setJobListings(jobRes.data);

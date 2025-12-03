@@ -12,6 +12,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import './Revenue.css';
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Revenue() {
   const [timeRange, setTimeRange] = useState('month');
@@ -33,7 +34,7 @@ function Revenue() {
         const token = localStorage.getItem('token');
         const year = new Date().getFullYear();
         const res = await fetch(
-          `http://localhost:8080/api/admin/revenue?year=${year}`,
+          `${API_URL}/api/admin/revenue?year=${year}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (!res.ok) throw new Error('Không lấy được doanh thu');

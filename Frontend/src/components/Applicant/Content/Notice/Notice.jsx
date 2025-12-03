@@ -6,6 +6,7 @@ import Toast from '../../../Toast/Toast.jsx'
 import useToast from '../../../../utils/useToast.js'
 
 const NoticeTable = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [noticeData, setNoticeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [editingNotice, setEditingNotice] = useState(null);
@@ -28,7 +29,7 @@ const NoticeTable = () => {
 
     const fetchNotice = async () => {
       const res = await axios.get(
-        "http://localhost:8080/api/applicant/notice",
+        `${API_URL}/api/applicant/notice`,
         {
           params: { id: applicantID },
           headers: {
@@ -82,7 +83,7 @@ const NoticeTable = () => {
   };
   const handleDelete = async (id) => {
     try {
-       await axios.delete(`http://localhost:8080/api/applicant/notice/delete/${id}`, {
+       await axios.delete(`${API_URL}/api/applicant/notice/delete/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -107,7 +108,7 @@ const NoticeTable = () => {
     if (editingNotice) {
       axios
         .put(
-          `http://localhost:8080/api/applicant/notice/update/${editingNotice.id}`,
+          `${API_URL}/api/applicant/notice/update/${editingNotice.id}`,
           request,
           { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -125,7 +126,7 @@ const NoticeTable = () => {
     else {
       axios
         .post(
-          `http://localhost:8080/api/applicant/notice/create?applicantID=${applicantID}`,
+          `${API_URL}/api/applicant/notice/create?applicantID=${applicantID}`,
           request,
           { headers: { Authorization: `Bearer ${token}` } }
         )

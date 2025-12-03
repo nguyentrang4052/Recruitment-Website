@@ -5,6 +5,8 @@ import axios from 'axios';
 import useToast from '../../../../utils/useToast'
 import Toast from '../../../Toast/Toast';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Employers({ onViewDetail }) {
   const [employers, setEmployers] = useState([]);
   const token = localStorage.getItem("token");
@@ -12,7 +14,7 @@ export default function Employers({ onViewDetail }) {
 
 
 const fectchEmployers = async () => {
-  const res = await  axios.get('http://localhost:8080/api/admin/employer', {
+  const res = await  axios.get(`${API_URL}/api/admin/employer`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setEmployers(res.data);
@@ -39,7 +41,7 @@ const fectchEmployers = async () => {
 
   const deleteEmployer = async (id) => {
     try {
-      const res = await axios.post(`http://localhost:8080/api/admin/employer/delete`, null, {
+      const res = await axios.post(`${API_URL}/api/admin/employer/delete`, null, {
         headers: { Authorization: `Bearer ${token}` },
         params: { id }
       });

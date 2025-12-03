@@ -64,10 +64,10 @@ public class ApplicationService implements IApplicationService {
         Optional<RecruitmentNews> reNews = recruitmentRepo.findById(RNID);
 
 
-		boolean alreadyApplied = apRepository.existsByApplicantAndRecruitmentNews(a, reNews.get());
-		if (alreadyApplied)
-			throw new IllegalStateException("You have already applied for this job.");
-		else {
+//		boolean alreadyApplied = apRepository.existsByApplicantAndRecruitmentNews(a, reNews.get());
+//		if (alreadyApplied)
+//			throw new IllegalStateException("You have already applied for this job.");
+//		else {
 			Application application = new Application();
 			application.setRecruitmentNews(reNews.get());
 			application.setApplicant(a);
@@ -76,7 +76,7 @@ public class ApplicationService implements IApplicationService {
 			String fileName = applicantService.storeFile(cvFile);
 			application.setCV(fileName);
 			return apRepository.save(application);
-		}
+//		}
 
 	}
 

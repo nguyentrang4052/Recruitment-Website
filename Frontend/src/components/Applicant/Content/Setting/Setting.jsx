@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import "./Setting.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import axios from "axios";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import Toast from '../../../Toast/Toast';
 import useToast from '../../../../utils/useToast';
 
+const API_URL = import.meta.env.VITE_API_URL;
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: API_URL,
   withCredentials: true,
 });
 
@@ -23,15 +24,9 @@ export default function Setting() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [newEmail, setNewEmail] = useState("");
+  // const [newEmail, setNewEmail] = useState("");
 
-  const [currentEmail, setCurrentEmail] = useState("");
-
-  // const [errors, setErrors] = useState({
-  //   password: "",
-  //   confirmPassword: "",
-  //   email: ""
-  // });
+  // const [currentEmail, setCurrentEmail] = useState("");
 
   const [showPassword, setShowPassword] = useState({
     old: false,
@@ -44,23 +39,22 @@ export default function Setting() {
 
   const { toast, showSuccess, showError, hideToast } = useToast();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await api.get("/api/applicant/settings/info");
-        console.log(data);
-        setCurrentEmail(data.email);
-      } catch {
-        showError("Không thể lấy thông tin email");
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const { data } = await api.get("/api/applicant/settings/info");
+  //       setCurrentEmail(data.email);
+  //     } catch {
+  //       showError("Không thể lấy thông tin email");
+  //     }
+  //   })();
+  // }, []);
 
 
   const validatePassword = (p) =>
     /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/.test(p);
-  const validateEmail = (e) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  // const validateEmail = (e) =>
+  //   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
   const handlePasswordUpdate = async () => {
     const err = { password: "", confirmPassword: "", email: "" };
@@ -68,7 +62,6 @@ export default function Setting() {
       showError("Mật khẩu ≥ 8 ký tự, có ít nhất 1 chữ hoa và 1 ký tự đặc biệt.");
       return;
     }
-      // err.password = "Mật khẩu ≥ 8 ký tự, có ít nhất 1 chữ hoa và 1 ký tự đặc biệt.";
     
     if (newPassword !== confirmPassword){
       showError("Mật khẩu xác nhận không khớp.");
@@ -88,20 +81,20 @@ export default function Setting() {
     }
   };
 
-  const handleEmailUpdate = async () => {
-    if (!validateEmail(newEmail))
-    {
-      showError( "Email không hợp lệ. Vui lòng nhập đúng định dạng!");
-      return;
-    }  
-      try {
-        await api.patch("/api/applicant/settings/email", { newEmail });
-        showSuccess("Cập nhật email thành công!");
-        setCurrentEmail(newEmail); setNewEmail("");
-      } catch (e) {
-        showError(e.response?.data?.message || "Cập nhật email thất bại");
-      }
-  };
+  // const handleEmailUpdate = async () => {
+  //   if (!validateEmail(newEmail))
+  //   {
+  //     showError( "Email không hợp lệ. Vui lòng nhập đúng định dạng!");
+  //     return;
+  //   }  
+  //     try {
+  //       await api.patch("/api/applicant/settings/email", { newEmail });
+  //       showSuccess("Cập nhật email thành công!");
+  //       setCurrentEmail(newEmail); setNewEmail("");
+  //     } catch (e) {
+  //       showError(e.response?.data?.message || "Cập nhật email thất bại");
+  //     }
+  // };
 
   return (
     <div className="main-layout" >
@@ -137,7 +130,7 @@ export default function Setting() {
               <span onClick={() => toggleShow("confirm")}>
                 <i className={`fa ${showPassword.confirm ? "fa-eye" : "fa-eye-slash"}`} />
               </span>
-              {/* {errors.password && <p className="error-message">{errors.password}</p>} */}
+             
             </div>
 
             <div className="button-group">
@@ -146,7 +139,7 @@ export default function Setting() {
             </div>
           </div>
 
-          <div className="setting-col">
+          {/* <div className="setting-col">
             <h3>Thay đổi địa chỉ Email</h3>
             <p style={{ marginBottom: 8, fontSize: 14, color: "#555" }}>
               Email hiện tại: <strong>{currentEmail}</strong>
@@ -162,7 +155,7 @@ export default function Setting() {
               <button className="btn-skip">BỎ QUA</button>
             </div>
 
-          </div>
+          </div> */}
         </div>
       </div>
       {toast && (

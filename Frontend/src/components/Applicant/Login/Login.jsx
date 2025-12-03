@@ -6,9 +6,10 @@ import { GoogleLogin } from "@react-oauth/google";
 import { isTokenExpired } from '../../../utils/Auth'
 import Toast from '../../Toast/Toast.jsx'
 import useToast from '../../../utils/useToast.js'
-
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Login() {
+
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
@@ -29,7 +30,7 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/login', { username, password })
+            const response = await axios.post(`${API_URL}/api/auth/login`, { username, password })
 
             const { token, email, roleName, applicantID } = response.data;
             localStorage.setItem('email', email)
@@ -57,7 +58,7 @@ function Login() {
     const handleGoogleLogin = async (response) => {
         const idToken = response.credential;
         try {
-            const res = await axios.post('http://localhost:8080/api/auth/google', { idToken });
+            const res = await axios.post(`${API_URL}/api/auth/google`, { idToken });
 
             const { token, email, roleName, applicantID } = res.data;
 

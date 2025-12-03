@@ -247,6 +247,14 @@ select:focus {
     text-align: center;
 }
 
+.require {
+    color: #7d1111;
+    font-size: 14px;
+    margin-top: 5px;
+    /* margin-left: 60px; */
+    text-align: left;
+    font-style: italic;
+}
 
 
 /* Tablettes */
@@ -266,7 +274,7 @@ select:focus {
 
   .form-group-pr input,
   .form-group-pr textarea {
-    width: 85%;
+    width: 100%;
   }
 
   .add-experience-btn,

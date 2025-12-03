@@ -6,9 +6,11 @@ import { formatDescription } from '../../../../utils/formatDescription';
 import { formatRangeShort } from '../../../../utils/formatSalary';
 import useToast from '../../../../utils/useToast';
 import Toast from '../../../Toast/Toast';
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function RecruitmentDetail({ job, onBack, onUpdate }) {
 
-    const API = "http://localhost:8080/api/admin/recruitment";
+    const API = `${API_URL}/api/admin/recruitment`;
     const token = localStorage.getItem("token");
 
     const [localJob, setLocalJob] = useState(job);

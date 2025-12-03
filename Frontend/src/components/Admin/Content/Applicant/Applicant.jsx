@@ -1,10 +1,10 @@
-// src/components/Applicant/Applicant.jsx
 import './Applicant.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import useToast from '../../../../utils/useToast'
 import Toast from '../../../Toast/Toast';
 
+const API_URL = import.meta.env.VITE_API_URL;
 export default function Applicant({ onViewDetail }) {
 
   const [applicants, setApplicants] = useState([]);
@@ -13,7 +13,7 @@ export default function Applicant({ onViewDetail }) {
   const { toast, showSuccess, showError, showWarning, hideToast } = useToast();
 
   const fetchApplicants = async () => {
-    const res = await axios.get('http://localhost:8080/api/admin/applicant', {
+    const res = await axios.get(`${API_URL}/api/admin/applicant`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setApplicants(res.data);
@@ -36,7 +36,7 @@ export default function Applicant({ onViewDetail }) {
 
   const deleteApplicant = async (id) => {
     try {
-      const res = await axios.post(`http://localhost:8080/api/admin/applicant/delete`, null, {
+      const res = await axios.post(`${API_URL}/api/admin/applicant/delete`, null, {
         headers: { Authorization: `Bearer ${token}` },
         params: { id }
       });

@@ -7,12 +7,13 @@ import { StarRating } from '../StartRating';
 import { useNavigate } from 'react-router-dom';
 
 const CompanyIntro = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const fetchCompany = async () => {
             try {
-                const res = await axios.get("http://localhost:8080/api/applicant/companies");
+                const res = await axios.get(`${API_URL}/api/applicant/companies`);
                 setCompanies(JSON.parse(typeof res.data === 'string' ? res.data : JSON.stringify(res.data)));
             } catch (thrown) {
                 console.error("Chi tiết lỗi:", thrown);

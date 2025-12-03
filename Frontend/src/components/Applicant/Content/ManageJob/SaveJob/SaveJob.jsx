@@ -8,13 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import { formatDate, formatDateTime } from '../../../../../utils/Format'
 
 const SavedJobs = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [savedJobs, setSaveJobs] = useState([])
   const applicantID = localStorage.getItem('applicantID')
   const token = localStorage.getItem('token')
   useEffect(() => {
     const fetchSaveJob = async () => {
       const res = await axios.get(
-        "http://localhost:8080/api/applicant/favourite-job",
+        `${API_URL}/api/applicant/favourite-job`,
         {
           params: { id: applicantID },
           headers: {
@@ -33,7 +34,7 @@ const SavedJobs = () => {
   const [favoriteJobs, setFavoriteJobs] = useState([]);
   const toggleFavorite = async (rnid) => {
       await axios.post(
-        "http://localhost:8080/api/applicant/toggle",
+        `${API_URL}/api/applicant/toggle`,
         null,
         {
           params: { applicantID, rnid },

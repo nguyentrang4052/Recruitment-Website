@@ -3,12 +3,6 @@ import { ChevronLeft } from 'lucide-react';
 import './ApplicantDetail.css';
 
 export default function ApplicantDetail({ applicant, onBack }) {
-  // const genderText = (g) => {
-  //   if (g === 1) return 'Nam';
-  //   if (g === 0) return 'Nữ';
-  //   return 'Khác';
-  // };
-
   const formatDate = (d) => (d ? new Date(d).toLocaleDateString('vi-VN') : '—');
 
   return (

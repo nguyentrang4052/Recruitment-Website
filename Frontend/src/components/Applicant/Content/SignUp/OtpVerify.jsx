@@ -5,6 +5,7 @@ import axios from 'axios';
 import './OtpVerify.css'
 
 function OtpVerifyPage() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [otp, setOtp] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
@@ -26,7 +27,7 @@ function OtpVerifyPage() {
     setMessage('');
 
     try {
-      const res = await axios.post('http://localhost:8080/api/auth/verify-email', { email, otp })
+      const res = await axios.post(`${API_URL}/api/auth/verify-email`, { email, otp })
 
       const success = res.data.success;
       if (success) {

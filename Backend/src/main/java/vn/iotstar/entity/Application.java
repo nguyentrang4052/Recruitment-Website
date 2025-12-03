@@ -45,7 +45,7 @@ public class Application implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private EStatus status;
 
-	@Column(name = "note", nullable = true, length = 255)
+	@Column(name = "note", nullable = true, length = 1000)
 	private String note;
 	
 	@Column(name = "CV", nullable = true, length = 255)

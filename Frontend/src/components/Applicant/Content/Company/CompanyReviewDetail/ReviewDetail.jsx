@@ -12,7 +12,7 @@ import useToast from '../../../../../utils/useToast.js';
 import Toast from '../../../../Toast/Toast.jsx';
 
 function CompanyReviews() {
-
+  const API_URL = import.meta.env.VITE_API_URL; 
   const { employerId } = useParams();
 
   const [company, setCompanies] = useState(null);
@@ -39,7 +39,7 @@ function CompanyReviews() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/applicant/companies/review",
+        `${API_URL}/api/applicant/companies/review`,
         { employerID: employerId, score, content },
         {
           params: { applicantId: applicantID },
@@ -67,10 +67,10 @@ function CompanyReviews() {
     showWarning(
       "Bạn chắc chắn muốn xoá đánh giá này?",
       () => {
-        deleteReview(reviewId); 
+        deleteReview(reviewId);
         hideToast();
       },
-      () => hideToast() 
+      () => hideToast()
     )
 
   };
@@ -79,7 +79,7 @@ function CompanyReviews() {
   const deleteReview = async (reviewId) => {
     try {
       await axios.delete(
-        `http://localhost:8080/api/applicant/companies/review/delete`,
+        `${API_URL}/api/applicant/companies/review/delete`,
         {
           params: {
             applicantID: applicantID,
@@ -104,8 +104,8 @@ function CompanyReviews() {
     const fetchCompany = async () => {
       try {
         const [res, jobRes] = await Promise.all([
-          axios.get("http://localhost:8080/api/applicant/companies/detail", { params: { id: employerId } }),
-          axios.get("http://localhost:8080/api/applicant/companies/job", { params: { id: employerId } })
+          axios.get(`${API_URL}/api/applicant/companies/detail`, { params: { id: employerId } }),
+          axios.get(`${API_URL}/api/applicant/companies/job`, { params: { id: employerId } })
         ]);
 
         setCompanies(res.data);

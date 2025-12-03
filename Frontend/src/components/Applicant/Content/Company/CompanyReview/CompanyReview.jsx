@@ -8,13 +8,14 @@ import dayjs from 'dayjs';
 
 
 function CompanyPage() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [companiesPerRow, setCompaniesPerRow] = useState(3);
   const [reviews, setReviews] = useState([]);
  
 useEffect(() => {
   const fetchReview = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/applicant/rating");
+      const res = await axios.get(`${API_URL}http://localhost:8080/api/applicant/rating`);
       setReviews(res.data); 
     } catch (error) {
       console.error("Failed to fetch reviews:", error);
@@ -30,7 +31,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/applicant/companies");
+        const res = await axios.get(`${API_URL}/api/applicant/companies`);
         setCompanies(JSON.parse(typeof res.data === 'string' ? res.data : JSON.stringify(res.data)));
       } catch (thrown) {
         console.error("Chi tiết lỗi:", thrown);

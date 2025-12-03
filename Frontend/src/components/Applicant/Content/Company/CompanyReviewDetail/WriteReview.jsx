@@ -3,6 +3,7 @@ import axios from 'axios';
 import './WriteReview.css';   // file style tuỳ chỉnh (tạm dùng inline cũng được)
 
 function WriteReview({ employerId, onSuccess }) {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [score, setScore] = useState(0);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,7 +15,7 @@ function WriteReview({ employerId, onSuccess }) {
     setLoading(true);
     try {
       await axios.post(
-         `http://localhost:8080/api/applicant/companies/review?applicantId=${applicantID}`,
+         `${API_URL}/api/applicant/companies/review?applicantId=${applicantID}`,
         { employerId, score, content },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );

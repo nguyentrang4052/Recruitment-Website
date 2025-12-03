@@ -10,6 +10,7 @@ import Toast from '../../../Toast/Toast.jsx'
 import useToast from '../../../../utils/useToast.js'
 
 function Profile() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const level = ['Tất cả', 'Fresher', 'Junior', 'Mid-level', 'Senior', 'Manager'];
     const timeWork = ['PART_TIME', 'FULL_TIME', 'REMOTE', 'HYBRID'];
     const [applicant, setApplicant] = useState({});
@@ -30,7 +31,7 @@ function Profile() {
 
     const fetchApplicant = async () => {
         const email = localStorage.getItem('email');
-        const res = await axios.get('http://localhost:8080/api/applicant/profile/info', {
+        const res = await axios.get(`${API_URL}/api/applicant/profile/info`, {
             params: { email },
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
@@ -44,7 +45,7 @@ function Profile() {
 
     useEffect(() => {
         const fetchSkill = async () => {
-            const res = await axios.get('http://localhost:8080/api/skills/list')
+            const res = await axios.get(`${API_URL}/api/skills/list`)
             setSkillList(res.data)
 
 
@@ -58,7 +59,7 @@ function Profile() {
         formData.append('photo', file);
         const email = localStorage.getItem('email');
         const res = await axios.post(
-            `http://localhost:8080/api/applicant/profile/upload-photo/${email}`,
+            `${API_URL}/api/applicant/profile/upload-photo/${email}`,
             formData,
             { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('token')}` } }
         );
@@ -184,7 +185,7 @@ function Profile() {
             }
 
             const res = await axios.put(
-                `http://localhost:8080/api/applicant/profile/update/${applicantID}`,
+                `${API_URL}/api/applicant/profile/update/${applicantID}`,
                 payload,
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
@@ -202,7 +203,7 @@ function Profile() {
     const handleDeleteImage = async () => {
         try {
             const email = localStorage.getItem('email');
-            await axios.delete('http://localhost:8080/api/applicant/delete/photo', {
+            await axios.delete(`${API_URL}/api/applicant/delete/photo`, {
                 params: { email },
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
@@ -230,7 +231,7 @@ function Profile() {
                             onChange={handleFileChange}
                         />
                         <img
-                            src={preview || (applicant.photo ? `http://localhost:8080/uploads/cv/${applicant.photo}` : 'avatar.png') || 'avatar.png'}
+                            src={preview || (applicant.photo ? `${API_URL}/uploads/cv/${applicant.photo}` : 'avatar.png') || 'avatar.png'}
                             alt="Avatar"
                             className="pr-avatar"
                             onClick={() => editingSection === 'personal' && handleImageClick()}
@@ -336,6 +337,7 @@ function Profile() {
                                     value={goalForm.goal || ''}
                                     onChange={e => setGoalForm({ ...goalForm, goal: e.target.value })}
                                 />
+                                <p className="require">Chỉ chứa tối đa 255 kí tự</p>
                             </div>
                             <button onClick={handleSave}>Lưu</button>
                             <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>
@@ -365,6 +367,7 @@ function Profile() {
                                 <label>Vị trí</label>
                                 <input value={expForm.position || ''} onChange={e => setExpForm({ ...expForm, position: e.target.value })} />
                             </div>
+                            <p className="require">Chỉ chứa tối đa 255 kí tự</p>
                             <button onClick={handleSave}>Lưu</button>
                             <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>Hủy</button>
                         </>
@@ -387,6 +390,7 @@ function Profile() {
                                 <label>Chuyên ngành</label>
                                 <input value={eduForm.major || ''} onChange={e => setEduForm({ ...eduForm, major: e.target.value })} />
                             </div>
+                            <p className="require">Chỉ chứa tối đa 255 kí tự</p>
                             <button onClick={handleSave}>Lưu</button>
                             <button onClick={handleCancel} style={{ marginLeft: '0.5rem' }}>Hủy</button>
                         </>
@@ -437,6 +441,7 @@ function Profile() {
                                     value={careerInfoForm.title || ''}
                                     onChange={e => setCareerInfoForm({ ...careerInfoForm, title: e.target.value })}
                                 />
+                                <p className="require">Lưu ý: Chỉ chứa tối đa 255 kí tự</p>
                             </div>
                             <div className="form-group-pr">
                                 <label>Cấp bậc mong muốn</label>

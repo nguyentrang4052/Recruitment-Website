@@ -77,10 +77,6 @@ public class RecruitmentService implements IRecruitmentService {
 				rn.getApplyBy(), viewRepository.countView(rn.getRNID()), rn.getIsActive());
 	}
 	
-//	public RecruitmentCardDTO mapToSaveJob(RecruitmentNews rn)
-//	{
-//		
-//	}
 
 	@Override
 	public RecruitmentCardDTO mapToApplication(Applicant applicant, RecruitmentNews rn) {

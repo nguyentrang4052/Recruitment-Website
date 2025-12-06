@@ -41,9 +41,6 @@ public class JobNoticeService implements IJobNoticeService {
 	@Autowired
 	private IRecruitmentService rService;
 
-//	@Autowired
-//	private IJobNoticeRepository noticeRepository;
-//	
 
 	@Autowired
 	private EmailService emailService;
@@ -84,8 +81,6 @@ public class JobNoticeService implements IJobNoticeService {
 		notification.setLevel(request.getLevel());
 
 		notification.setFrequency(EFrequency.valueOf(request.getFrequency().toUpperCase()));
-//		notification.setEmailEnabled(request.getEmailEnabled());
-//		notification.setWebEnabled(request.getWebEnabled());
 		notification.setCreatedDate(LocalDateTime.now());
 		notification.setLastSentDate(LocalDate.of(1970,1,1));
 		notification.setIsActive(true);
@@ -101,13 +96,10 @@ public class JobNoticeService implements IJobNoticeService {
 		dto.setId(notification.getNoticeID());
 		dto.setTitle(notification.getJobTitle());
 
-//		dto.setRn(notification.getRn());
 		dto.setLocation(notification.getLocation());
 		dto.setSalary(notification.getSalary());
 		dto.setLevel(notification.getLevel());
 		dto.setFrequency(notification.getFrequency().getCode());
-//		dto.setEmailEnabled(notification.getEmailEnabled());
-//		dto.setWebEnabled(notification.getWebEnabled());
 		dto.setCreatedDate(notification.getCreatedDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		dto.setMatchingJobs(getMatchingJobsCount(notification.getNoticeID()));
 
@@ -129,26 +121,7 @@ public class JobNoticeService implements IJobNoticeService {
 				.stream().map(rService::mapToDetail).toList();
 	}
 
-//	public void sendEmailNotification(JobNotice notification, Applicant applicant, List<RecruitmentCardDTO> jobs) {
-//		System.out.println("Sending email for JobNotice ID: " + notification.getNoticeID());
-//		try {
-//			String keyword = notification.getJobTitle() != null && !notification.getJobTitle().isEmpty()
-//					? notification.getJobTitle()
-//					: "công việc phù hợp";
-//			jobs = findMatchingJobs(notification);
-//			EmailData emailData = new EmailData();
-//			emailData.setApplicantName(applicant.getApplicantName());
-//			emailData.setKeyword(keyword);
-//			emailData.setJobCount(jobs.size());
-//			emailData.setJobs(jobs.subList(0, Math.min(20, jobs.size()))); // Limit to 20 jobs
-//
-//			emailService.sendJobNotificationEmail(applicant.getAccount().getEmail(), emailData);
-//			System.out.println("Email sent to: " + applicant.getAccount().getEmail());
-//		} catch (Exception e) {
-//			System.err.println("Error sending email for JobNotice ID: " + notification.getNoticeID());
-//			e.printStackTrace();
-//		}
-//	}
+
 	@Override
 	public void sendEmailNotification(JobNotice notification, Applicant applicant, List<RecruitmentCardDTO> jobs) {
 		String keyword = notification.getJobTitle() != null && !notification.getJobTitle().isEmpty()
@@ -194,18 +167,6 @@ public class JobNoticeService implements IJobNoticeService {
 		history.setApplicant(notification.getApplicant());
 		history.setJobCount(jobCount);
 		history.setSentDate(LocalDateTime.now());
-//		history.setStatus(status);
-//		history.setErrorMessage(errorMessage);
-
-//		DeliveryType deliveryType;
-//		if (notification.getEmailEnabled() && notification.getWebEnabled()) {
-//			deliveryType = DeliveryType.BOTH;
-//		} else if (notification.getEmailEnabled()) {
-//			deliveryType = DeliveryType.EMAIL;
-//		} else {
-//			deliveryType = DeliveryType.WEB;
-//		}
-//		history.setDeliveryType(deliveryType);
 
 		historyService.save(history);
 	}
@@ -239,9 +200,6 @@ public class JobNoticeService implements IJobNoticeService {
 		notification.setSalary(request.getSalary());
 		notification.setLevel(request.getLevel());
 		notification.setFrequency(EFrequency.valueOf(request.getFrequency().toUpperCase()));
-//		notification.setEmailEnabled(request.getEmailEnabled());
-//		notification.setWebEnabled(request.getWebEnabled());
-
 		notification = jobNoticeRepository.save(notification);
 
 		return convertToDTO(notification);

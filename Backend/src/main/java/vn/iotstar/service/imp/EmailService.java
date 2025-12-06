@@ -14,6 +14,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import vn.iotstar.dto.applicant.notice.EmailData;
 import vn.iotstar.entity.RecruitmentNews;
+import vn.iotstar.util.FormatSalary;
 import vn.iotstar.util.UrlUtil;
 
 @Service
@@ -86,6 +87,12 @@ public class EmailService {
 					logo = UrlUtil.replaceLocalhost(logo, backendUrl);
 					job.getEmployer().setLogo(logo);
 				}
+
+				if (job.getSalary() != null) {
+					String formattedSalary = FormatSalary.formatRangeShort(job.getSalary());
+					job.setSalary(formattedSalary);
+				}
+
 			});
 
 			Context context = new Context();

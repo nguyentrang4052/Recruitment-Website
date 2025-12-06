@@ -1,35 +1,67 @@
 package vn.iotstar.util;
 
+import java.math.BigDecimal;
+
 public class FormatSalary {
-    public static String formatCurrencyShort(Long value) {
-        if (value == null) return "";
+	private static String removeTrailingZeros(BigDecimal value) {
+	    return value.stripTrailingZeros().toPlainString();
+	}
 
-        if (value >= 1_000_000_000L) {
-            double result = value / 1_000_000_000.0;
-            return removeTrailingZeros(result) + " tỷ";
-        }
-        if (value >= 1_000_000L) {
-            double result = value / 1_000_000.0;
-            return removeTrailingZeros(result) + " triệu";
-        }
-        if (value >= 1_000L) {
-            double result = value / 1_000.0;
-            return removeTrailingZeros(result) + " nghìn";
-        }
-        return value + " VND";
-    }
+	public static String formatCurrencyShort(BigDecimal value) {
+	    if (value == null) return "";
 
-    public static String formatRangeShort(Long min, Long max) {
-        if (min == null || max == null) return "";
-        return formatCurrencyShort(min) + " - " + formatCurrencyShort(max);
-    }
+	    BigDecimal billion = new BigDecimal("1000000000");
+	    BigDecimal million = new BigDecimal("1000000");
+	    BigDecimal thousand = new BigDecimal("1000");
 
-    private static String removeTrailingZeros(double value) {
-        if (value == (long) value) {
-            return String.valueOf((long) value);
-        } else {
-            return String.format("%.2f", value).replaceAll("\\.?0+$", "");
-        }
-    }
+	    // >= 1 tỷ
+	    if (value.compareTo(billion) >= 0) {
+	        BigDecimal result = value.divide(billion);
+	        return removeTrailingZeros(result) + " tỷ";
+	    }
+
+	    // >= 1 triệu
+	    if (value.compareTo(million) >= 0) {
+	        BigDecimal result = value.divide(million);
+	        return removeTrailingZeros(result) + " triệu";
+	    }
+
+	    // >= 1 nghìn
+	    if (value.compareTo(thousand) >= 0) {
+	        BigDecimal result = value.divide(thousand);
+	        return removeTrailingZeros(result) + " nghìn";
+	    }
+
+	    return value.toPlainString() + " VND";
+	}
+	
+
+	public static String formatRangeShort(String value) {
+	    if (value == null || value.isEmpty()) return "";
+
+	    try {
+	        String[] parts = value.split("-");
+	        if (parts.length != 2) return "";
+
+	        String minStr = parts[0].trim();
+	        String maxStr = parts[1].trim();
+
+	        BigDecimal min = new BigDecimal(minStr);
+	        BigDecimal max = new BigDecimal(maxStr);
+
+	        return formatCurrencyShort(min) + " - " + formatCurrencyShort(max);
+
+	    } catch (Exception e) {
+	        return "Không xác định";
+	    }
+	}
+
+//    private static String removeTrailingZeros(double value) {
+//        if (value == (long) value) {
+//            return String.valueOf((long) value);
+//        } else {
+//            return String.format("%.2f", value).replaceAll("\\.?0+$", "");
+//        }
+//    }
 
 }

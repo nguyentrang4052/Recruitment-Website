@@ -1,504 +1,138 @@
 body {
-    overflow-x: hidden;
+  overflow-x: hidden;
 }
-
-main, #app {
-    overflow-x: hidden;
-}
-
 .setting-emp-container {
-    width: auto;
-    margin: 50px auto;
-    padding: 30px 40px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    width: 1000px;
-    margin-left: 350px;
+  width: calc(100% - 360px);
+  margin: 50px auto;
+  padding: 30px 40px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-left: 320px;
 }
-
 .setting-title {
-    font-size: 1.5em; 
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    color: rgb(9, 11, 155);
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  color: rgb(9, 11, 155);
 }
 
-.setting-col h3 {
-    color: #333; 
-    font-weight: 600;
-    font-size: 1.5em;
-    text-align: center;
+
+.setting-single-col {
+  display: flex;
+  justify-content: center;
+}
+.setting-box {
+  width: 100%;
+  max-width: 480px;
+  background: #fafafa;
+  padding: 30px;
+  border-radius: 8px;
+  border: 2px solid #eee;
 }
 
-.setting-row {
-    display: flex; 
-    gap: 40px;
-    margin-bottom: 30px;
-    flex-wrap: wrap; 
+.setting-box h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+  color: #333;
 }
 
-.setting-col {
-    flex: 1; 
-    background: #fafafa;
-    padding: 25px;
-    border-radius: 8px;
-    border: 2px solid #eee;
-    min-width: 150px;
-}
 
 .form-emp {
-    margin-bottom: 20px; 
-    position: relative;
+  margin-bottom: 20px;
+  position: relative;
 }
-
 .form-emp input {
-    margin-top: 20px;
-    width: 370px;
-    padding: 10px;
-    padding-right: 40px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.2s;
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.2s;
 }
-
-.form-group input:focus {
-    border-color: #00c2a5;
+.form-emp input:focus {
+  border-color: #00c2a5;
+}
+.error-message {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+.form-emp span {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+  color: #666;
+  font-size: 16px;
+}
+.form-emp span:hover {
+  color: #000;
 }
 
 .button-group {
-    margin-top: 15px;
-    display: flex;
-    gap: 10px;
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
 }
-
 .btn-update {
-    background: linear-gradient(to right, #00e0ac, #00c2a5);
-    border: none;
-    padding: 15px 10px;
-    border-radius: 6px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: opacity 0.3s;
-    flex: 1; 
-    margin-left: 50px;
-    margin-right: 50px;
+  flex: 1;
+  background: linear-gradient(to right, #00e0ac, #00c2a5);
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.3s;
 }
-
 .btn-update:hover {
-    opacity: 0.9;
+  opacity: 0.9;
+}
+.btn-cancel {
+  flex: 1;
+  background: #f1f1f1;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.btn-cancel:hover {
+  background: #e0e0e0;
 }
 
-.btn-skip {
-    background: #f1f1f1;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    color: #333;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    flex: 1; 
-    margin-right: 10px;
+
+@media (max-width: 1279px) {
+  .setting-emp-container {
+    margin-left: 280px;
+    width: calc(100% - 320px);
+  }
 }
-
-.btn-skip:hover {
-    background: #e0e0e0;
+@media (max-width: 991px) {
+  .setting-emp-container {
+    margin-left: 0;
+    width: calc(100% - 40px);
+    margin: 40px auto;
+  }
 }
-
-.error-message {
-    color: red;
-    font-size: 0.9rem;
-    margin-top: 4px;
-}
-
-.form-emp span {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-top: 10px;
-    cursor: pointer;
-    user-select: none;
-}
-
-.form-emp span i {
-    color: #666;
-    font-size: 16px;
-}
-
-.form-emp span:hover i {
-    color: #000;
-}
-
-/* ======================== RESPONSIVE STYLES ======================== */
-
-/* Desktop Large (1280px - 1599px) */
-@media screen and (max-width: 1599px) {
-    .setting-emp-container {
-        margin-left: 320px;
-        width: calc(100% - 360px);
-        max-width: 1000px;
-    }
-}
-
-/* Desktop Medium (1024px - 1279px) */
-@media screen and (max-width: 1279px) {
-    .setting-emp-container {
-        margin-left: 280px;
-        width: calc(100% - 320px);
-        padding: 25px 35px;
-    }
-
-    .setting-row {
-        gap: 30px;
-    }
-
-    .setting-col {
-        padding: 20px;
-    }
-
-    .form-emp input {
-        width: 100%;
-        max-width: 370px;
-    }
-
-    .btn-update {
-        margin-left: 30px;
-        margin-right: 30px;
-    }
-}
-
-/* Tablet Large (992px - 1023px) */
-@media screen and (max-width: 1023px) {
-    .setting-emp-container {
-        margin-left: 0;
-        margin-right: 0;
-        width: calc(100% - 40px);
-        max-width: 900px;
-        margin: 40px auto;
-        padding: 25px 30px;
-    }
-
-    .setting-title {
-        font-size: 1.4em;
-    }
-
-    .setting-col h3 {
-        font-size: 1.3em;
-    }
-
-    .setting-row {
-        gap: 25px;
-    }
-
-    .form-emp input {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .btn-update {
-        margin-left: 20px;
-        margin-right: 20px;
-    }
-}
-
-/* Tablet Medium (768px - 991px) */
-@media screen and (max-width: 991px) {
-    .setting-emp-container {
-        width: calc(100% - 32px);
-        margin: 30px auto;
-        padding: 20px 25px;
-    }
-
-    .setting-title {
-        font-size: 1.3em;
-        margin-bottom: 18px;
-    }
-
-    .setting-row {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .setting-col {
-        width: 100%;
-        min-width: auto;
-        padding: 20px;
-    }
-
-    .setting-col h3 {
-        font-size: 1.2em;
-        margin-bottom: 15px;
-    }
-
-    .form-emp {
-        margin-bottom: 18px;
-    }
-
-    .form-emp input {
-        width: 100%;
-        padding: 12px;
-        padding-right: 40px;
-        font-size: 15px;
-    }
-
-    .button-group {
-        flex-direction: row;
-        gap: 12px;
-    }
-
-    .btn-update,
-    .btn-skip {
-        margin: 0;
-        padding: 12px 20px;
-    }
-}
-
-/* Mobile Large (576px - 767px) */
-@media screen and (max-width: 767px) {
-    .setting-emp-container {
-        width: calc(100% - 24px);
-        margin: 20px auto;
-        padding: 20px;
-        border-radius: 8px;
-    }
-
-    .setting-title {
-        font-size: 1.2em;
-        margin-bottom: 16px;
-        padding-bottom: 8px;
-    }
-
-    .setting-row {
-        gap: 18px;
-        margin-bottom: 20px;
-    }
-
-    .setting-col {
-        padding: 18px;
-        border-radius: 6px;
-    }
-
-    .setting-col h3 {
-        font-size: 1.1em;
-        margin-bottom: 12px;
-    }
-
-    .setting-col p {
-        font-size: 13px !important;
-    }
-
-    .form-emp {
-        margin-bottom: 16px;
-    }
-
-    .form-emp input {
-        margin-top: 15px;
-        padding: 11px;
-        padding-right: 40px;
-        font-size: 14px;
-    }
-
-    .form-emp span {
-        right: 10px;
-    }
-
-    .form-emp span i {
-        font-size: 15px;
-    }
-
-    .error-message {
-        font-size: 0.85rem;
-    }
-
-    .button-group {
-        margin-top: 12px;
-        gap: 10px;
-    }
-
-    .btn-update,
-    .btn-skip {
-        padding: 11px 16px;
-        font-size: 14px;
-    }
-}
-
-/* Mobile Medium (480px - 575px) */
-@media screen and (max-width: 575px) {
-    .setting-emp-container {
-        width: calc(100% - 20px);
-        margin: 15px auto;
-        padding: 16px;
-    }
-
-    .setting-title {
-        font-size: 1.1em;
-        margin-bottom: 14px;
-    }
-
-    .setting-col {
-        padding: 16px;
-    }
-
-    .setting-col h3 {
-        font-size: 1em;
-    }
-
-    .setting-col p {
-        font-size: 12px !important;
-        margin-bottom: 6px !important;
-    }
-
-    .form-emp input {
-        margin-top: 12px;
-        padding: 10px;
-        padding-right: 38px;
-        font-size: 13px;
-    }
-
-    .button-group {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .btn-update,
-    .btn-skip {
-        width: 100%;
-        padding: 12px;
-        font-size: 14px;
-    }
-}
-
-/* Mobile Small (320px - 479px) */
-@media screen and (max-width: 479px) {
-    .setting-emp-container {
-        width: calc(100% - 16px);
-        margin: 12px auto;
-        padding: 14px;
-        border-radius: 6px;
-    }
-
-    .setting-title {
-        font-size: 1em;
-        margin-bottom: 12px;
-        padding-bottom: 6px;
-    }
-
-    .setting-row {
-        gap: 14px;
-        margin-bottom: 16px;
-    }
-
-    .setting-col {
-        padding: 14px;
-        border-width: 1px;
-    }
-
-    .setting-col h3 {
-        font-size: 0.95em;
-        margin-bottom: 10px;
-    }
-
-    .setting-col p {
-        font-size: 11px !important;
-        margin-bottom: 5px !important;
-    }
-
-    .form-emp {
-        margin-bottom: 14px;
-    }
-
-    .form-emp input {
-        margin-top: 10px;
-        padding: 9px;
-        padding-right: 36px;
-        font-size: 12px;
-        border-radius: 4px;
-    }
-
-    .form-emp span {
-        right: 8px;
-    }
-
-    .form-emp span i {
-        font-size: 14px;
-    }
-
-    .error-message {
-        font-size: 0.8rem;
-        margin-top: 3px;
-    }
-
-    .button-group {
-        margin-top: 10px;
-        gap: 6px;
-    }
-
-    .btn-update,
-    .btn-skip {
-        padding: 10px;
-        font-size: 13px;
-        border-radius: 5px;
-    }
-}
-
-/* Landscape orientation for mobile devices */
-@media screen and (max-height: 500px) and (orientation: landscape) {
-    .setting-emp-container {
-        margin: 10px auto;
-        padding: 15px;
-    }
-
-    .setting-title {
-        font-size: 1em;
-        margin-bottom: 10px;
-    }
-
-    .setting-row {
-        gap: 15px;
-    }
-
-    .setting-col {
-        padding: 12px;
-    }
-
-    .setting-col h3 {
-        font-size: 0.95em;
-        margin-bottom: 8px;
-    }
-
-    .form-emp {
-        margin-bottom: 12px;
-    }
-
-    .form-emp input {
-        margin-top: 8px;
-        padding: 8px;
-        padding-right: 35px;
-    }
-
-    .button-group {
-        margin-top: 8px;
-    }
-
-    .btn-update,
-    .btn-skip {
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-}
-
-/* Ultra-wide screens (1920px+) */
-@media screen and (min-width: 1920px) {
-    .setting-emp-container {
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+@media (max-width: 575px) {
+  .setting-emp-container {
+    width: calc(100% - 20px);
+    padding: 20px;
+  }
+  .setting-box {
+    padding: 20px;
+  }
+  .button-group {
+    flex-direction: column;
+  }
 }

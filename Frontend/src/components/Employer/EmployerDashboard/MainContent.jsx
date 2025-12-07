@@ -2,14 +2,17 @@ import './MainContent.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBriefcase, faChartLine, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 function MainContent({ activeTab, username, setActiveTab }) {
     const [stats, setStats] = useState({
-        newApplicantsCount: 0,
         activeJobsCount: 0,
         weeklyProfileViews: 0
     });
     const [statsLoading, setStatsLoading] = useState(false);
+
+    const { toast, hideToast, showInfo } = useToast();
 
     useEffect(() => {
         if (activeTab === 'dashboard') {
@@ -34,7 +37,6 @@ function MainContent({ activeTab, username, setActiveTab }) {
 
             const data = await res.json();
             setStats({
-                newApplicantsCount: data.newApplicantsCount || 0,
                 activeJobsCount: data.activeJobsCount || 0,
                 weeklyProfileViews: data.weeklyProfileViews || 0
             });
@@ -64,30 +66,13 @@ function MainContent({ activeTab, username, setActiveTab }) {
                                 <p>Đây là nơi bạn có thể theo dõi tổng quan các hoạt động của mình.</p>
                             </div>
                             <div className="grid-container">
-                                {/* <div
-                                    className={`stat-card ${stats.newApplicantsCount === 0 ? 'disabled' : ''}`}
-                                    onClick={() => {
-                                        if (stats.newApplicantsCount === 0) {
-                                            alert('Không có dữ liệu ứng viên mới');
-                                            return;
-                                        }
-                                        setActiveTab('newApplicant');
-                                    }}
-                                    style={{ cursor: stats.newApplicantsCount === 0 ? 'not-allowed' : 'pointer' }}
-                                >
-                                    <h4><FontAwesomeIcon icon={faUserCircle} /> Ứng viên mới</h4>
-                                    {statsLoading ? (
-                                        <p className="loading">Đang tải...</p>
-                                    ) : (
-                                        <p className="number">{stats.newApplicantsCount}</p>
-                                    )}
-                                </div> */}
+
 
                                 <div
                                     className={`stat-card ${stats.activeJobsCount === 0 ? 'disabled' : ''}`}
                                     onClick={() => {
                                         if (stats.activeJobsCount === 0) {
-                                            alert('Không có tin tuyển dụng đang hoạt động');
+                                            showInfo('Không có tin tuyển dụng đang hoạt động');
                                             return;
                                         }
                                         setActiveTab('activeJobs');
@@ -102,11 +87,12 @@ function MainContent({ activeTab, username, setActiveTab }) {
                                     )}
                                 </div>
 
+
                                 <div
                                     className={`stat-card ${stats.weeklyProfileViews === 0 ? 'disabled' : ''}`}
                                     onClick={() => {
                                         if (stats.weeklyProfileViews === 0) {
-                                            alert('Không có dữ liệu lượt xem hồ sơ');
+                                            showInfo('Không có dữ liệu lượt xem hồ sơ');
                                             return;
                                         }
                                         setActiveTab('profileViewsStats');
@@ -128,7 +114,6 @@ function MainContent({ activeTab, username, setActiveTab }) {
                 return <h2>QUẢN LÝ TRANG CÔNG TY</h2>
             case 'post':
                 return <h2>ĐĂNG TIN TUYÊN DỤNG</h2>
-
             case 'search':
                 return <h2>TÌM KIẾM ỨNG VIÊN</h2>
             case 'newApplicant':
@@ -143,7 +128,20 @@ function MainContent({ activeTab, username, setActiveTab }) {
     return (
         <div className="main-content">
             {renderContent()}
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    duration={toast.duration}
+                    onClose={hideToast}
+                    onConfirm={toast.onConfirm}
+                    onCancel={toast.onCancel}
+                    confirmText={toast.confirmText}
+                    cancelText={toast.cancelText}
+                />
+            )}
         </div>
+
     );
 }
 

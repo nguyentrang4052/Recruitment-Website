@@ -56,6 +56,9 @@ public class LoginController {
 				}
 
 				Applicant applicant = applicantService.findByAccount_accountID(account.getAccountID());
+				
+				System.out.print("bbbbbbbbbbbbbbbbbb" + applicant.getApplicantName());
+				System.out.print("aaaaaaaaaaaaaaaaaaaaaaaa" + account.getAccountID());
 				Map<String, Object> response = new HashMap<>();
 				response.put("token", token);
 				response.put("email", account.getEmail());

@@ -4,21 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import avatarPlaceholder from "../../../assets/avatar.png";
 import ViewApplicant from "../ViewApplicant/ViewApplicant.jsx";
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 const NewApplicant = ({ recruitmentNewsId, onBack }) => {
-
-    // console.log("3️⃣ Received recruitmentNewsId:", recruitmentNewsId, typeof recruitmentNewsId);
-
-    // useEffect(() => {
-    //     if (!recruitmentNewsId) {
-    //         console.error("❌ recruitmentNewsId is undefined!");
-    //         setError("Không tìm thấy ID tin tuyển dụng");
-    //         setLoading(false);
-    //         return;
-    //     }
-    //     fetchApplicants();
-    // }, [recruitmentNewsId]);
-
     const [applicants, setApplicants] = useState([]);
     const [selectedApplicantId, setSelectedApplicantId] = useState(null);
     const [showViewCV, setShowViewCV] = useState(false);
@@ -27,6 +16,8 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const applicantsPerPage = 4;
     const [jobStatus, setJobStatus] = useState({ isActive: true });
+
+    const { toast, hideToast, showSuccess, showError } = useToast();
 
     const API_BASE = "http://localhost:8080/api/employer/applications";
     const token = localStorage.getItem("token");
@@ -37,8 +28,8 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
             setError(null);
             const res = await fetch(`${API_BASE}/new?recruitmentNewsId=${recruitmentNewsId}`, {
                 method: "GET",
-                headers: { "Authorization": `Bearer ${token}` },
-                credentials: "include"
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: "include",
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}: Không thể tải danh sách ứng viên`);
             const data = await res.json();
@@ -46,17 +37,17 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
             setApplicants(withAvatars);
         } catch (err) {
             console.error("fetchApplicants", err);
-            setError("Lỗi khi tải danh sách ứng viên mới.");
+            showError("Lỗi khi tải danh sách ứng viên mới.");
         } finally {
             setLoading(false);
         }
-    }, [recruitmentNewsId, token]);
+    }, [recruitmentNewsId, token, showError]);
 
     useEffect(() => {
         const fetchJobStatus = async () => {
             try {
                 const res = await fetch(`http://localhost:8080/api/employer/jobs/${recruitmentNewsId}`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+                    headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
                 setJobStatus({ isActive: data.isActive });
@@ -65,7 +56,7 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
             }
         };
         if (recruitmentNewsId) fetchJobStatus();
-    }, [recruitmentNewsId]);
+    }, [recruitmentNewsId, token]);
 
     useEffect(() => { fetchApplicants(); }, [fetchApplicants]);
 
@@ -73,33 +64,32 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
         try {
             const res = await fetch(`${API_BASE}/${recruitmentNewsId}/${applicantId}/approve`, {
                 method: "PUT",
-                headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+                headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Không thể duyệt hồ sơ");
-            alert(`✅ Đã duyệt hồ sơ ứng viên ID: ${applicantId}`);
+            showSuccess("Đã duyệt hồ sơ ứng viên!");
             await fetchApplicants();
             handleBackFromCV();
         } catch (err) {
             console.error("handleApprove", err);
-            alert("❌ Có lỗi xảy ra khi duyệt ứng viên.");
+            showError(err.message || "Có lỗi xảy ra khi duyệt ứng viên.");
         }
     };
 
     const handleReject = async (applicantId) => {
         if (!window.confirm('Bạn có chắc chắn muốn TỪ CHỐI ứng viên này?')) return;
-
         try {
             const res = await fetch(`${API_BASE}/${recruitmentNewsId}/${applicantId}/reject`, {
                 method: "PUT",
-                headers: { "Authorization": `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Không thể từ chối hồ sơ");
-            alert(`✅ Đã từ chối hồ sơ ứng viên ID: ${applicantId}`);
+            showSuccess("Đã từ chối hồ sơ ứng viên!");
             await fetchApplicants();
             handleBackFromCV();
         } catch (err) {
             console.error("handleReject", err);
-            alert("❌ Có lỗi xảy ra khi từ chối ứng viên.");
+            showError(err.message || "Có lỗi xảy ra khi từ chối ứng viên.");
         }
     };
 
@@ -114,9 +104,10 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
     };
 
     const totalPages = Math.ceil(applicants.length / applicantsPerPage);
-    const indexOfLastApplicant = currentPage * applicantsPerPage;
-    const indexOfFirstApplicant = indexOfLastApplicant - applicantsPerPage;
-    const currentApplicants = applicants.slice(indexOfFirstApplicant, indexOfLastApplicant);
+    const currentApplicants = applicants.slice(
+        (currentPage - 1) * applicantsPerPage,
+        currentPage * applicantsPerPage
+    );
 
     if (loading) return <div className="loading-spinner">⏳ Đang tải danh sách...</div>;
     if (error) return (
@@ -128,7 +119,6 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
 
     if (showViewCV) {
         const selectedApplicant = applicants.find(a => a.applicantId === selectedApplicantId);
-
         return (
             <ViewApplicant
                 applicantId={selectedApplicantId}
@@ -143,65 +133,65 @@ const NewApplicant = ({ recruitmentNewsId, onBack }) => {
     }
 
     return (
-        <div className="new-applicants-container">
-            <header className="main-header">
-                <button className="back-button" onClick={onBack}>
-                    <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
-                </button>
-                <h2>ỨNG VIÊN ĐÃ ỨNG TUYỂN</h2>
-            </header>
+        <>
+            <div className="new-applicants-container">
+                <header className="main-header">
+                    <button className="back-button" onClick={onBack}>
+                        <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
+                    </button>
+                    <h2>ỨNG VIÊN ĐÃ ỨNG TUYỂN</h2>
+                </header>
 
-            <div className="applicants-list">
-                {currentApplicants.length > 0 ? (
-                    currentApplicants.map((applicant) => (
-                        <div key={applicant.applicantId} className="applicant-card">
-                            <div className="applicant-header">
-                                <img src={applicant.avatar} alt="Avatar" className="candidate-avatar" />
-                                <div className="applicant-info">
-                                    <h4 className="applicant-name">
-                                        {applicant.applicantName}
-                                        {applicant.status === "APPROVED" && (
-                                            <span className="status-badge approved">✅ Đã duyệt</span>
+                <div className="applicants-list">
+                    {currentApplicants.length > 0 ? (
+                        currentApplicants.map(applicant => (
+                            <div key={applicant.applicantId} className="applicant-card">
+                                <div className="applicant-header">
+                                    <img src={applicant.avatar} alt="Avatar" className="candidate-avatar" />
+                                    <div className="applicant-info">
+                                        <h4 className="applicant-name">
+                                            {applicant.applicantName}
+                                            {applicant.status === "APPROVED" && (
+                                                <span className="status-badge approved">✅ Đã duyệt</span>
+                                            )}
+                                        </h4>
+                                        <p className="applicant-position">{applicant.position}</p>
+                                        {applicant.skills && (
+                                            <div className="applicant-skills">
+                                                {applicant.skills.map(skill => (
+                                                    <span key={skill} className="skill-tag">{skill}</span>
+                                                ))}
+                                            </div>
                                         )}
-                                    </h4>
-                                    <p className="applicant-position">{applicant.position}</p>
-                                    {/* <div className="applicant-details">
-                                        <span><FontAwesomeIcon icon={faMapMarkerAlt} /> {applicant.location}</span>
-                                        <span><FontAwesomeIcon icon={faBriefcase} /> {applicant.experience}</span>
-                                    </div> */}
-                                    {applicant.skills && (
-                                        <div className="applicant-skills">
-                                            {applicant.skills.map(skill => (
-                                                <span key={skill} className="skill-tag">{skill}</span>
-                                            ))}
-                                        </div>
-                                    )}
+                                    </div>
+                                </div>
+                                <div className="applicant-actions">
+                                    <button onClick={() => handleViewCV(applicant.applicantId)} className="action-button view-button">
+                                        <FontAwesomeIcon icon={faEye} /> Xem CV
+                                    </button>
                                 </div>
                             </div>
-                            <div className="applicant-actions">
-                                <button onClick={() => handleViewCV(applicant.applicantId)} className="action-button view-button">
-                                    <FontAwesomeIcon icon={faEye} /> Xem CV
-                                </button>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p className="no-applicants">📭 Không có ứng viên</p>
+                        ))
+                    ) : (
+                        <p className="no-applicants">📭 Không có ứng viên</p>
+                    )}
+                </div>
+
+                {totalPages > 1 && (
+                    <div className="pagination">
+                        <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>
+                            ← Trang trước
+                        </button>
+                        <span>Trang {currentPage} / {totalPages}</span>
+                        <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
+                            Trang sau →
+                        </button>
+                    </div>
                 )}
             </div>
 
-            {totalPages > 1 && (
-                <div className="pagination">
-                    <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>
-                        ← Trang trước
-                    </button>
-                    <span>Trang {currentPage} / {totalPages}</span>
-                    <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
-                        Trang sau →
-                    </button>
-                </div>
-            )}
-        </div>
+            {toast && <Toast {...toast} onClose={hideToast} />}
+        </>
     );
 };
 

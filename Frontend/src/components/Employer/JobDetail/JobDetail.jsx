@@ -7,6 +7,8 @@ import {
     faBriefcase, faMoneyBill, faUsers, faEye, faFileAlt,
     faGraduationCap, faCalendar, faStar, faPauseCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 const api = axios.create({
     baseURL: 'http://localhost:8080',
@@ -96,14 +98,14 @@ const JobDetail = ({ jobId, onBack }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const { toast, hideToast, showSuccess, showError } = useToast();
+
     const fetchJobDetail = useCallback(async () => {
         setLoading(true);
         setError(null);
-
         try {
             const response = await api.get(`/api/employer/jobs/${jobId}`);
             const jobData = response.data;
-
             setJob(jobData);
             setEditData(jobData);
         } catch (err) {
@@ -116,15 +118,14 @@ const JobDetail = ({ jobId, onBack }) => {
             } else {
                 setError('Không thể tải thông tin công việc');
             }
+            showError(error);
         } finally {
             setLoading(false);
         }
-    }, [jobId]);
+    }, [jobId, error, showError]);
 
     useEffect(() => {
-        if (jobId) {
-            fetchJobDetail();
-        }
+        if (jobId) fetchJobDetail();
     }, [jobId, fetchJobDetail]);
 
     const formatDate = (dateString) => {
@@ -139,13 +140,13 @@ const JobDetail = ({ jobId, onBack }) => {
             const response = await api.patch(`/api/employer/jobs/${jobId}/deactivate`);
 
             if (response.data.success) {
-                alert('✅ Đã ngừng tuyển dụng');
+                showSuccess('Đã ngừng tuyển dụng');
                 setJob(prev => ({ ...prev, status: 'INACTIVE' }));
                 setEditData(prev => ({ ...prev, status: 'INACTIVE' }));
             }
         } catch (err) {
             console.error('❌ Lỗi ngừng tuyển:', err);
-            alert(`❌ ${err.response?.data?.message || 'Thất bại'}`);
+            showError(err.response?.data?.message || 'Ngừng tuyển thất bại');
         }
     };
 
@@ -188,24 +189,38 @@ const JobDetail = ({ jobId, onBack }) => {
     };
 
     const handleSaveEdit = async () => {
+        const { minSalary, maxSalary, quantity } = editData;
+
+        if (minSalary < 0 || maxSalary < 0) {
+            showError('Lương tối thiểu và lương tối đa không được âm!');
+            return;
+        }
+        if (minSalary && maxSalary && Number(minSalary) > Number(maxSalary)) {
+            showError('Lương tối thiểu không được lớn hơn lương tối đa!');
+            return;
+        }
+        if (quantity <= 0) {
+            showError('Số lượng tuyển phải lớn hơn 0!');
+            return;
+        }
+
         if (!window.confirm('Bạn có chắc muốn lưu thay đổi?')) return;
 
         setLoading(true);
         setError(null);
-
         try {
             const response = await api.put(`/api/employer/jobs/${jobId}`, editData);
 
             if (response.data.success) {
                 setJob(response.data.data);
                 setIsEditing(false);
-                alert('✅ Cập nhật thành công!');
+                showSuccess('Cập nhật thành công!');
             } else {
                 throw new Error(response.data.message);
             }
         } catch (err) {
             console.error('❌ Lỗi cập nhật:', err);
-            alert(`❌ ${err.response?.data?.message || 'Cập nhật thất bại'}`);
+            showError(err.response?.data?.message || 'Cập nhật thất bại');
         } finally {
             setLoading(false);
         }
@@ -220,14 +235,14 @@ const JobDetail = ({ jobId, onBack }) => {
             const response = await api.delete(`/api/employer/jobs/${jobId}`);
 
             if (response.data.success) {
-                alert('✅ Xóa thành công!');
+                showSuccess('Xóa thành công!');
                 onBack();
             } else {
                 throw new Error(response.data.message);
             }
         } catch (err) {
             console.error('❌ Lỗi xóa:', err);
-            alert(`❌ ${err.response?.data?.message || 'Xóa thất bại'}`);
+            showError(err.response?.data?.message || 'Xóa thất bại');
         } finally {
             setLoading(false);
         }
@@ -653,7 +668,9 @@ const JobDetail = ({ jobId, onBack }) => {
                     </div>
                 </div>
             </div>
+            {toast && <Toast {...toast} onClose={hideToast} />}
         </div>
+
     );
 };
 

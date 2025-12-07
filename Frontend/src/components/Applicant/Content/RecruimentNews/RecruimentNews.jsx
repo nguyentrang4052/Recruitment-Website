@@ -111,7 +111,7 @@ function ImageWithSearch({
                 </div>
 
 
-                  <div className="input-renews-wrapper">
+                <div className="input-renews-wrapper">
                     <select
                         value={location}
                         onChange={e => setLocation(e.target.value)}
@@ -269,21 +269,17 @@ function RecruimentNews() {
     const token = localStorage.getItem('token')
     useEffect(() => {
         const fetchSaveJob = async () => {
-            try {
-                const res = await axios.get(
-                    `${API_URL}/api/applicant/favourite-job`,
-                    {
-                        params: { id: applicantID },
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        }
+            const res = await axios.get(
+                `${API_URL}/api/applicant/favourite-job`,
+                {
+                    params: { id: applicantID },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
                     }
-                );
-                const savedIds = res.data.map(job => job.rnid);
-                setFavoriteJobs(savedIds);
-            } catch {
-                console.log('Loi khi tai tin yeu thich')
-            }
+                }
+            );
+            const savedIds = res.data.map(job => job.rnid);
+            setFavoriteJobs(savedIds);
 
 
         }
@@ -325,7 +321,9 @@ function RecruimentNews() {
                                     <p><strong>Ngày đăng tin:</strong><span className="recruiment-value"> {formatDate(recruiment.postedAt)}</span></p>
                                 </div>
                                 <div className="recruiment-info">
-                                    <p><MdAttachMoney /><span className="recruiment-value"> {formatRangeShort(recruiment.salary)}</span></p>
+                                    <p><MdAttachMoney /><span className="recruiment-value">
+                                        {recruiment.salary ? formatRangeShort(recruiment.salary) : "Thoả thuận"}
+                                    </span></p>
                                     <p><strong>Hạn nộp hồ sơ:</strong><span className="recruiment-value"> {formatDate(recruiment.deadline)}</span></p>
                                 </div>
                                 <div className="end-card">

@@ -4,9 +4,18 @@ import { Link } from 'react-router-dom';
 import GZPic1 from '../../../assets/GZConnect1.png';
 import GZPic2 from '../../../assets/GZConnect2.png';
 import GZPic3 from '../../../assets/GZConnect3.png';
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 const EmployerRegistration = () => {
     const images = [GZPic1, GZPic2, GZPic3];
+
+
+    const { toast, hideToast, showSuccess, showInfo, showError } = useToast();
+
+    const TERMS_OF_SERVICE = `Nhà tuyển dụng phải cung cấp thông tin chính xác, đầy đủ và cập nhật kịp thời. Không được đăng tin sai sự thật, phân biệt đối xử, hoặc vi phạm pháp luật. Dịch vụ cao cấp cần thanh toán theo bảng giá hiện hành. Chúng tôi có quyền khóa tài khoản nếu phát hiện vi phạm mà không cần báo trước.`;
+
+    const PRIVACY_POLICY = `Chúng tôi thu thập tên, email, số điện thoại, tên công ty để phục vụ tuyển dụng. Mật khẩu được mã hóa một chiều; dữ liệu không chia sẻ cho bên thứ ba, trừ khi có yêu cầu pháp lý. Bạn có thể yêu cầu xuất/xóa dữ liệu cá nhân bất kỳ lúc nào qua email hỗ trợ.`;
 
     const [formData, setFormData] = useState({
         username: '',
@@ -17,96 +26,75 @@ const EmployerRegistration = () => {
         confirmPassword: '',
         phoneNumber: '',
     });
-
     const [agreedToTerms, setAgreedToTerms] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [modalContent, setModalContent] = useState({ title: '', message: '' });
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
 
     useEffect(() => {
-        const interval = setInterval(() => {
+        const id = setInterval(() => {
             setCurrentImageIndex(prev => (prev + 1) % images.length);
         }, 3000);
-        return () => clearInterval(interval);
+        return () => clearInterval(id);
     }, [images.length]);
-
 
     const handleChange = e => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
-
     const handleCheckboxChange = e => setAgreedToTerms(e.target.checked);
-    const handleLinkClick = (title, message) => {
-        setModalContent({ title, message });
-        setShowModal(true);
+
+
+    const handleLinkClick = (title, content) => {
+        showInfo(content);
     };
-    const closeModal = () => setShowModal(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            handleLinkClick('Lỗi', 'Email không hợp lệ.');
+            showError('Email không hợp lệ.');
             return;
         }
 
         const phoneRegex = /^(0|\+84)(\d{9})$/;
         if (!phoneRegex.test(formData.phoneNumber)) {
-            handleLinkClick('Lỗi', 'Số điện thoại không hợp lệ.');
+            showError('Số điện thoại không hợp lệ.');
             return;
         }
 
         if (!agreedToTerms) {
-            handleLinkClick('Lỗi', 'Bạn phải đồng ý với các điều khoản.');
+            showError('Bạn phải đồng ý với các điều khoản.');
             return;
         }
 
         if (formData.password.length < 8) {
-            handleLinkClick('Lỗi', 'Mật khẩu ít nhất 8 ký tự.');
+            showError('Mật khẩu ít nhất 8 ký tự.');
             return;
         }
-
         if (!/[A-Z]/.test(formData.password)) {
-            handleLinkClick('Lỗi', 'Mật khẩu cần 1 chữ hoa.');
+            showError('Mật khẩu cần 1 chữ hoa.');
             return;
         }
-
         if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(formData.password)) {
-            handleLinkClick('Lỗi', 'Mật khẩu cần 1 ký tự đặc biệt.');
+            showError('Mật khẩu cần 1 ký tự đặc biệt.');
             return;
         }
-
         if (formData.password !== formData.confirmPassword) {
-            handleLinkClick('Lỗi', 'Mật khẩu và xác nhận không khớp!');
+            showError('Mật khẩu và xác nhận không khớp!');
             return;
         }
-
 
         try {
-            const response = await fetch('http://localhost:8080/api/employer/register', {
+            const res = await fetch('http://localhost:8080/api/employer/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: formData.username,
-                    companyName: formData.companyName,
-                    confirmPassword: formData.confirmPassword,
-                    contactPerson: formData.contactPerson,
-                    email: formData.email,
-                    password: formData.password,
-                    phoneNumber: formData.phoneNumber
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
             });
 
-            // const data = await response.json();
+            if (res.ok) {
+                showSuccess(`Đăng ký thành công! Vui lòng kiểm tra email: ${formData.email}`);
 
-            if (response.ok) {
-                handleLinkClick('Đăng ký thành công!', `Vui lòng kiểm tra email: ${formData.email}`);
                 setFormData({
                     username: '',
                     companyName: '',
@@ -118,30 +106,30 @@ const EmployerRegistration = () => {
                 });
                 setAgreedToTerms(false);
             } else {
-                // handleLinkClick('Lỗi', data.message || 'Đăng ký thất bại');
-                // const errorText = await response.text();
-                const data = await response.json();
-                handleLinkClick('Lỗi', data.message || 'Đăng ký thất bại');
+                const data = await res.json();
+                showError(data.message || 'Đăng ký thất bại');
             }
-        } catch (error) {
-            handleLinkClick('Lỗi', 'Không thể kết nối server. Vui lòng thử lại sau.');
-            console.error('API error:', error);
+        } catch (err) {
+            console.error(err);
+            showError('Không thể kết nối server. Vui lòng thử lại sau.');
         }
     };
+
 
     return (
         <div className="main-page-container">
             <div className="main-card-container">
                 <div className="image-panel">
-                    {images.map((img, index) => (
+                    {images.map((img, idx) => (
                         <img
-                            key={index}
+                            key={idx}
                             src={img}
-                            alt={`Slide ${index + 1}`}
-                            className={`image-slide ${index === currentImageIndex ? 'visible' : ''}`}
+                            alt={`Slide ${idx + 1}`}
+                            className={`image-slide ${idx === currentImageIndex ? 'visible' : ''}`}
                         />
                     ))}
                 </div>
+
 
                 <div className="form-panel">
                     <div className="form-content-wrapper">
@@ -182,6 +170,7 @@ const EmployerRegistration = () => {
                                     required
                                 />
                             </div>
+
                             <div className="form-group">
                                 <label htmlFor="email">Email</label>
                                 <input
@@ -193,6 +182,7 @@ const EmployerRegistration = () => {
                                     required
                                 />
                             </div>
+
                             <div className="form-group">
                                 <label htmlFor="password">Mật khẩu</label>
                                 <input
@@ -204,6 +194,7 @@ const EmployerRegistration = () => {
                                     required
                                 />
                             </div>
+
                             <div className="form-group">
                                 <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
                                 <input
@@ -215,6 +206,7 @@ const EmployerRegistration = () => {
                                     required
                                 />
                             </div>
+
                             <div className="form-group">
                                 <label htmlFor="phoneNumber">Số điện thoại</label>
                                 <input
@@ -238,7 +230,7 @@ const EmployerRegistration = () => {
                                     Tôi đã đồng ý với{' '}
                                     <button
                                         type="button"
-                                        onClick={() => handleLinkClick('Điều khoản dịch vụ', 'Nội dung điều khoản...')}
+                                        onClick={() => handleLinkClick('Điều khoản dịch vụ', TERMS_OF_SERVICE)}
                                         className="link-button"
                                     >
                                         Điều khoản dịch vụ
@@ -246,7 +238,7 @@ const EmployerRegistration = () => {
                                     và{' '}
                                     <button
                                         type="button"
-                                        onClick={() => handleLinkClick('Chính sách bảo mật', 'Nội dung chính sách...')}
+                                        onClick={() => handleLinkClick('Chính sách bảo mật', PRIVACY_POLICY)}
                                         className="link-button"
                                     >
                                         Chính sách bảo mật
@@ -270,20 +262,21 @@ const EmployerRegistration = () => {
                 </div>
             </div>
 
-            {showModal && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <div className="modal-content">
-                            <h3 className="modal-title">{modalContent.title}</h3>
-                            <p>{modalContent.message}</p>
-                            <button onClick={closeModal} className="modal-close-button">
-                                Đóng
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    duration={toast.duration}
+                    onClose={hideToast}
+                    onConfirm={toast.onConfirm}
+                    onCancel={toast.onCancel}
+                    confirmText={toast.confirmText}
+                    cancelText={toast.cancelText}
+                />
             )}
         </div>
+
+
     );
 };
 

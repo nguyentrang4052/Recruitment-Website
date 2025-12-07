@@ -28,7 +28,8 @@ public interface IRecruitmentRepository extends JpaRepository<RecruitmentNews, I
 
 	@Query("SELECT COUNT(r) FROM RecruitmentNews r WHERE r.employer.employerID = :id AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true")
 	Integer countApprovedJobs(@Param("id") Integer id);
-
+	
+	@Query("SELECT r FROM RecruitmentNews r WHERE r.employer.employerID = :id AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true")
 	List<RecruitmentNews> findByEmployer_EmployerID(Integer id);
 
 	@Query("SELECT r FROM RecruitmentNews r JOIN r.skill s WHERE LOWER(s.skillName) = LOWER(:skillName) AND r.status = 'APPROVED' AND r.deadline >= CURRENT_DATE AND r.employer.account.active=1 AND r.isActive = true")

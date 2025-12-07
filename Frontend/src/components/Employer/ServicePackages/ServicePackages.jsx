@@ -1,31 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faStar, faGift } from '@fortawesome/free-solid-svg-icons';
 import './ServicePackages.css';
 import PaymentPage from '../PaymentPage/PaymentPage.jsx';
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 const packageThemes = {
-    'BASIC': {
-        gradient: 'gradient-indigo',
-        iconClass: 'indigo',
-        badge: null
-    },
-    'STANDARD': {
-        gradient: 'gradient-yellow',
-        iconClass: 'yellow',
-        badge: { icon: faStar, text: 'Được đề xuất' }
-    },
-    'PREMIUM': {
-        gradient: 'gradient-green',
-        iconClass: 'green',
-        badge: null
-    },
-    'ENTERPRISE': {
-        gradient: 'gradient-red',
-        iconClass: 'red',
-        badge: null
-    }
+    BASIC: { gradient: 'gradient-indigo', iconClass: 'indigo', badge: null },
+    STANDARD: { gradient: 'gradient-yellow', iconClass: 'yellow', badge: { icon: faStar, text: 'Được đề xuất' } },
+    PREMIUM: { gradient: 'gradient-green', iconClass: 'green', badge: null },
+    ENTERPRISE: { gradient: 'gradient-red', iconClass: 'red', badge: null },
 };
 
 const getAutoTheme = (index) => {
@@ -42,23 +28,11 @@ const getAutoTheme = (index) => {
 
 const getThemeForPackage = (pkg, index) => {
     if (pkg.isRecommended) {
-        return {
-            gradient: 'gradient-yellow',
-            iconClass: 'yellow',
-            badge: { icon: faStar, text: 'Được đề xuất' }
-        };
+        return { gradient: 'gradient-yellow', iconClass: 'yellow', badge: { icon: faStar, text: 'Được đề xuất' } };
     }
     if (pkg.price === 0) {
-        return {
-            gradient: 'gradient-blue',
-            iconClass: 'blue',
-            badge: { icon: faGift, text: 'Miễn Phí' }
-        };
+        return { gradient: 'gradient-blue', iconClass: 'blue', badge: { icon: faGift, text: 'Miễn Phí' } };
     }
-
-    // if (packageThemes[pkg.packageName]) {
-    //     return packageThemes[pkg.packageName];
-    // }
     const key = pkg.packageName?.toUpperCase().replace(/ /g, '');
     const matched = packageThemes[key];
     if (matched) return matched;
@@ -72,11 +46,10 @@ function ServicePackages() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const { toast, hideToast, showError, showSuccess } = useToast();
 
-    const fetchData = async () => {
+
+    const fetchData = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
@@ -90,12 +63,10 @@ function ServicePackages() {
                 axios.get('http://localhost:8080/api/packages', {
                     headers: { Authorization: `Bearer ${token}` },
                 }),
-
                 axios
-                    .get(
-                        `http://localhost:8080/api/employer/transactions/active?employerID=${employerID}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
-                    )
+                    .get(`http://localhost:8080/api/employer/transactions/active?employerID=${employerID}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
                     .catch((err) => {
                         console.warn('Không thể lấy gói đang hoạt động:', err.response?.status);
                         return { data: [] };
@@ -105,11 +76,18 @@ function ServicePackages() {
             setPackages(packagesRes.data);
             setActivePkgs(activeRes.data);
         } catch (err) {
-            setError(err.response?.data?.message || err.message || 'Có lỗi xảy ra');
+            const msg = err.response?.data?.message || err.message || 'Có lỗi xảy ra';
+            setError(msg);
+            showError(msg);
         } finally {
             setLoading(false);
         }
-    };
+    }, [showError]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
 
     const isActive = (packageID) => activePkgs.some((p) => p.packageID === packageID);
 
@@ -133,10 +111,10 @@ function ServicePackages() {
                     { packageID: selected.packageID, employerID: Number(employerID) },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-                alert(res.data.message);
+                showSuccess(res.data.message);
                 await fetchData();
             } catch (err) {
-                alert('❌ ' + (err.response?.data?.message || err.message));
+                showError(err.response?.data?.message || err.message);
             }
             return;
         }
@@ -146,35 +124,17 @@ function ServicePackages() {
 
     const handleGoBack = () => setSelectedPackageDetails(null);
 
-    // Function tạo features từ data có sẵn
     const generateFeatures = (pkg) => {
         const features = [];
+        if (pkg.maxPosts) features.push(`Đăng tối đa ${pkg.maxPosts} tin tuyển dụng`);
+        else features.push('Đăng tin không giới hạn');
 
-        if (pkg.maxPosts) {
-            features.push(`Đăng tối đa ${pkg.maxPosts} tin tuyển dụng`);
-        } else {
-            features.push('Đăng tin không giới hạn');
-        }
+        if (pkg.maxCvViews) features.push(`Xem tối đa ${pkg.maxCvViews} CV ứng viên`);
+        else features.push('Xem CV không giới hạn');
 
-        if (pkg.maxCvViews) {
-            features.push(`Xem tối đa ${pkg.maxCvViews} CV ứng viên`);
-        } else {
-            features.push('Xem CV không giới hạn');
-        }
-
-        if (pkg.supportPriorityDays > 0) {
-            features.push(`Ưu tiên duyệt tin trong vòng ${pkg.supportPriorityDays} ngày`);
-        }
-
-        if (pkg.has1on1Consult) {
-            features.push('Tư vấn 1-1 với chuyên gia');
-        }
-
-        if (pkg.hasEmailSupport) {
-            features.push('Hỗ trợ Email 24/7');
-        }
-
-
+        if (pkg.supportPriorityDays > 0) features.push(`Ưu tiên duyệt tin trong vòng ${pkg.supportPriorityDays} ngày`);
+        if (pkg.has1on1Consult) features.push('Tư vấn 1-1 với chuyên gia');
+        if (pkg.hasEmailSupport) features.push('Hỗ trợ Email 24/7');
         return features;
     };
 
@@ -186,68 +146,71 @@ function ServicePackages() {
     if (!packages.length) return <div className="message info"><span>ℹ️</span>Không có gói nào.</div>;
 
     return (
-        <div className="service-packages">
-            <div className="call-to-action-section">
-                <h1>Tìm kiếm Tài năng IT? <span className="highlight">Chọn Gói Dịch Vụ Của Bạn!</span></h1>
-                <p>Nâng tầm chiến lược tuyển dụng với các gói linh hoạt, phù hợp mọi nhu cầu.</p>
-            </div>
+        <>
+            <div className="service-packages">
+                <div className="call-to-action-section">
+                    <h1>Tìm kiếm Tài năng IT? <span className="highlight">Chọn Gói Dịch Vụ Của Bạn!</span></h1>
+                    <p>Nâng tầm chiến lược tuyển dụng với các gói linh hoạt, phù hợp mọi nhu cầu.</p>
+                </div>
 
-            <div className="cards-grid">
-                {packages.map((pkg, index) => {
-                    const theme = getThemeForPackage(pkg, index);
-                    const active = isActive(pkg.packageID);
-                    const days = daysLeft(pkg.packageID);
-                    const isSelected = selectedPackageDetails && selectedPackageDetails.packageName === pkg.packageName;
-                    const features = generateFeatures(pkg);
-                    return (
-                        <div
-                            key={pkg.packageID}
-                            className={`service-card ${pkg.isRecommended ? 'recommended' : ''} ${isSelected ? 'selected' : ''}`}
-                        >
-                            {theme.badge && (
-                                <div className="badge">
-                                    <FontAwesomeIcon icon={theme.badge.icon} /> {theme.badge.text}
+                <div className="cards-grid">
+                    {packages.map((pkg, index) => {
+                        const theme = getThemeForPackage(pkg, index);
+                        const active = isActive(pkg.packageID);
+                        const days = daysLeft(pkg.packageID);
+                        const isSelected = selectedPackageDetails && selectedPackageDetails.packageName === pkg.packageName;
+                        const features = generateFeatures(pkg);
+                        return (
+                            <div
+                                key={pkg.packageID}
+                                className={`service-card ${pkg.isRecommended ? 'recommended' : ''} ${isSelected ? 'selected' : ''}`}
+                            >
+                                {theme.badge && (
+                                    <div className="badge">
+                                        <FontAwesomeIcon icon={theme.badge.icon} /> {theme.badge.text}
+                                    </div>
+                                )}
+
+                                <div className="card-header">
+                                    <span className={`category ${theme.gradient}`}>{pkg.category}</span>
+                                    <h3 className="package-name">{pkg.packageName}</h3>
+                                    {pkg.description && <p className="description">{pkg.description}</p>}
+                                    <p className="price">
+                                        {pkg.price === 0 ? 'Miễn phí' : `${pkg.price.toLocaleString('vi-VN')} VND`}
+                                        <span className="duration"> / {pkg.duration} ngày</span>
+                                    </p>
                                 </div>
-                            )}
 
-                            <div className="card-header">
-                                <span className={`category ${theme.gradient}`}>{pkg.category}</span>
-                                <h3 className="package-name">{pkg.packageName}</h3>
-                                {pkg.description && <p className="description">{pkg.description}</p>}
-                                <p className="price">
-                                    {pkg.price === 0 ? 'Miễn phí' : `${pkg.price.toLocaleString('vi-VN')} VND`}
-                                    <span className="duration"> / {pkg.duration} ngày</span>
-                                </p>
+                                <ul className="features">
+                                    {features.map((f, idx) => (
+                                        <li key={idx}>
+                                            <FontAwesomeIcon icon={faCheckCircle} className={`feature-icon ${theme.iconClass}`} />
+                                            {f}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                {active ? (
+                                    <div className="active-tag">
+                                        Đang sử dụng {days ? `(còn ${days})` : ''}
+                                    </div>
+                                ) : (
+                                    <button
+                                        className={`btn ${theme.gradient}`}
+                                        onClick={() => handleSelectPackage(pkg.packageName)}
+                                        disabled={isSelected}
+                                    >
+                                        {isSelected ? 'Đã Chọn Gói' : 'Chọn Gói Dịch Vụ'}
+                                    </button>
+                                )}
                             </div>
-
-
-                            <ul className="features">
-                                {features.map((f, idx) => (
-                                    <li key={idx}>
-                                        <FontAwesomeIcon icon={faCheckCircle} className={`feature-icon ${theme.iconClass}`} />
-                                        {f}
-                                    </li>
-                                ))}
-                            </ul>
-
-                            {active ? (
-                                <div className="active-tag">
-                                    Đang sử dụng {days ? `(còn ${days})` : ''}
-                                </div>
-                            ) : (
-                                <button
-                                    className={`btn ${theme.gradient}`}
-                                    onClick={() => handleSelectPackage(pkg.packageName)}
-                                    disabled={isSelected}
-                                >
-                                    {isSelected ? 'Đã Chọn Gói' : 'Chọn Gói Dịch Vụ'}
-                                </button>
-                            )}
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
             </div>
-        </div>
+
+            {toast && <Toast {...toast} onClose={hideToast} />}
+        </>
     );
 }
 

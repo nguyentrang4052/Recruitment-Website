@@ -5,6 +5,8 @@ import axios from 'axios';
 import './ActiveJobs.css';
 import NewApplicant from '../NewApplicant/NewApplicant.jsx';
 import JobDetail from '../JobDetail/JobDetail.jsx';
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 const ActiveJobs = ({ setActiveTab }) => {
     const api = useMemo(() => {
@@ -12,18 +14,14 @@ const ActiveJobs = ({ setActiveTab }) => {
             baseURL: 'http://localhost:8080',
             withCredentials: true,
         });
-
         instance.interceptors.request.use(
             (config) => {
                 const token = localStorage.getItem('token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
+                if (token) config.headers.Authorization = `Bearer ${token}`;
                 return config;
             },
             (error) => Promise.reject(error)
         );
-
         return instance;
     }, []);
 
@@ -35,6 +33,8 @@ const ActiveJobs = ({ setActiveTab }) => {
     const [selectedJobId, setSelectedJobId] = useState(null);
     const [viewingApplicants, setViewingApplicants] = useState(false);
 
+    const { toast, hideToast, showError } = useToast();
+
     const fetchActiveJobs = useCallback(async () => {
         try {
             setLoading(true);
@@ -44,35 +44,24 @@ const ActiveJobs = ({ setActiveTab }) => {
                 params: { page: currentPage },
             });
 
-
             setJobs(response.data.content || []);
             setTotalPages(response.data.totalPages || 1);
-            // const response = await api.get('/api/employer/jobs/active', { params: { page: currentPage } });
-
-            // console.log("📋 Raw API response:", response.data); // Xem cấu trúc thật
-
-            // const jobs = response.data.content || [];
-            // jobs.forEach((job, idx) => {
-            //     console.log(`Job ${idx}:`, { id: job.id, title: job.title, applicants: job.applicants });
-            //     // Kiểm tra: job.id có phải là số không? có undefined không?
-            // });
-
-            // setJobs(jobs);
         } catch (err) {
             console.error('❌ Lỗi chi tiết:', err);
 
             if (err.response?.status === 401) {
-                setError('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+                showError('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
                 localStorage.removeItem('token');
             } else if (err.response?.status === 403) {
-                setError('Bạn không có quyền truy cập tính năng này.');
+                showError('Bạn không có quyền truy cập tính năng này.');
             } else {
-                setError('Không thể tải danh sách công việc. Vui lòng thử lại sau.');
+                showError('Không thể tải danh sách công việc. Vui lòng thử lại sau.');
             }
+            setJobs([]);
         } finally {
             setLoading(false);
         }
-    }, [currentPage, api]);
+    }, [currentPage, api, showError]);
 
     useEffect(() => {
         fetchActiveJobs();
@@ -95,22 +84,11 @@ const ActiveJobs = ({ setActiveTab }) => {
     };
 
     if (selectedJobId && viewingApplicants) {
-        return (
-
-            <NewApplicant
-                recruitmentNewsId={selectedJobId}
-                onBack={handleBack}
-            />
-        );
+        return <NewApplicant recruitmentNewsId={selectedJobId} onBack={handleBack} />;
     }
 
     if (selectedJobId && !viewingApplicants) {
-        return (
-            <JobDetail
-                jobId={selectedJobId}
-                onBack={handleBack}
-            />
-        );
+        return <JobDetail jobId={selectedJobId} onBack={handleBack} />;
     }
 
     if (loading) return <div className="loading-spinner">⏳ Đang tải danh sách...</div>;
@@ -122,7 +100,7 @@ const ActiveJobs = ({ setActiveTab }) => {
                 🔄 Thử lại
             </button>
             {error.includes('đăng nhập') && (
-                <button onClick={() => window.location.href = '/login'}>
+                <button onClick={() => (window.location.href = '/login')}>
                     🔐 Đăng nhập
                 </button>
             )}
@@ -130,69 +108,74 @@ const ActiveJobs = ({ setActiveTab }) => {
     );
 
     return (
-        <div className="joblist-container">
-            <div className="joblist-header">
-                <button className="joblist-back-button" onClick={() => setActiveTab('dashboard')}>
-                    ← Quay lại Dashboard
-                </button>
-                <h2 className="page-title">📋 TIN TUYỂN DỤNG ĐANG HOẠT ĐỘNG</h2>
-            </div>
+        <>
+            <div className="joblist-container">
+                <div className="joblist-header">
+                    <button className="joblist-back-button" onClick={() => setActiveTab('dashboard')}>
+                        ← Quay lại Dashboard
+                    </button>
+                    <h2 className="page-title">📋 TIN TUYỂN DỤNG ĐANG HOẠT ĐỘNG</h2>
+                </div>
 
-            <div className="joblist-list">
-                {jobs.length === 0 ? (
-                    <div className="no-jobs">
-                        <p>📭 Không có công việc nào đang hoạt động</p>
-                        <p style={{ fontSize: '14px', color: '#666' }}>Hãy đăng tin tuyển dụng mới</p>
-                    </div>
-                ) : (
-                    jobs.map(job => (
-                        <div key={job.id} className="joblist-card">
-                            <h3
-                                className="joblist-title"
-                                onClick={() => handleJobClick(job.id)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                {job.title || 'Không có tiêu đề'}
-                            </h3>
-                            <p className="joblist-meta">
-                                <FontAwesomeIcon icon={faMapMarkerAlt} /> {job.location || 'Chưa cập nhật'} |{' '}
-                                <FontAwesomeIcon icon={faClock} /> {job.postedDate || 'N/A'}
-                            </p>
-                            <span
-                                className="joblist-applicants"
-                                onClick={() => handleViewApplicants(job.id)}
-                                style={{ cursor: 'pointer', color: '#007bff', textDecoration: 'underline' }}
-                            >
-                                <FontAwesomeIcon icon={faUsers} /> Ứng viên đã nộp: {job.applicants || 0}
-                            </span>
-                            <span className={`joblist-status ${job.status === 'APPROVED' ? 'active' : ''}`}>
-                                {job.status || 'Đang tuyển'}
-                            </span>
+                <div className="joblist-list">
+                    {jobs.length === 0 ? (
+                        <div className="no-jobs">
+                            <p>📭 Không có công việc nào đang hoạt động</p>
+                            <p style={{ fontSize: '14px', color: '#666' }}>Hãy đăng tin tuyển dụng mới</p>
                         </div>
-                    ))
+                    ) : (
+                        jobs.map(job => (
+                            <div key={job.id} className="joblist-card">
+                                <h3 className="joblist-title" onClick={() => handleJobClick(job.id)}>
+                                    {job.title || 'Không có tiêu đề'}
+                                </h3>
+                                <p className="joblist-meta">
+                                    <FontAwesomeIcon icon={faMapMarkerAlt} /> {job.location || 'Chưa cập nhật'} |{' '}
+                                    <FontAwesomeIcon icon={faClock} /> {job.postedDate || 'N/A'}
+                                </p>
+                                <span
+                                    className="joblist-applicants"
+                                    onClick={() => handleViewApplicants(job.id)}
+                                    style={{
+                                        cursor: 'pointer',
+                                        color: '#007bff',
+                                        textDecoration: 'underline',
+                                        fontWeight: 500,
+                                    }}
+                                >
+                                    <FontAwesomeIcon icon={faUsers} /> Ứng viên đã nộp: {job.applicants || 0}
+                                </span>
+                                <span className={`joblist-status ${job.status === 'APPROVED' ? 'active' : ''}`}>
+                                    {job.status || 'Đang tuyển'}
+                                </span>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {totalPages > 1 && (
+                    <div className="joblist-pagination">
+                        <button
+                            className="pagination-btn"
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                        >
+                            ← Trang trước
+                        </button>
+                        <span>Trang {currentPage} / {totalPages}</span>
+                        <button
+                            className="pagination-btn"
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage >= totalPages}
+                        >
+                            Trang sau →
+                        </button>
+                    </div>
                 )}
             </div>
 
-            {totalPages > 1 && (
-                <div className="joblist-pagination">
-                    <button
-                        className="pagination-btn"
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        disabled={currentPage === 1}
-                    >
-                        ← Trang trước
-                    </button>
-                    <span>Trang {currentPage} / {totalPages}</span>
-                    <button
-                        className="pagination-btn"
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        disabled={currentPage >= totalPages}
-                    >
-                        Trang sau →
-                    </button>
-                </div>
-            )}
-        </div>
+            {toast && <Toast {...toast} onClose={hideToast} />}
+        </>
     );
 };
 

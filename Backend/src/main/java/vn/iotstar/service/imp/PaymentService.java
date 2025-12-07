@@ -130,6 +130,40 @@ public class PaymentService implements IPaymentService {
         }
     }
 
+    private void accumulateLimit(EmployerPackageLimit limit, PostPackage newPkg, LocalDate newExpiry) {
+        boolean isExpired = limit.getExpiryDate() == null || limit.getExpiryDate().isBefore(LocalDate.now());
+
+        if (isExpired) {
+         
+            limit.setMaxPosts(newPkg.getMaxPosts());
+            limit.setPostsLeft(newPkg.getMaxPosts());
+            limit.setMaxCvViews(newPkg.getMaxCvViews());
+            limit.setCvViewsLeft(newPkg.getMaxCvViews());
+        } else {
+            
+            limit.setMaxPosts(limit.getMaxPosts() + newPkg.getMaxPosts());
+            limit.setPostsLeft(limit.getPostsLeft() + newPkg.getMaxPosts());
+            limit.setMaxCvViews(limit.getMaxCvViews() + newPkg.getMaxCvViews());
+            limit.setCvViewsLeft(limit.getCvViewsLeft() + newPkg.getMaxCvViews());
+        }
+
+    
+        limit.setSupportPriorityDays(
+            Math.max(
+                Optional.ofNullable(limit.getSupportPriorityDays()).orElse(0),
+                Optional.ofNullable(newPkg.getSupportPriorityDays()).orElse(0)
+            )
+        );
+        limit.setHas1on1Consult(limit.getHas1on1Consult() || newPkg.getHas1on1Consult());
+        limit.setHasEmailSupport(limit.getHasEmailSupport() || newPkg.getHasEmailSupport());
+
+      
+        limit.setExpiryDate(
+            limit.getExpiryDate() == null || newExpiry.isAfter(limit.getExpiryDate())
+                ? newExpiry
+                : limit.getExpiryDate()
+        );
+    }
     
     @Override
     @Transactional
@@ -160,7 +194,7 @@ public class PaymentService implements IPaymentService {
             BigDecimal taxAmount = postPackage.getPrice().multiply(taxRate);
             BigDecimal totalAmount = postPackage.getPrice().add(taxAmount);
 
-            // KIỂM TRA THANH TOÁN THẬT
+          
             boolean paid = isActuallyPaid(transactionRef, totalAmount);
             if (!paid) {
                 return new PaymentResponseDTO(false, "Giao dịch chưa được thanh toán. Vui lòng thực hiện chuyển khoản trước khi xác nhận.", null, null);
@@ -207,14 +241,7 @@ public class PaymentService implements IPaymentService {
                     .orElse(new EmployerPackageLimit());
 
             limit.setEmployer(employer);
-            limit.setMaxPosts(postPackage.getMaxPosts());
-            limit.setPostsLeft(postPackage.getMaxPosts());
-            limit.setMaxCvViews(postPackage.getMaxCvViews());
-            limit.setCvViewsLeft(postPackage.getMaxCvViews());
-            limit.setSupportPriorityDays(postPackage.getSupportPriorityDays());
-            limit.setHas1on1Consult(postPackage.getHas1on1Consult());
-            limit.setHasEmailSupport(postPackage.getHasEmailSupport());
-            limit.setExpiryDate(transactionDetail.getExpiryDate());
+            accumulateLimit(limit, postPackage, transactionDetail.getExpiryDate());
 
             employerLimitRepo.save(limit);	
             return new PaymentResponseDTO(

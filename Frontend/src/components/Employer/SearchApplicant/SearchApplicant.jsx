@@ -3,6 +3,8 @@ import './SearchApplicant.css';
 import provincesData from '../../../../data/provinces.json';
 import avatarPlaceholder from '../../../assets/avatar.png';
 import ViewCV from '../ViewApplicant/ViewApplicant.jsx';
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 const API_BASE_URL = 'http://localhost:8080/api/employer';
 const SKILLS_API_URL = 'http://localhost:8080/api/skills/list';
@@ -29,9 +31,10 @@ const SearchApplicant = () => {
     const [selectedApplicantId, setSelectedApplicantId] = useState(null);
     const [showViewCV, setShowViewCV] = useState(false);
 
+    const { toast, hideToast, showError } = useToast();
+
     const experienceLevels = ["Tất cả", "Fresher", "Junior", "Mid-level", "Senior", "Manager"];
     const token = localStorage.getItem('token');
-
 
     useEffect(() => {
         setCities(provincesData);
@@ -45,16 +48,17 @@ const SearchApplicant = () => {
                 setAvailableSkills(skillNames);
             } catch (err) {
                 console.error("Lỗi khi tải kỹ năng:", err);
+                showError('Không thể tải danh sách kỹ năng');
             } finally {
                 setSkillsLoading(false);
             }
         };
         fetchSkills();
-    }, []);
+    }, [showError]);
 
     const fetchCandidates = useCallback(async (page = 0) => {
         if (!token) {
-            alert("Bạn cần đăng nhập với vai trò Nhà tuyển dụng để tìm kiếm ứng viên.");
+            showError('Bạn cần đăng nhập với vai trò Nhà tuyển dụng để tìm kiếm ứng viên.');
             return;
         }
 
@@ -75,59 +79,42 @@ const SearchApplicant = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(searchPayload)
+                body: JSON.stringify(searchPayload),
             });
 
             const data = await res.json();
 
-
             if (!res.ok) {
                 if (res.status === 402) {
                     const errorType = data.errorType;
-
-                    if (errorType === 'NO_PACKAGE') {
-                        alert('⚠️ Bạn chưa đăng ký gói dịch vụ nào.\n\nVui lòng đăng ký gói để sử dụng tính năng tìm kiếm ứng viên.');
-
-                    } else if (errorType === 'EXPIRED') {
-                        alert(`⚠️ Gói dịch vụ của bạn đã hết hạn.\n\nVui lòng gia hạn để tiếp tục sử dụng.\n\nNgày hết hạn: ${data.expiryDate}`);
-
-                    } else if (errorType === 'NO_CV_VIEWS_LEFT') {
-                        alert('⚠️ Bạn đã hết lượt xem CV trong gói hiện tại.\n\nVui lòng nâng cấp gói dịch vụ để tiếp tục.');
-                    } else {
-                        alert('⚠️ ' + (data.message || 'Bạn cần đăng ký hoặc gia hạn gói dịch vụ.'));
-                    }
-
+                    if (errorType === 'NO_PACKAGE') showError('Bạn chưa đăng ký gói dịch vụ nào. Vui lòng đăng ký gói để sử dụng tính năng tìm kiếm ứng viên.');
+                    else if (errorType === 'EXPIRED') showError(`Gói dịch vụ của bạn đã hết hạn. Ngày hết hạn: ${data.expiryDate}`);
+                    else if (errorType === 'NO_CV_VIEWS_LEFT') showError('Bạn đã hết lượt tìm kiếm hồ sơ trong gói hiện tại. Vui lòng nâng cấp gói dịch vụ để tiếp tục.');
+                    else showError(data.message || 'Bạn cần đăng ký hoặc gia hạn gói dịch vụ.');
                     setCandidates([]);
                     setTotalResults(0);
                     setTotalPages(0);
                     return;
                 }
-
                 throw new Error(data?.message || `Lỗi ${res.status}: Không thể tìm kiếm ứng viên.`);
             }
-
 
             setCandidates(data.candidates || []);
             setTotalResults(data.totalResults || 0);
             setTotalPages(data.totalPages || 0);
-
-
-            if (data.maxCvViews && data.maxCvViews > 0) {
-                console.log(`📊 Lượt xem CV: ${data.cvViewsLeft}/${data.maxCvViews}`);
-            }
-
+            if (data.maxCvViews && data.maxCvViews > 0) console.log(`📊 Lượt xem CV: ${data.cvViewsLeft}/${data.maxCvViews}`);
         } catch (err) {
             console.error("Lỗi gọi API tìm kiếm:", err);
-            alert(`❌ Lỗi tìm kiếm: ${err.message}`);
+            showError(`Lỗi tìm kiếm: ${err.message}`);
             setCandidates([]);
             setTotalResults(0);
             setTotalPages(0);
         } finally {
             setLoading(false);
         }
-    }, [searchTerm, location, experience, selectedSkills, token]);
+    }, [searchTerm, location, experience, selectedSkills, token, showError]);
 
     useEffect(() => {
         fetchCandidates(0);
@@ -139,19 +126,13 @@ const SearchApplicant = () => {
     };
 
     const handlePageChange = (newPage) => {
-        if (newPage >= 0 && newPage < totalPages) {
-            fetchCandidates(newPage);
-        }
+        if (newPage >= 0 && newPage < totalPages) fetchCandidates(newPage);
     };
 
     const handleSkillToggle = (skill) => {
-        setSelectedSkills(prevSkills => {
-            const isSelected = prevSkills.includes(skill);
-            if (isSelected) {
-                return prevSkills.filter(item => item !== skill);
-            } else {
-                return [...prevSkills, skill];
-            }
+        setSelectedSkills(prev => {
+            const isSelected = prev.includes(skill);
+            return isSelected ? prev.filter(item => item !== skill) : [...prev, skill];
         });
     };
 
@@ -182,167 +163,161 @@ const SearchApplicant = () => {
     }
 
     return (
-        <div className="search-applicant-container">
-            <h3>TÌM KIẾM ỨNG VIÊN</h3>
-            <form onSubmit={handleSearch} className="search-form">
-                <div className="form-group-inline">
-                    <div className="form-group search-field">
-                        <label htmlFor="searchTerm">Từ khóa (Tên, chức danh)</label>
-                        <input
-                            type="text"
-                            id="searchTerm"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Nhập từ khóa tìm kiếm..."
-                        />
+        <>
+            <div className="search-applicant-container">
+                <h3>TÌM KIẾM ỨNG VIÊN</h3>
+                <form onSubmit={handleSearch} className="search-form">
+                    <div className="form-group-inline">
+                        <div className="form-group search-field">
+                            <label htmlFor="searchTerm">Từ khóa (Tên, chức danh)</label>
+                            <input
+                                type="text"
+                                id="searchTerm"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                placeholder="Nhập từ khóa tìm kiếm..."
+                            />
+                        </div>
+                        <div className="form-group search-field">
+                            <label htmlFor="location">Địa điểm</label>
+                            <select id="location" value={location} onChange={(e) => setLocation(e.target.value)}>
+                                <option value="">Tất cả địa điểm</option>
+                                {cities.map(loc => (
+                                    <option key={loc.code} value={loc.name}>{loc.name}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                    <div className="form-group search-field">
-                        <label htmlFor="location">Địa điểm</label>
-                        <select
-                            id="location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                        >
-                            <option value="">Tất cả địa điểm</option>
-                            {cities.map(loc => (
-                                <option key={loc.code} value={loc.name}>{loc.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
 
-                <div className="form-group-inline">
-                    <div className="form-group search-field full-width">
-                        <label>Kỹ năng</label>
-                        <div className="custom-combobox" tabIndex="0" onBlur={() => setIsDropdownOpen(false)}>
-                            <div
-                                className="combobox-selected-display"
-                                onClick={(e) => { e.stopPropagation(); setIsDropdownOpen(!isDropdownOpen); }}
-                            >
-                                {selectedSkills.length > 0 ? (
-                                    selectedSkills.map(skill => (
-                                        <span key={skill} className="selected-skill-tag">
-                                            {skill}
-                                            <button
-                                                type="button"
-                                                className="remove-skill"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleSkillToggle(skill);
-                                                }}
-                                            >
-                                                &times;
-                                            </button>
-                                        </span>
-                                    ))
-                                ) : (
-                                    <span className="combobox-placeholder">Chọn kỹ năng...</span>
-                                )}
-                            </div>
-                            {isDropdownOpen && (
-                                <div className="combobox-dropdown" onMouseDown={(e) => e.preventDefault()}>
-                                    <input
-                                        type="text"
-                                        className="combobox-search-input"
-                                        placeholder="Tìm kiếm..."
-                                        value={skillSearchTerm}
-                                        onChange={(e) => setSkillSearchTerm(e.target.value)}
-                                        onClick={(e) => e.stopPropagation()}
-                                    />
-                                    <ul className="combobox-list">
-                                        {skillsLoading ? (
-                                            <li className="combobox-placeholder">Đang tải...</li>
-                                        ) : filteredSkills.length === 0 ? (
-                                            <li className="combobox-placeholder">Không tìm thấy kỹ năng.</li>
-                                        ) : (
-                                            filteredSkills.map(skill => (
-                                                <li
-                                                    key={skill}
-                                                    className={`combobox-item ${selectedSkills.includes(skill) ? 'selected' : ''}`}
+                    <div className="form-group-inline">
+                        <div className="form-group search-field full-width">
+                            <label>Kỹ năng</label>
+                            <div className="custom-combobox" tabIndex="0" onBlur={() => setIsDropdownOpen(false)}>
+                                <div
+                                    className="combobox-selected-display"
+                                    onClick={(e) => { e.stopPropagation(); setIsDropdownOpen(!isDropdownOpen); }}
+                                >
+                                    {selectedSkills.length > 0 ? (
+                                        selectedSkills.map(skill => (
+                                            <span key={skill} className="selected-skill-tag">
+                                                {skill}
+                                                <button
+                                                    type="button"
+                                                    className="remove-skill"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleSkillToggle(skill);
                                                     }}
                                                 >
-                                                    {skill}
-                                                </li>
-                                            ))
-                                        )}
-                                    </ul>
+                                                    &times;
+                                                </button>
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="combobox-placeholder">Chọn kỹ năng...</span>
+                                    )}
                                 </div>
-                            )}
+                                {isDropdownOpen && (
+                                    <div className="combobox-dropdown" onMouseDown={(e) => e.preventDefault()}>
+                                        <input
+                                            type="text"
+                                            className="combobox-search-input"
+                                            placeholder="Tìm kiếm..."
+                                            value={skillSearchTerm}
+                                            onChange={(e) => setSkillSearchTerm(e.target.value)}
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                        <ul className="combobox-list">
+                                            {skillsLoading ? (
+                                                <li className="combobox-placeholder">Đang tải...</li>
+                                            ) : filteredSkills.length === 0 ? (
+                                                <li className="combobox-placeholder">Không tìm thấy kỹ năng.</li>
+                                            ) : (
+                                                filteredSkills.map(skill => (
+                                                    <li
+                                                        key={skill}
+                                                        className={`combobox-item ${selectedSkills.includes(skill) ? 'selected' : ''}`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleSkillToggle(skill);
+                                                        }}
+                                                    >
+                                                        {skill}
+                                                    </li>
+                                                ))
+                                            )}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="form-group search-field">
+                            <label htmlFor="experience">Cấp bậc</label>
+                            <select id="experience" value={experience} onChange={(e) => setExperience(e.target.value)}>
+                                {experienceLevels.map(level => (
+                                    <option key={level} value={level}>{level}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
-                    <div className="form-group search-field">
-                        <label htmlFor="experience">Cấp bậc</label>
-                        <select
-                            id="experience"
-                            value={experience}
-                            onChange={(e) => setExperience(e.target.value)}
-                        >
-                            {experienceLevels.map(level => (
-                                <option key={level} value={level}>{level}</option>
+
+                    <button type="submit" className="search-button" disabled={loading}>
+                        {loading ? 'Đang tìm...' : 'Tìm kiếm'}
+                    </button>
+                </form>
+
+                <div className="search-results-container">
+                    <h4>Tìm thấy {totalResults} ứng viên phù hợp</h4>
+                    {loading ? (
+                        <p className="loading-indicator">Đang tải danh sách ứng viên...</p>
+                    ) : candidates.length > 0 ? (
+                        <div className="candidates-list">
+                            {candidates.map(candidate => (
+                                <div key={candidate.applicantID} className="candidate-card">
+                                    <img
+                                        src={candidate.photo || avatarPlaceholder}
+                                        alt="Avatar"
+                                        className="candidate-avatar"
+                                        onError={(e) => { e.target.onerror = null; e.target.src = avatarPlaceholder; }}
+                                    />
+                                    <div className="candidate-info">
+                                        <h5 className="candidate-name">{candidate.applicantName}</h5>
+                                        <p className="candidate-title">{candidate.jobTitle || 'Chưa cập nhật chức danh'}</p>
+                                        <div className="candidate-skills">
+                                            {(candidate.skillNames || []).map((skill, index) => (
+                                                <span key={index} className="skill-tag">{skill}</span>
+                                            ))}
+                                        </div>
+                                        <p className="salary-expectation">
+                                            Mức lương mong muốn: <strong>{candidate.desireSalary || 'Thỏa thuận'}</strong>
+                                        </p>
+                                        <button onClick={() => handleViewCV(candidate.applicantID)} className="view-profile-button">
+                                            Xem hồ sơ
+                                        </button>
+                                    </div>
+                                </div>
                             ))}
-                        </select>
-                    </div>
+                        </div>
+                    ) : (
+                        <p className="no-results">Không tìm thấy ứng viên phù hợp. Vui lòng thử lại với tiêu chí khác.</p>
+                    )}
                 </div>
 
-                <button type="submit" className="search-button" disabled={loading}>
-                    {loading ? 'Đang tìm...' : 'Tìm kiếm'}
-                </button>
-            </form>
-
-            <div className="search-results-container">
-                <h4>Tìm thấy {totalResults} ứng viên phù hợp</h4>
-                {loading ? (
-                    <p className="loading-indicator">Đang tải danh sách ứng viên...</p>
-                ) : candidates.length > 0 ? (
-                    <div className="candidates-list">
-                        {candidates.map(candidate => (
-                            <div key={candidate.applicantID} className="candidate-card">
-                                <img
-                                    src={candidate.photo || avatarPlaceholder}
-                                    alt="Avatar"
-                                    className="candidate-avatar"
-                                    onError={(e) => { e.target.onerror = null; e.target.src = avatarPlaceholder; }}
-                                />
-                                <div className="candidate-info">
-                                    <h5 className="candidate-name">{candidate.applicantName}</h5>
-                                    <p className="candidate-title">{candidate.jobTitle || "Chưa cập nhật chức danh"}</p>
-                                    {/* <div className="candidate-meta">
-                                        <span><i className="fas fa-map-marker-alt"></i> {candidate.location || "Toàn quốc"}</span>
-                                        <span><i className="fas fa-briefcase"></i> {candidate.experience || "Chưa rõ"}</span>
-                                    </div> */}
-                                    <div className="candidate-skills">
-                                        {(candidate.skillNames || []).map((skill, index) => (
-                                            <span key={index} className="skill-tag">{skill}</span>
-                                        ))}
-                                    </div>
-                                    <p className="salary-expectation">Mức lương mong muốn: <strong>{candidate.desireSalary || "Thỏa thuận"}</strong></p>
-                                    <button onClick={() => handleViewCV(candidate.applicantID)} className="view-profile-button">
-                                        Xem hồ sơ
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                {totalPages > 1 && (
+                    <div className="pagination">
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0 || loading}>
+                            Trang trước
+                        </button>
+                        <span className="page-indicator">Trang {currentPage + 1} / {totalPages}</span>
+                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1 || loading}>
+                            Trang sau
+                        </button>
                     </div>
-                ) : (
-                    <p className="no-results">Không tìm thấy ứng viên phù hợp. Vui lòng thử lại với tiêu chí khác.</p>
                 )}
             </div>
 
-            {totalPages > 1 && (
-                <div className="pagination">
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0 || loading}>
-                        Trang trước
-                    </button>
-                    <span className="page-indicator">Trang {currentPage + 1} / {totalPages}</span>
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1 || loading}>
-                        Trang sau
-                    </button>
-                </div>
-            )}
-        </div>
+            {toast && <Toast {...toast} onClose={hideToast} />}
+        </>
     );
 };
 

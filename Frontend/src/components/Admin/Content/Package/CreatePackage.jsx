@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import useToast from '../../../../utils/useToast.js';   // <- thêm
 import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL;
 
+const API_URL = import.meta.env.VITE_API_URL;
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
 });
-
 api.interceptors.request.use((cfg) => {
   const t = localStorage.getItem('token');
   if (t) cfg.headers.Authorization = `Bearer ${t}`;
   return cfg;
 });
 
-export default function CreatePackage({ onCreate, onCancel }) {
+export default function CreatePackage({ onCreate, onCancel, serverErrors }) {
+  const { showError } = useToast();                     // <- lấy hàm showError
+
   const [form, setForm] = useState({
     packageName: '',
     category: '',
@@ -29,14 +31,21 @@ export default function CreatePackage({ onCreate, onCancel }) {
     has1on1Consult: false,
     hasEmailSupport: false,
   });
-  const [err, setErr] = useState({});
+
+  const [err, setErr] = useState({});                   // chỉ dùng cho client-side
+
+  /* Hiển thị lỗi server bằng Toast */
+  useEffect(() => {
+    if (serverErrors && Object.keys(serverErrors).length) {
+      // show lỗi đầu tiên
+      const msg = Object.values(serverErrors)[0];
+      showError(Array.isArray(msg) ? msg[0] : msg);
+    }
+  }, [serverErrors, showError]);
 
   const handle = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     if (err[name]) setErr((prev) => ({ ...prev, [name]: '' }));
   };
 
@@ -64,7 +73,7 @@ export default function CreatePackage({ onCreate, onCancel }) {
       packageName: form.packageName.trim(),
       category: form.category.trim(),
       price: Number(form.price),
-      duration: form.duration,
+      duration: Number(form.duration),
       description: form.description.trim(),
       taxRate: Number(form.taxRate) || 0,
       isRecommended: form.isRecommended,
@@ -88,32 +97,27 @@ export default function CreatePackage({ onCreate, onCancel }) {
         </div>
 
         <form onSubmit={submit}>
-
+          {/* ===== Thông tin cơ bản ===== */}
           <div className="form-section-title">📋 Thông tin cơ bản</div>
           <div className="form-grid">
             <div className="form-group">
-              <label className="form-label">
-                Tên gói <span className="required">*</span>
-              </label>
+              <label className="form-label">Tên gói <span className="required">*</span></label>
               <input
                 name="packageName"
                 value={form.packageName}
                 onChange={handle}
-                className={`form-input ${err.packageName ? 'error' : ''}`}
+                className={`form-input ${err.packageName || serverErrors?.packageName ? 'error' : ''}`}
                 placeholder="VD: Gói Free, Gói Premium"
               />
-              {err.packageName && <span className="error-message">{err.packageName}</span>}
             </div>
 
             <div className="form-group">
-              <label className="form-label">
-                Danh mục <span className="required">*</span>
-              </label>
+              <label className="form-label">Danh mục <span className="required">*</span></label>
               <select
                 name="category"
                 value={form.category}
                 onChange={handle}
-                className={`form-input ${err.category ? 'error' : ''}`}
+                className={`form-input ${err.category || serverErrors?.category ? 'error' : ''}`}
               >
                 <option value="">-- Chọn danh mục --</option>
                 <option value="Free">Free</option>
@@ -121,13 +125,10 @@ export default function CreatePackage({ onCreate, onCancel }) {
                 <option value="Premium">Premium</option>
                 <option value="Enterprise">Enterprise</option>
               </select>
-              {err.category && <span className="error-message">{err.category}</span>}
             </div>
 
             <div className="form-group">
-              <label className="form-label">
-                Giá (VNĐ) <span className="required">*</span>
-              </label>
+              <label className="form-label">Giá (VNĐ) <span className="required">*</span></label>
               <input
                 name="price"
                 type="number"
@@ -135,26 +136,22 @@ export default function CreatePackage({ onCreate, onCancel }) {
                 min="0"
                 value={form.price}
                 onChange={handle}
-                className={`form-input ${err.price ? 'error' : ''}`}
+                className={`form-input ${err.price || serverErrors?.price ? 'error' : ''}`}
                 placeholder="0 (miễn phí) hoặc 1500000"
               />
-              {err.price && <span className="error-message">{err.price}</span>}
             </div>
 
             <div className="form-group">
-              <label className="form-label">
-                Thời hạn (ngày) <span className="required">*</span>
-              </label>
+              <label className="form-label">Thời hạn (ngày) <span className="required">*</span></label>
               <input
                 name="duration"
                 type="number"
                 min="1"
                 value={form.duration}
                 onChange={handle}
-                className={`form-input ${err.duration ? 'error' : ''}`}
+                className={`form-input ${err.duration || serverErrors?.duration ? 'error' : ''}`}
                 placeholder="30"
               />
-              {err.duration && <span className="error-message">{err.duration}</span>}
             </div>
 
             <div className="form-group">
@@ -166,14 +163,13 @@ export default function CreatePackage({ onCreate, onCancel }) {
                 min="0"
                 value={form.taxRate}
                 onChange={handle}
-                className={`form-input ${err.taxRate ? 'error' : ''}`}
+                className={`form-input ${err.taxRate || serverErrors?.taxRate ? 'error' : ''}`}
                 placeholder="10"
               />
-              {err.taxRate && <span className="error-message">{err.taxRate}</span>}
             </div>
           </div>
 
-
+          {/* ===== Giới hạn quyền ===== */}
           <div className="form-section-title">🔒 Giới hạn quyền</div>
           <div className="form-grid">
             <div className="form-group">
@@ -184,10 +180,9 @@ export default function CreatePackage({ onCreate, onCancel }) {
                 min="0"
                 value={form.maxPosts}
                 onChange={handle}
-                className={`form-input ${err.maxPosts ? 'error' : ''}`}
+                className={`form-input ${err.maxPosts || serverErrors?.maxPosts ? 'error' : ''}`}
                 placeholder="20 (để trống = không giới hạn)"
               />
-              {err.maxPosts && <span className="error-message">{err.maxPosts}</span>}
             </div>
 
             <div className="form-group">
@@ -198,10 +193,9 @@ export default function CreatePackage({ onCreate, onCancel }) {
                 min="0"
                 value={form.maxCvViews}
                 onChange={handle}
-                className={`form-input ${err.maxCvViews ? 'error' : ''}`}
+                className={`form-input ${err.maxCvViews || serverErrors?.maxCvViews ? 'error' : ''}`}
                 placeholder="100 (để trống = không giới hạn)"
               />
-              {err.maxCvViews && <span className="error-message">{err.maxCvViews}</span>}
             </div>
 
             <div className="form-group">
@@ -212,14 +206,13 @@ export default function CreatePackage({ onCreate, onCancel }) {
                 min="0"
                 value={form.supportPriorityDays}
                 onChange={handle}
-                className={`form-input ${err.supportPriorityDays ? 'error' : ''}`}
+                className={`form-input ${err.supportPriorityDays || serverErrors?.supportPriorityDays ? 'error' : ''}`}
                 placeholder="30"
               />
-              {err.supportPriorityDays && <span className="error-message">{err.supportPriorityDays}</span>}
             </div>
           </div>
 
-
+          {/* ===== Dịch vụ bổ sung ===== */}
           <div className="form-section-title">⭐ Dịch vụ bổ sung</div>
           <div className="form-grid">
             <div className="form-group checkbox-group">
@@ -271,7 +264,7 @@ export default function CreatePackage({ onCreate, onCancel }) {
             </div>
           </div>
 
-
+          {/* ===== Mô tả ===== */}
           <div className="form-section-title">📝 Mô tả</div>
           <div className="form-group full-width">
             <label className="form-label">Mô tả chi tiết</label>
@@ -285,6 +278,7 @@ export default function CreatePackage({ onCreate, onCancel }) {
             />
           </div>
 
+          {/* ===== Hành động ===== */}
           <div className="form-actions">
             <button type="submit" className="btn-primary-package">
               <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">

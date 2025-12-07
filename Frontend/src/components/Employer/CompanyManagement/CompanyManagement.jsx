@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../../Employer/CompanyManagement/CompanyManagement.css';
 import provincesData from '../../../../data/provinces.json';
 import wardsData from '../../../../data/wards.json';
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 const CompanyManagement = () => {
     const [companyInfo, setCompanyInfo] = useState({
@@ -21,6 +23,8 @@ const CompanyManagement = () => {
         companyImagePreview: null,
         companySize: 0,
     });
+
+    const { toast, hideToast, showSuccess, showError } = useToast();
 
     const [isEditing, setIsEditing] = useState(false);
     const [provinces, setProvinces] = useState([]);
@@ -104,16 +108,14 @@ const CompanyManagement = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-
         setErrors(prev => ({ ...prev, [name]: '' }));
 
         setCompanyInfo(prev => ({
             ...prev,
-            [name]: name === "companySize" ? (value === '' ? '' : Number(value)) : value
+            [name]: name === 'companySize' ? (value === '' ? '' : Number(value)) : value,
         }));
 
-        setErrors(prev => ({ ...prev, [name]: '' }));
-        if (name === "phone") {
+        if (name === 'phone') {
             if (value === '') {
                 setErrors(prev => ({ ...prev, phone: 'Số điện thoại không được để trống.' }));
             } else if (!validatePhoneNumber(value)) {
@@ -124,18 +126,12 @@ const CompanyManagement = () => {
         }
     };
 
-
     const handleTextareaKeyDown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             const { name, value, selectionStart } = e.target;
-
-
             const newValue = value.substring(0, selectionStart) + '\n• ' + value.substring(selectionStart);
-
             setCompanyInfo(prev => ({ ...prev, [name]: newValue }));
-
-
             setTimeout(() => {
                 e.target.selectionStart = e.target.selectionEnd = selectionStart + 3;
             }, 0);
@@ -186,38 +182,40 @@ const CompanyManagement = () => {
 
     const handleSave = async () => {
         const requiredFields = [
-            "employerName",
-            "fullName",
-            "representative",
-            "phone",
-            "companyWebsite",
-            "companyProfile",
-            "registeredProvince",
-            "registeredWard",
-            "detailedAddress",
-            "companySize"
+            'employerName',
+            'fullName',
+            'representative',
+            'phone',
+            'companyWebsite',
+            'companyProfile',
+            'registeredProvince',
+            'registeredWard',
+            'detailedAddress',
+            'companySize',
         ];
 
-        const missingFields = requiredFields.filter(field => {
-            const value = companyInfo[field];
-            return value === null || value === undefined || value === "";
-        });
 
+        const missingFields = requiredFields.filter(
+            (f) => companyInfo[f] === null || companyInfo[f] === undefined || companyInfo[f] === ''
+        );
         if (missingFields.length > 0) {
-            alert("Vui lòng nhập đủ các trường thông tin để cập nhật.");
+            const newErrors = {};
+            missingFields.forEach((f) => (newErrors[f] = 'Thông tin bắt buộc'));
+            setErrors(newErrors);
+            showError('Vui lòng nhập đủ các trường thông tin bắt buộc.');
             return;
         }
-        const newErrors = {};
-        if (!validatePhoneNumber(companyInfo.phone)) newErrors.phone = 'Số điện thoại không hợp lệ.';
-        // if (!companyInfo.employerName) newErrors.employerName = 'Tên công ty không được để trống.';
-        // if (Object.keys(newErrors).length > 0) {
-        //     setErrors(newErrors);
-        //     alert('Vui lòng kiểm tra lại các trường thông tin.');
-        //     return;
-        // }
+
+
+        if (!validatePhoneNumber(companyInfo.phone)) {
+            setErrors((prev) => ({ ...prev, phone: 'Số điện thoại không hợp lệ.' }));
+            showError('Số điện thoại không hợp lệ.');
+            return;
+        }
 
         let logoUrl = companyInfo.logoPreview;
         let imageUrl = companyInfo.companyImagePreview;
+
 
         if (companyInfo.logo) {
             try {
@@ -232,11 +230,12 @@ const CompanyManagement = () => {
                 logoUrl = `http://localhost:8080${uploadData.url}?t=${new Date().getTime()}`;
             } catch (err) {
                 console.error('Upload logo thất bại:', err);
-                alert('Upload logo thất bại!');
+                showError('Upload logo thất bại!');
                 return;
             }
         }
 
+        // Upload ảnh công ty
         if (companyInfo.companyImage) {
             try {
                 const formData = new FormData();
@@ -250,7 +249,7 @@ const CompanyManagement = () => {
                 imageUrl = `http://localhost:8080${uploadData.url}?t=${new Date().getTime()}`;
             } catch (err) {
                 console.error('Upload ảnh công ty thất bại:', err);
-                alert('Upload ảnh công ty thất bại!');
+                showError('Upload ảnh công ty thất bại!');
                 return;
             }
         }
@@ -282,16 +281,16 @@ const CompanyManagement = () => {
                 body: JSON.stringify(payload),
             });
             if (!res.ok) {
-                alert('Cập nhật thất bại. HTTP status ' + res.status);
+                showError('Cập nhật thất bại. HTTP status ' + res.status);
                 return;
             }
             const data = await res.json();
-            if (data.message) alert(data.message);
+            if (data.message) showSuccess(data.message);
             await loadCompanyInfo();
             setIsEditing(false);
         } catch (err) {
             console.error('Cập nhật thất bại:', err);
-            alert('Cập nhật thất bại!');
+            showError('Cập nhật thất bại!');
         }
     };
 
@@ -301,7 +300,7 @@ const CompanyManagement = () => {
 
             {isEditing ? (
                 <div className="company-edit-form">
-
+                    {/* Logo */}
                     <div className="logo-upload-section">
                         <label>Logo Công ty</label>
                         <div className="logo-preview-wrapper" onClick={handleLogoClick}>
@@ -314,6 +313,7 @@ const CompanyManagement = () => {
                         </div>
                     </div>
 
+                    {/* Ảnh công ty */}
                     <div className="image-upload-section rectangle">
                         <label>Ảnh công ty</label>
                         <div className="image-box" onClick={handleImageClick}>
@@ -329,6 +329,7 @@ const CompanyManagement = () => {
                         </div>
                     </div>
 
+                    {/* Các trường input */}
                     <div className="form-group">
                         <label>Tên Công ty</label>
                         <input type="text" name="employerName" value={companyInfo.employerName} onChange={handleInputChange} />
@@ -417,26 +418,11 @@ const CompanyManagement = () => {
                         )}
                     </div>
 
-                    {isEditing && companyInfo.companyImagePreview && (
-                        <div className="image-upload-section rectangle">
-                            <label>Ảnh công ty</label>
-                            <div className="image-box" onClick={handleImageClick}>
-                                <img src={companyInfo.companyImagePreview} alt="Company" className="company-img" />
-                                <input type="file" accept="image/*" onChange={handleImageChange} ref={imageInputRef} style={{ display: 'none' }} />
-                            </div>
-                        </div>
-                    )}
                     <p><strong>Tên đầy đủ:</strong> {companyInfo.fullName}</p>
                     <p><strong>Tên Công ty:</strong> {companyInfo.employerName}</p>
                     <p><strong>Tên người liên hệ:</strong> {companyInfo.representative}</p>
                     <p><strong>Địa chỉ:</strong> {`${companyInfo.detailedAddress || ''}${companyInfo.registeredWard ? ', ' + companyInfo.registeredWard : ''}${companyInfo.registeredProvince ? ', ' + companyInfo.registeredProvince : ''}` || 'Chưa cập nhật'}</p>
-                    <p>
-                        <strong>Số lượng nhân sự:</strong>{' '}
-                        {companyInfo.companySize !== null && companyInfo.companySize !== undefined
-                            ? `${companyInfo.companySize} người`
-                            : 'Chưa cập nhật'}
-
-                    </p>
+                    <p><strong>Số lượng nhân sự:</strong> {companyInfo.companySize ? `${companyInfo.companySize} người` : 'Chưa cập nhật'}</p>
                     <p><strong>Điện thoại:</strong> {companyInfo.phone}</p>
                     <p><strong>Website:</strong> <a href={companyInfo.companyWebsite} target="_blank" rel="noopener noreferrer">{companyInfo.companyWebsite}</a></p>
                     <p><strong>Mô tả:</strong></p>
@@ -444,6 +430,19 @@ const CompanyManagement = () => {
 
                     <button onClick={() => setIsEditing(true)} className="edit-button">Chỉnh sửa</button>
                 </div>
+            )}
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    duration={toast.duration}
+                    onClose={hideToast}
+                    onConfirm={toast.onConfirm}
+                    onCancel={toast.onCancel}
+                    confirmText={toast.confirmText}
+                    cancelText={toast.cancelText}
+                />
             )}
         </div>
     );

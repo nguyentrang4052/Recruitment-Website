@@ -87,7 +87,7 @@ public class EmployerJobService implements IEmployerJobService {
         Long applicantCount = applicationRepository.countByRecruitmentNews_RNID(jobId);
         if (applicantCount > 0) {
             throw new RuntimeException("Không thể xóa tin tuyển dụng đã có " + applicantCount + 
-                " người ứng tuyển. Vui lòng sử dụng chức năng 'Ngừng tuyển' thay thế.");
+                " người ứng tuyển.");
         }
 
         recruitmentRepository.deleteById(jobId);

@@ -7,6 +7,8 @@ import {
     faGraduationCap, faBullseye, faFileAlt, faStar, faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import avatarPlaceholder from '../../../assets/avatar.png';
+import useToast from '../../../utils/useToast.js';
+import Toast from '../../Toast/Toast.jsx';
 
 const API_BASE_URL = 'http://localhost:8080/api/employer';
 
@@ -18,13 +20,14 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, isJobActive = true, onB
     const [showInterviewModal, setShowInterviewModal] = useState(false)
     const companyName = localStorage.getItem('employerName') || 'Công ty của bạn';
 
+    const { toast, hideToast, showSuccess, showError } = useToast();
+
     useEffect(() => {
         const fetchApplicantDetail = async () => {
             setLoading(true);
             setError(null);
             try {
                 const token = localStorage.getItem('token');
-
                 if (!token) throw new Error('Bạn chưa đăng nhập');
 
                 const res = await fetch(`${API_BASE_URL}/applicant/detail/${applicantId}`, {
@@ -65,13 +68,14 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, isJobActive = true, onB
                 setApplicant(mappedApplicant);
             } catch (err) {
                 setError(err.message);
+                showError(err.message);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchApplicantDetail();
-    }, [applicantId]);
+    }, [applicantId, showError]);
 
 
     const handleScheduleInterview = async (e) => {
@@ -89,7 +93,6 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, isJobActive = true, onB
             companyName: companyName
         };
 
-
         try {
             const token = localStorage.getItem('token');
             const res = await fetch('http://localhost:8080/api/employer/send-interview-email', {
@@ -101,19 +104,12 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, isJobActive = true, onB
                 body: JSON.stringify(data),
             });
 
-            console.group('📥 PHẢN HỒI TỪ SERVER');
-            console.log('🔢 Status:', res.status, res.statusText);
-            console.log('📥 Headers:', Object.fromEntries(res.headers.entries()));
-            console.log('📄 Data:', data);
-            console.groupEnd();
-
             if (!res.ok) throw new Error('Gửi email thất bại');
-
-            alert('✅ Đã gửi lịch phỏng vấn qua email!');
+            showSuccess('Đã gửi lịch phỏng vấn qua email!');
             setShowInterviewModal(false);
             onApprove(applicant.applicantID);
         } catch (err) {
-            alert('❌ Lỗi: ' + err.message);
+            showError('Lỗi: ' + err.message);
         }
     };
 
@@ -160,19 +156,18 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, isJobActive = true, onB
         console.log("🔥 cvUrl truthy?", !!cvUrl);
 
         if (!cvUrl || cvUrl === 'http://localhost:8080null') {
-            console.error("❌ Invalid CV URL");
-            alert('Không tìm thấy file CV');
+            showError('Không tìm thấy file CV');
             return;
         }
 
         console.log("✅ Attempting to open CV...");
 
-        //  Mở tab mới với window.open
+
         try {
             const newWindow = window.open(cvUrl, '_blank', 'noopener,noreferrer');
             console.log("🔥 window.open result:", newWindow);
 
-            // Nếu bị chặn popup
+
             if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
                 console.warn("⚠️ Popup blocked, trying alternative method...");
 
@@ -189,7 +184,7 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, isJobActive = true, onB
             }
         } catch (error) {
             console.error("❌ Error opening CV:", error);
-            alert('Lỗi khi mở CV: ' + error.message);
+            showError('Lỗi khi mở CV: ' + error.message);
         }
     };
 
@@ -458,7 +453,9 @@ const ViewApplicant = ({ applicantId, recruitmentNewsId, isJobActive = true, onB
                     </div>
                 </div>
             )}
+            {toast && <Toast {...toast} onClose={hideToast} />}
         </div>
+
     );
 };
 

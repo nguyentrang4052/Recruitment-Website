@@ -118,7 +118,7 @@ public class ApplicationService implements IApplicationService {
 	                app.getStatus() != null ? app.getStatus().toString() : "PENDING",
 	                app.getCV(),
 	                applicant.getAccount() != null ? applicant.getAccount().getPhoto() : null,
-	                recruitmentNewsId // ✅ ĐẢM BẢO TRẢ VỀ ĐÚNG recruitmentNewsId
+	                recruitmentNewsId 
 	        );
 	    }).collect(Collectors.toList());
 	}

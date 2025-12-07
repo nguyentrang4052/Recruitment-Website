@@ -167,7 +167,9 @@ function CompanyDetail() {
                                         </div>
                                         <div className="job-salary">
                                             <span className="salary-icon">💰</span>
-                                            <p className="salary">{formatRangeShort(job.salary)}</p>
+                                            <p className="salary"><span>{job.salary && job.salary !== "Thỏa thuận"
+                                                ? formatRangeShort(job.salary)
+                                                : job.salary}</span></p>
                                         </div>
                                         <div className="job-meta">
                                             <div className="job-benefit-text">

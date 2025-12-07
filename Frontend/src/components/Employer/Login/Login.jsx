@@ -98,8 +98,8 @@ function Login() {
                 showError("Tài khoản Google này chưa được đăng ký với vai trò nhà tuyển dụng.")
             }
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                showError(error.response.data)
+            if (error.response) {
+                showError(error.response.data || "Đăng nhập với Google thất bại.");
             } else {
                 showError("Đăng nhập với Google thất bại. Vui lòng thử lại sau.")
             }

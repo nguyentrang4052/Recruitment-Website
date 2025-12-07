@@ -53,10 +53,6 @@ public class Employer implements Serializable {
 	@Column(name = "companySize", nullable = true)
 	private Integer companySize;
 
-
-//	@Column(name = "taxCode", nullable = true, length = 255)
-//	private String taxCode;
-
 	@Column(name = "companyLogo", nullable = true, length = 255)
 	private String companyLogo;
 	

@@ -214,7 +214,7 @@ function RecruitDetail() {
         { label: 'Kinh nghiệm', value: recruitmentDetail.experience },
         { label: 'Địa điểm làm việc', value: recruitmentDetail.location },
         { label: 'Thời gian làm việc', value: recruitmentDetail.workingTime },
-        { label: 'Số lượng tuyển', value: recruitmentDetail.quantity },
+        { label: 'Số lượng tuyển', value: recruitmentDetail.quantity + " người" },
         { label: 'Hạn nộp hồ sơ', value: formatDate(recruitmentDetail.deadline) },
         { label: 'Cách thức ứng tuyển', value: recruitmentDetail.applyBy },
     ];
@@ -233,7 +233,9 @@ function RecruitDetail() {
                                         <strong> Mức lương:</strong><br />
                                     </div>
                                     <div className="info-detail-value">
-                                        <span> {formatRangeShort(recruitmentDetail.salary)}</span>
+                                       <span>{recruitmentDetail.salary && recruitmentDetail.salary !== "Thỏa thuận"
+                                                ? formatRangeShort(recruitmentDetail.salary)
+                                                : recruitmentDetail.salary}</span>
                                     </div>
                                 </div>
                                 <div className="info-block">
@@ -352,7 +354,9 @@ function RecruitDetail() {
                                             </h4>
                                             <p className="related-job-company">{job.employer.name}</p>
                                             <p className="related-job-location"><RiMapPinFill />{" " + job.location}</p>
-                                            <p className="related-job-salary"><TfiMoney />{" " + formatRangeShort(job.salary)}</p>
+                                            <p className="related-job-salary"><TfiMoney /><span>{job.salary && job.salary !== "Thỏa thuận"
+                                                ? formatRangeShort(job.salary)
+                                                : job.salary}</span></p>
                                         </div>
                                     </li>
                                 ))}

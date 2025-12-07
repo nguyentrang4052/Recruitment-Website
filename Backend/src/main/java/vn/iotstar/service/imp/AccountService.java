@@ -3,8 +3,10 @@ package vn.iotstar.service.imp;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -255,7 +257,7 @@ public class AccountService implements IAccountService {
 
 		Account account = accountRepository.findByEmail(email);
 		if (account == null) {
-			Role role = roleRepository.findByRoleName("applicant");
+			Role role = roleRepository.findByRoleName("employer");
 
 			Employer emp = new Employer();
 			emp.setEmployerName(name);
@@ -269,7 +271,14 @@ public class AccountService implements IAccountService {
 
 			account.setProvider("google");
 			emp.setAccount(account);
-			accountRepository.save(account);
+			try {
+			    accountRepository.save(account);
+			} catch (Exception e) {
+			    throw new ResponseStatusException(
+			        HttpStatus.BAD_REQUEST,
+			        "Tài khoản Google này chưa được đăng ký với vai trò nhà tuyển dụng."
+			    );
+			}
 			return jwtUtil.generateToken(account.getEmail(), "google");
 		} else {
 			if (account.getUsername() != null)

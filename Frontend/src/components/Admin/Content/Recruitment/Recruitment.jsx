@@ -94,7 +94,9 @@ export default function Recruitment({ onViewDetail }) {
                   <h3 className="job-title">{job.position}</h3>
                   <p className="job-company">{job.employer.name} - {job.location}</p>
                   <div className="job-meta">
-                    <span>💰 {formatRangeShort(job.salary)}</span>
+                    <span>💰 <span>{job.salary && job.salary !== "Thỏa thuận"
+                                                ? formatRangeShort(job.salary)
+                                                : job.salary}</span></span>
                     <span>📅 Ngày đăng: {formatDate(job.postedAt)}</span>
                     <span>👁️ {job.view} lượt xem</span>
                   </div>

@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import vn.iotstar.dto.*;
 import vn.iotstar.entity.Account;
@@ -57,8 +58,6 @@ public class LoginController {
 
 				Applicant applicant = applicantService.findByAccount_accountID(account.getAccountID());
 				
-				System.out.print("bbbbbbbbbbbbbbbbbb" + applicant.getApplicantName());
-				System.out.print("aaaaaaaaaaaaaaaaaaaaaaaa" + account.getAccountID());
 				Map<String, Object> response = new HashMap<>();
 				response.put("token", token);
 				response.put("email", account.getEmail());
@@ -67,12 +66,12 @@ public class LoginController {
 
 				return ResponseEntity.ok(response);
 			} else {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ.");
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error verifying token");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể xác thực token.");
 		}
 	}
 
@@ -127,7 +126,7 @@ public class LoginController {
 	public ResponseEntity<?> authenticateWithGoogleEmp(@RequestBody LoginGGRequestDTO req) throws Exception {
 		String idTokenString = req.getIdToken();
 		try {
-			String token = accountService.loginByGoogle(idTokenString);
+			String token = accountService.loginByGoogleEmp(idTokenString);
 			if (token != null) {
 				String authen = jwtUtil.extractUsername(token);
 
@@ -149,13 +148,14 @@ public class LoginController {
 
 				return ResponseEntity.ok(response);
 			} else {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ.");
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error verifying token");
-		}
-	}
+		} catch (ResponseStatusException e) {
+	        return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể xác thực token.");
+	    }	}
 
 }

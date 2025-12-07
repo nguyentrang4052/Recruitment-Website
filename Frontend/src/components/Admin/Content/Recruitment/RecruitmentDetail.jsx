@@ -90,7 +90,7 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
     return (
         <div className="job-detail-wrapper">
             <div className="job-detail-container">
-\
+                \
                 <div className="job-detail-header">
                     <button className="back-recruitmentbutton" onClick={onBack}>
                         <ChevronLeft size={24} />
@@ -115,7 +115,9 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                     <div className="basic-info-grid">
                         <div>
                             <p className="info-label">💰 Mức lương</p>
-                            <p className="info-value">{formatRangeShort(localJob.salary)}</p>
+                            <p className="info-value"><span>{localJob.salary && localJob.salary !== "Thỏa thuận"
+                                ? formatRangeShort(localJob.salary)
+                                : localJob.salary}</span></p>
                         </div>
                         <div>
                             <p className="info-label">📍 Địa điểm</p>
@@ -262,13 +264,13 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                 </div>
             )}
             {toast && (
-                    <Toast
-                        message={toast.message}
-                        type={toast.type}
-                        duration={toast.duration}
-                        onClose={hideToast}
-                    />
-                )}
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    duration={toast.duration}
+                    onClose={hideToast}
+                />
+            )}
         </div>
     );
 }

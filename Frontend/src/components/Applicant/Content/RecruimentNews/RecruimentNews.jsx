@@ -322,9 +322,11 @@ function RecruimentNews() {
                                 </div>
                                 <div className="recruiment-info">
                                     <p><MdAttachMoney /><span className="recruiment-value">
-                                        {recruiment.salary ? formatRangeShort(recruiment.salary) : "Thoả thuận"}
+                                        {recruiment.salary && recruiment.salary !== "Thỏa thuận"
+                                            ? formatRangeShort(recruiment.salary)
+                                            : recruiment.salary}
                                     </span></p>
-                                    <p><strong>Hạn nộp hồ sơ:</strong><span className="recruiment-value"> {formatDate(recruiment.deadline)}</span></p>
+                                        <p><strong>Hạn nộp hồ sơ:</strong><span className="recruiment-value"> {formatDate(recruiment.deadline)}</span></p>
                                 </div>
                                 <div className="end-card">
                                     <div className="skills-list">

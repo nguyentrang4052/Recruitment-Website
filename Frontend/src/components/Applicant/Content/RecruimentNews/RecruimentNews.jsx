@@ -163,9 +163,6 @@ function RecruimentNews() {
         fetchRecruitments();
     }, []);
 
-
-
-
     const totalPages = Math.ceil(recruitments.length / recruimentPerPage);
 
     const displayrecruitments = recruitments.slice(
@@ -223,9 +220,6 @@ function RecruimentNews() {
             setRecruitments([]);
         }
     };
-
-
-
 
     const onApply = (rnid) => {
         navigate(`/recruitment/${rnid}`);
@@ -286,8 +280,22 @@ function RecruimentNews() {
         fetchSaveJob([applicantID, token])
     })
 
-
     const isFavorite = (rnid) => { return favoriteJobs.includes(rnid); }
+
+    // const searchParams = new URLSearchParams(location.search);
+    // const keyword = searchParams.get('keyword');  
+
+    //  useEffect(() => {
+    //     setPosition(keyword);  
+    // }, [keyword]);
+
+    // const handleViewMore = () => {
+    //     if (keyword) {
+    //         setPosition(keyword);  
+    //         handleSearch();  
+    //     }
+    // };
+
 
 
     if (loading) return <div>Loading...</div>;
@@ -326,7 +334,7 @@ function RecruimentNews() {
                                             ? formatRangeShort(recruiment.salary)
                                             : recruiment.salary}
                                     </span></p>
-                                        <p><strong>Hạn nộp hồ sơ:</strong><span className="recruiment-value"> {formatDate(recruiment.deadline)}</span></p>
+                                    <p><strong>Hạn nộp hồ sơ:</strong><span className="recruiment-value"> {formatDate(recruiment.deadline)}</span></p>
                                 </div>
                                 <div className="end-card">
                                     <div className="skills-list">
@@ -348,6 +356,12 @@ function RecruimentNews() {
                         </div>
                     ))}
                 </div>
+
+                  {/* <div className="view-more">
+                    <button className="view-more-button" onClick={handleViewMore}>
+                        Xem tất cả
+                    </button>
+                </div> */}
 
                 <div className="pagination">
                     <button

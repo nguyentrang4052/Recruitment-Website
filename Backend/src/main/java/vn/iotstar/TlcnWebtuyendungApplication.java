@@ -26,7 +26,7 @@ public class TlcnWebtuyendungApplication {
     private JobNoticeService nService;
     @Service
     class TestScheduler {
-    	@Scheduled(cron = "0 12 23 * * ?", zone = "Asia/Ho_Chi_Minh")
+    	@Scheduled(cron = "0 15 00 * * ?", zone = "Asia/Ho_Chi_Minh")
 //    	@Scheduled(cron = "*/10 * * * * *")
     	public void sendDailyNotifications() {
     		nService.sendScheduledNotifications();

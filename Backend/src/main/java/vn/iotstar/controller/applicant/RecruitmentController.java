@@ -103,5 +103,12 @@ public class RecruitmentController {
 
 		    return list;
 	}
+	
+//	@GetMapping("/recruiment")
+//	public ResponseEntity<List<RecruitmentCardDTO>> getAllJobs(@RequestParam(required = false) String keyword) {
+//	    List<RecruitmentCardDTO> jobs = rService.findByPosition(keyword).stream().map(rService::mapToDetail).toList(); 
+//	    return ResponseEntity.ok(jobs);
+//	}
+//
 
 }

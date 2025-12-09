@@ -47,8 +47,12 @@ const ForgotPassword = () => {
             const response = await axios.post("http://localhost:8080/api/auth/forgot-password", { email });
             setStep(2);
             showSuccess(response.data.message);
-        } catch {
-            showError('Gửi OTP thất bại');
+        } catch (error) {
+            if (error.response) {
+                showError(error.response.data.message);
+            } else {
+                showError("Gửi OTP thất bại, vui lòng thử lại.");
+            }
         }
     };
 

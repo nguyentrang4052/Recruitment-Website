@@ -28,6 +28,11 @@ public class ForgotPassController {
 
 	@PostMapping("/forgot-password")
 	public ResponseEntity<ForgotPassResponeDTO> forgotPass(@RequestBody ForgotPassRequestDTO req) {
+		boolean isEmailExists = accountService.existsByEmail(req.getEmail());
+	    if (!isEmailExists) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body(new ForgotPassResponeDTO("Email này chưa được đăng ký.", false));
+	    }
 
 		boolean isSent = securityUtil.sendOtp(req.getEmail());
 		if (isSent) {

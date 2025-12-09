@@ -149,10 +149,9 @@ body {
     font-size: 14px;
     color: #374151;
     line-height: 1.6;
-    text-align: left;
+    text-align: justify;
 }
 
-/* Two Column Section */
 .two-col-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

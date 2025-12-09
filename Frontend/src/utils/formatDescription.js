@@ -3,10 +3,9 @@ export const formatDescription = (text) => {
 
     const isHTML = /<\/?[a-z][\s\S]*>/i.test(text);
     if (isHTML) {
-        return { __html: text }; 
+        return { __html: text };
     }
 
-    // Nếu có bullet point • 
     if (text.includes("•")) {
         const lines = text
             .split(/\r?\n/)
@@ -21,7 +20,26 @@ export const formatDescription = (text) => {
         return { __html: ul };
     }
 
-    // Nếu chỉ có xuống dòng → chuyển thành <p>
+    if (text.includes("-")) {
+        const items = text
+            .split("-")              
+            .map(i => i.trim())      
+            .filter(i => i.length > 0);
+
+        const ul = `<ul>${items.map(i => `<li>${i}</li>`).join("")}</ul>`;
+        return { __html: ul };
+    }
+
+    if (!text.includes("-")) {
+    const items = text
+        .split(/(?<=\.)\s+/)      
+        .map(i => i.trim())
+        .filter(i => i.length > 0);
+
+    const ul = `<ul>${items.map(i => `<li>${i}</li>`).join("")}</ul>`;
+    return { __html: ul };
+}
+
     if (text.includes("\n")) {
         const paragraphs = text
             .split(/\r?\n/)
@@ -30,6 +48,5 @@ export const formatDescription = (text) => {
         return { __html: paragraphs };
     }
 
-    // Chuỗi đơn bình thường
     return { __html: `<p>${text}</p>` };
 };

@@ -90,7 +90,6 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
     return (
         <div className="job-detail-wrapper">
             <div className="job-detail-container">
-                \
                 <div className="job-detail-header">
                     <button className="back-recruitmentbutton" onClick={onBack}>
                         <ChevronLeft size={24} />
@@ -147,12 +146,16 @@ export default function RecruitmentDetail({ job, onBack, onUpdate }) {
                             <div className="info-row">
                                 <p className="info-label">Mô tả yêu cầu</p>
 
-                                {localJob.requirement && (
+                                {/* {localJob.requirement && (
                                     <div
                                         className="section-content"
                                         dangerouslySetInnerHTML={{ __html: formatDescription(localJob.requirement) }}
                                     />
-                                )}
+                                )} */}
+                                <div
+                                    className="section-content"
+                                    dangerouslySetInnerHTML={formatDescription(localJob.requirement)}
+                                />
 
                             </div>
                             <div className="info-row">
